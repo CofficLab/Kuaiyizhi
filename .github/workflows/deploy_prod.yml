@@ -50,7 +50,7 @@ jobs:
       - name: 当前用户
         run: whoami
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: 下载构件
         uses: actions/download-artifact@v3
         with:
