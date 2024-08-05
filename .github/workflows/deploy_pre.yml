@@ -12,6 +12,7 @@ env:
   DEPLOY_DIR: /www/wwwroot/pre.kuaiyizhi.cn/production
   STORAGE_DIR: /www/storage/pre.kuaiyizhi.cn
   DATABASE_FILE_PATH: /www/database/pre.kuaiyizhi.cn.db
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 on:
   push:
