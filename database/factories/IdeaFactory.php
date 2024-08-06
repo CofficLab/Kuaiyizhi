@@ -17,7 +17,7 @@ class IdeaFactory extends Factory
         return [
             'uuid'      => uuid_create(),
             'title'     => fake()->name(),
-            'content'   => fake()->text(6000),
+            'content'   => "<h1>" . fake()->text(12) . "</h1>" . fake()->text(6000) . $this->makeCodeContent(),
             'parent_id' => config('app.root_name'),
             'priority'  => fake()->numberBetween(1, 100),
         ];
@@ -30,5 +30,10 @@ class IdeaFactory extends Factory
                 'parent_id' => $idea->uuid,
             ];
         });
+    }
+
+    private function makeCodeContent()
+    {
+        return "<pre><code>" . fake()->text(50) . "</code></pre>";
     }
 }
