@@ -30,12 +30,10 @@ class IdeaController extends Controller
 
     public function show(string $id)
     {
-        $idea            = Idea::findOrFail($id);
-        $contentInBase64 = base64_encode($idea->content);
+        $idea = Idea::findOrFail($id);
 
         return view('ideas.show', [
-            'idea'            => $idea,
-            'contentInBase64' => $contentInBase64,
+            'idea' => $idea,
         ]);
     }
 }

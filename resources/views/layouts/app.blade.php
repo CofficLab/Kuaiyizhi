@@ -40,11 +40,11 @@
     @stack('scripts')
 
     @php
-        $files = glob(public_path('/editor/juice-editor/assets') . '/index*.js');
+        $files = glob(public_path('/editor/assets') . '/index*.js');
         $js = basename($files[0]);
     @endphp
 
-    <script type="module" crossorigin src="/editor/juice-editor/assets/{{ $js }}"></script>
+    <script type="module" crossorigin src="/editor/assets/{{ $js }}"></script>
 </body>
 
 </html>

@@ -17,7 +17,19 @@ class IdeaFactory extends Factory
         return [
             'uuid'      => uuid_create(),
             'title'     => fake()->name(),
-            'content'   => "<h1>" . fake()->text(12) . "</h1>" . fake()->text(6000) . $this->makeCodeContent(),
+            'content'   => "<h1>" . fake()->text(12) . "</h1>"
+            . fake()->text(600)
+            . $this->makeCodeContent()
+            . $this->makeHeadingContent()
+            . fake()->text(600)
+            . $this->makeHeadingContent()
+            . fake()->text(600)
+            . $this->makeHeadingContent()
+            . fake()->text(600)
+            . $this->makeHeadingContent()
+            . fake()->text(600)
+            . $this->makeHeadingContent()
+            . fake()->text(600),
             'parent_id' => config('app.root_name'),
             'priority'  => fake()->numberBetween(1, 100),
         ];
@@ -32,8 +44,14 @@ class IdeaFactory extends Factory
         });
     }
 
+    private function makeHeadingContent()
+    {
+        $h = 'h' . mt_rand(2, 5);
+        return "<$h>" . fake()->text(50) . "</$h>";
+    }
+
     private function makeCodeContent()
     {
-        return "<pre><code>" . fake()->text(50) . "</code></pre>";
+        return "<pre><code>console.log('" . fake()->colorName() . "')</code></pre>";
     }
 }
