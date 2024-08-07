@@ -27,14 +27,12 @@ class Menu extends Component
 
     public function goto ()
     {
-        $this->current   = $this->idea;
-        $contentInBase64 = base64_encode($this->current->content);
-        $this->active    = true;
+        $this->current = $this->idea;
+        $this->active  = true;
         // 发出livewire事件
         $this->dispatch("current_changed", $this->idea->uuid);
         // 改地址栏
         $this->js("history.pushState({}, '', '{$this->link}');");
-        $this->js("updateUUIDAndContent('{$this->current->uuid}', '{$contentInBase64}');");
     }
 
     // 监听livewire事件
