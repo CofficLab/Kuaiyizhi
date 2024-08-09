@@ -2,20 +2,22 @@
     <div class="flex flex-col justify-center w-full">
         <div class="relative z-20 px-8 mx-auto xl:px-5 max-w-7xl">
             <div class="flex flex-col items-start h-full pt-0 pb-56 lg:flex-row">
-                <div class="flex flex-col w-full lg:w-1/3">
+                <div class="flex w-full mb-16 lg:w-2/3 lg:mb-0">
+                    <img src="{{ asset('images/app-1.min.png') }}" alt="" class="rounded-3xl">
+                </div>
+
+                <div class="flex flex-col w-full lg:w-1/3 justify-center items-center my-auto">
                     <div class="mt-5 flex mx-auto flex-col gap-2">
+                        <h1 class="text-6xl font-bold">快易知</h1>
+                        <h2 class="mt-6 mb-4">记录灵感，本该如此简单</h2>
                         <a class="" target="_blank" href="https://apps.apple.com/app/快易知/id6457892799">
                             <img class="w-48 dark:hidden" src="{{ asset('images/mac_app_store.svg') }}" alt="">
                             <img class="w-48 hidden dark:flex" src="{{ asset('images/mac_app_store_dark.svg') }}"
                                 alt="">
                         </a>
-                    </div>
-                </div>
 
-                <div class="flex w-full mb-16 lg:w-2/3 lg:mb-0">
-                    <img src="{{ asset('images/app-firstsight.min.png') }}" alt="" class="dark:hidden">
-                    <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-firstsight-dark.min.png') }}' }"
-                        x-bind:src="src" alt="" class="hidden dark:block">
+                        <p class="mt-4 text-xs">适用于 macOS 14.0 Sonoma 及以上</p>
+                    </div>
                 </div>
             </div>
         </div>
