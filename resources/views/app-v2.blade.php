@@ -1,4 +1,8 @@
 <x-app-layout>
+    @section('title')
+        快易知 APP
+    @endsection
+
     <div class="flex flex-col justify-center w-full">
         <div class="relative z-20 px-8 mx-auto xl:px-5 max-w-7xl">
             <div class="flex flex-col items-start h-full pt-0 pb-56 lg:flex-row">

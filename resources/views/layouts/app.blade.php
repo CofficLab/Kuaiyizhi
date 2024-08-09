@@ -13,7 +13,8 @@
     <meta property="og:image" content="https://www.kuaiyizhi.cn/logo.png">
     <meta property="og:url" content="https://www.kuaiyizhi.cn">
 
-    <title>{{ config('app.name') }} - 一棵知识大树</title>
+
+    <title>@yield('title', config('app.name') . ' - 一棵知识大树')</title>
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -35,7 +36,6 @@
     @endif
 
     @include('goodbye')
-
 
     <footer class="p-16 mt-96">
         <div class="shadow-2xl bg-base-100/40 backdrop-blur rounded-3xl">
