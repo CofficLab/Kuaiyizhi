@@ -5,8 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="keywords" content="知识, 学习, 资源, 教育">
+    <meta name="description" content="{{ config('app.name') }}是一个提供丰富知识和资源的平台，帮助用户探索和学习各种主题。">
 
-    <title>{{ config('app.name') }}</title>
+    <meta property="og:title" content="一棵知识大树">
+    <meta property="og:description" content="丰富的知识和资源平台">
+    <meta property="og:image" content="https://www.kuaiyizhi.cn/logo.png">
+    <meta property="og:url" content="https://www.kuaiyizhi.cn">
+
+    <title>{{ config('app.name') }} - 一棵知识大树</title>
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -45,6 +52,17 @@
     @endphp
 
     <script type="module" crossorigin src="/editor/assets/{{ $js }}"></script>
+
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ config('app.name') }}",
+    "url": "https://www.kuaiyizhi.cn",
+    "description": "提供丰富知识和资源的平台"
+    }
+    </script>
+
 </body>
 
 </html>
