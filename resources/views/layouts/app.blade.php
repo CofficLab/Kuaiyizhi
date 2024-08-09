@@ -25,15 +25,9 @@
         @livewire('header')
     </div>
 
-    @if (Route::currentRouteName() != 'ideas.show')
-        <main class="flex justify-center h-auto min-h-screen px-2 pt-24 lg:px-24 bg-gradient-to-b from-base-100/60">
-            {{ $slot }}
-        </main>
-    @else
-        <main class="flex flex-col bg-gradient-to-b from-base-100/60">
-            {{ $slot }}
-        </main>
-    @endif
+    <main class="flex justify-center h-auto min-h-screen px-2 pt-24 lg:px-24 bg-gradient-to-b from-base-100/60">
+        {{ $slot }}
+    </main>
 
     @include('goodbye')
 

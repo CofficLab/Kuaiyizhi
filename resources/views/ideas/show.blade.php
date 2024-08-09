@@ -3,10 +3,14 @@
         {{ $idea->title }} - {{ config('app.name') }}
     @endsection
 
-    <div class="flex flex-row flex-grow w-full h-screen">
-        <div class="fixed z-40 hidden h-screen pt-12 lg:flex">
-            @livewire('side-bar', ['current' => $idea])
-        </div>
+    <div class="flex flex-row flex-grow">
+        @if ($children = $idea->getChildren())
+            @if ($children->count() > 0)
+                <div class="fixed z-40 hidden lg:flex">
+                    @livewire('side-bar', ['current' => $idea])
+                </div>
+            @endif
+        @endif
 
         @livewire('idea-show', ['idea' => $idea])
     </div>
