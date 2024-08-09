@@ -1,28 +1,21 @@
 <x-app-layout>
     <div class="flex flex-col justify-center w-full">
         <div class="relative z-20 px-8 mx-auto xl:px-5 max-w-7xl">
-            <div class="flex flex-col items-start h-full pt-0 pb-56 lg:flex-row gap-6">
+            <div class="flex flex-col items-start h-full pt-0 pb-56 lg:flex-row">
                 <div class="flex flex-col w-full lg:w-1/3">
-                    <div class="smart-card flex flex-col items-start  mt-4">
-                        <h1 class="text-left mt-4 text-5xl text-primary">快易知</h1>
-                        <h2 class="text-left mt-4 text-lg">沉浸式学习平台</h2>
-                        <p class="text-left mt-4">多编程语言教程</p>
-                        <p class="text-left mt-4">软件工程之旅</p>
-                        <p class="text-left mt-4">从这里开始</p>
+                    <div class="mt-5 flex mx-auto flex-col gap-2">
+                        <a class="" target="_blank" href="https://apps.apple.com/app/快易知/id6457892799">
+                            <img class="w-48 dark:hidden" src="{{ asset('images/mac_app_store.svg') }}" alt="">
+                            <img class="w-48 hidden dark:flex" src="{{ asset('images/mac_app_store_dark.svg') }}"
+                                alt="">
+                        </a>
                     </div>
                 </div>
 
                 <div class="flex w-full mb-16 lg:w-2/3 lg:mb-0">
-                    @if (count($ideas) > 0)
-                        <div class="flex flex-col pb-24 justify-center">
-                            <div
-                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-8">
-                                @foreach ($ideas as $key => $book)
-                                    @livewire('book-card', ['book' => $book], key($key))
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
+                    <img src="{{ asset('images/app-firstsight.min.png') }}" alt="" class="dark:hidden">
+                    <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-firstsight-dark.min.png') }}' }"
+                        x-bind:src="src" alt="" class="hidden dark:block">
                 </div>
             </div>
         </div>

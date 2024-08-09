@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::resource('ideas', IdeaController::class)->only(['index', 'show']);
 
 Route::get('/', [HomeController::class, 'index'])->name("home");
-Route::view('/app', 'app')->name("app");
+Route::view('/app', 'app-v2')->name("app");
 Route::view('/about', 'wild.about')->name('about');
 Route::view('/privacy', 'wild.privacy')->name('privacy');
 Route::view('/terms', 'wild.terms')->name('terms');

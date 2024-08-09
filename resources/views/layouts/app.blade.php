@@ -29,18 +29,19 @@
             {{ $slot }}
         </main>
     @else
-        <main class="flex flex-col bg-base-100/60">
+        <main class="flex flex-col bg-gradient-to-b from-base-100/60">
             {{ $slot }}
         </main>
     @endif
 
-    @if (Route::currentRouteName() != 'ideas.show')
-        <footer class="p-16 mt-96">
-            <div class="shadow-2xl bg-base-100/40 backdrop-blur rounded-3xl">
-                @livewire('footer')
-            </div>
-        </footer>
-    @endif
+    @include('goodbye')
+
+
+    <footer class="p-16 mt-96">
+        <div class="shadow-2xl bg-base-100/40 backdrop-blur rounded-3xl">
+            @livewire('footer')
+        </div>
+    </footer>
 
     @stack('modals')
     @livewireScripts
