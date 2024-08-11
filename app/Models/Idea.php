@@ -51,7 +51,7 @@ class Idea extends Model
         });
     }
 
-    public function getParent()
+    public function getParent(): Idea | null
     {
         return $this->parent;
     }
