@@ -1,14 +1,14 @@
 <div class="flex flex-col justify-center gap-4 py-8">
-    <a href="/" class="smart-link flex items-center w-auto text-lg font-bold self-center">
+    <a href="/" class="flex items-center self-center w-auto text-lg font-bold smart-link">
         <div class="flex flex-row items-center w-full">
             <img src="/logo.png" alt="" class="h-8 mt-1 fill-current">
-            <span class="ml-4 text-xl font-bold w-full">快易知</span>
+            <span class="w-full ml-4 text-xl font-bold">快易知</span>
         </div>
     </a>
 
-    <div class="w-full flex flex-col">
-        <div class="flex flex-row justify-center gap-16 p-8 w-full">
-            <ul class="gap-8 flex flex-col">
+    <div class="flex flex-col w-full">
+        <div class="flex flex-row justify-center w-full gap-16 p-8">
+            <ul class="flex flex-col gap-8">
                 <li>
                     <a href="{{ route('privacy') }}" class="smart-link" target="_blank">隐私条款</a>
                 </li>
@@ -23,7 +23,7 @@
                 </li>
             </ul>
 
-            <ul class="gap-8 flex flex-col">
+            <ul class="flex flex-col gap-8">
                 <li>
                     <a href="https://www.kuaiyc.com" class="smart-link" target="_blank">快易查</a>
                 </li>
@@ -35,6 +35,23 @@
                 </li>
                 <li>
                     <a href="https://cofficlab.github.io" class="smart-link" target="_blank">Coffic 系列软件</a>
+                </li>
+            </ul>
+            <ul class="flex flex-col gap-8">
+                <li>
+                    <a href="https://github.com/cofficlab" class="smart-link" target="_blank">GitHub</a>
+                </li>
+                <li>
+                    <a href="https://github.com/CofficLab/JuiceEditor" class="smart-link"
+                        target="_blank">JuiceEditor</a>
+                </li>
+                <li>
+                    <a href="https://apps.apple.com/cn/app/%E5%BF%AB%E6%98%93%E7%9F%A5/id6457892799" class="smart-link"
+                        target="_blank">快易知笔记 APP</a>
+                </li>
+                <li>
+                    <a href="https://apps.apple.com/cn/app/cisum/id6466401036" class="smart-link" target="_blank">Cisum
+                        音乐与有声书播放器</a>
                 </li>
             </ul>
         </div>
