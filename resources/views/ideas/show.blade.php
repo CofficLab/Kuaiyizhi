@@ -12,6 +12,8 @@
             @endif
         @endif
 
-        @livewire('idea-show', ['idea' => $idea])
+        <div class="lg:ml-72">
+            @livewire('idea-show', ['idea' => $idea])
+        </div>
     </div>
 </x-app-layout>
