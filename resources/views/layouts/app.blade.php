@@ -31,7 +31,7 @@
 
     @include('goodbye')
 
-    <footer class="p-16 mt-96">
+    <footer class="p-16 mt-48">
         <div class="shadow-2xl bg-base-100/40 backdrop-blur rounded-3xl">
             @livewire('footer')
         </div>
