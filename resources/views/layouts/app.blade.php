@@ -31,8 +31,6 @@
 
     <footer class="p-16 mt-48">
         <div class="flex flex-col gap-16 shadow-2xl bg-base-100/40 backdrop-blur rounded-3xl">
-            @include('goodbye')
-            <hr class="border-cyan-500/10">
             @livewire('footer')
         </div>
     </footer>
