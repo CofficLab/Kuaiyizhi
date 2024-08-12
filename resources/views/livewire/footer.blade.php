@@ -1,5 +1,5 @@
 <div>
-    <div class="container z-50 mx-auto">
+    <div class="w-full z-50 mx-auto">
         <div class="mt-0 hero smart-card">
             <div class="text-center hero-content">
                 <div class="max-w-md">
