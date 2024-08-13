@@ -16,11 +16,11 @@ class IdeaSeeder extends Seeder
     {
         if (!Idea::find(config('app.root_name'))) {
             Idea::create([
-                'uuid' => config('app.root_name'),
-                'title' => '本地根节点',
-                'content' => '本地根节点',
+                'uuid'      => config('app.root_name'),
+                'title'     => '本地根节点',
+                'content'   => '本地根节点',
                 'parent_id' => '',
-                'priority' => 0,
+                'priority'  => 0,
             ]);
         }
 
@@ -33,7 +33,7 @@ class IdeaSeeder extends Seeder
         });
 
         Idea::query()->whereNot("uuid", config('app.root_name'))->inRandomOrder()->limit(6)->get()->each(function ($idea) {
-            $idea->children()->saveMany(Idea::factory()->count(8)->parentOf($idea)->create());
+            $idea->children()->saveMany(Idea::factory()->count(mt_rand(2, 500))->parentOf($idea)->create());
         });
     }
 }
