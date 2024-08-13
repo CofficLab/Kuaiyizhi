@@ -6,7 +6,7 @@
     <div class="flex flex-row flex-grow">
         @if ($children = $idea->getBook()->getChildren())
             @if ($children->count() > 0)
-                <div class="fixed hidden h-screen pb-24 top-12 lg:flex">
+                <div class="fixed hidden w-56 h-screen pt-16 pb-24 top-12 lg:flex">
                     @livewire('side-bar', ['current' => $idea])
                 </div>
             @endif
