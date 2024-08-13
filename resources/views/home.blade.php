@@ -108,5 +108,49 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="hero w-full mt-0 pt-12 mb-12 smart-card">
+            <div class="hero-content text-center">
+                <div class="w-full">
+                    <h1 class="text-5xl font-bold mb-24">客户评价</h1>
+                    <x-speak>
+                        <x-slot name="speakerName">小猿猿</x-slot>
+                        <x-slot name="speakerTitle">软件工程师</x-slot>
+                        <x-slot name="image">{{ 'images/book.png' }}</x-slot>
+                        <x-slot name="words">
+                            {{ config('app.name') }}</b>
+                            简单易用，没有过多步骤，给我节省了大量时间，正是我期待的用户体验
+                        </x-slot>
+                    </x-speak>
+
+                    <x-speak>
+                        <x-slot name="speakerName">扫地师</x-slot>
+                        <x-slot name="speakerTitle">大学老师</x-slot>
+                        <x-slot name="image">{{ 'images/book.png' }}</x-slot>
+                        <x-slot name="words">
+                            偶尔偷个懒，让学生来这里学习，我可以沉醉在知识的海洋中了。
+                        </x-slot>
+                    </x-speak>
+                    <x-speak>
+                        <x-slot name="speakerName">HENRY</x-slot>
+                        <x-slot name="speakerTitle">研究生</x-slot>
+                        <x-slot name="image">{{ 'images/book.png' }}</x-slot>
+                        <x-slot name="words">
+                            我需要学编程来画一些图表，<b>{{ config('app.name') }}</b>
+                            完全满足需要甚至超出预期，节省的时间去谈恋爱喽～
+                        </x-slot>
+                    </x-speak>
+                    <x-speak>
+                        <x-slot name="speakerName">非常奶妈</x-slot>
+                        <x-slot name="speakerTitle">自媒体从业者</x-slot>
+                        <x-slot name="image">{{ 'images/book.png' }}</x-slot>
+                        <x-slot name="words">
+                            娃去了幼儿园我就在这里学习，真的很棒，适合零基础，学到了很多东西。
+                        </x-slot>
+                    </x-speak>
+                </div>
+            </div>
+        </div>
     </div>
 </x-app-layout>
