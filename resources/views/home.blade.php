@@ -1,119 +1,116 @@
 <x-app-layout>
     <div class="flex flex-col justify-center w-full">
-        <div class="relative z-20 px-8 mx-auto xl:px-5 max-w-7xl">
-            <div class="flex flex-col items-start h-full pt-0 pb-56 lg:flex-row gap-6">
-                <div class="flex flex-col w-full lg:w-1/3">
-                    <div class="smart-card flex flex-col items-start  mt-4">
-                        <h1 class="text-left mt-4 text-5xl text-primary">快易知</h1>
-                        <h2 class="text-left mt-4 text-lg">沉浸式学习平台</h2>
-                        <p class="text-left mt-4">多编程语言教程</p>
-                        <p class="text-left mt-4">软件工程之旅</p>
-                        <p class="text-left mt-4">从这里开始</p>
-                    </div>
-                </div>
-
-                <div class="flex w-full mb-16 lg:w-2/3 lg:mb-0">
-                    @if (count($ideas) > 0)
-                        <div class="flex flex-col pb-24 justify-center">
-                            <div
-                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-8">
-                                @foreach ($ideas as $key => $book)
-                                    @livewire('book-card', ['book' => $book], key($key))
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <section class="relative w-full pt-24 pb-16">
-            <div class="relative flex flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
-                <div class="w-3/4">
-                    <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-runner.min.png') }}' }"
-                        x-bind:src="src" alt="" class="dark:hidden shadow-lg">
-                    <img src="{{ asset('images/app-runner.min.png') }}" x-data="{ src: '{{ asset('images/app-runner-dark.min.png') }}' }"
-                        x-bind:src="src" alt="" class="hidden dark:block">
-                </div>
-                <div class="w-1/4 mr-0 ml-2 smart-card">
-                    <h2 class="text-3xl font-bold mr-0 text-end">就地运行</h2>
-                    <p class="mt-4 leading-6 text-end">运行实验代码</p>
-                    <p class="mt-4 leading-6 text-end">无需编辑器</p>
-                    <p class="mt-4 leading-6 text-end">如此简洁</p>
-                    <p class="mt-4 leading-6 text-end">真方便</p>
-                    <p class="mt-4 leading-6 text-end">快速</p>
-                    <p class="mt-4 leading-6 text-end">赞</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="relative w-full pt-24 pb-16">
-            <div class="relative flex flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
-                <div class="w-1/4 smart-card mr-2">
-                    <h2 class="text-3xl font-bold">万紫千红</h2>
-                    <p class="mt-4 leading-6">还有暗黑模式</p>
-                    <p class="mt-4 leading-6">一图胜万言</p>
-                    <p class="mt-4 leading-6">印象深刻</p>
-                    <p class="mt-4 leading-6">好有趣</p>
-                    <p class="mt-4 leading-6">厉害</p>
-                    <p class="mt-4 leading-6">酷</p>
-                </div>
-                <div class="w-3/4">
-                    <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-colorful.min.png') }}' }"
-                        x-bind:src="src" alt="" class="dark:hidden shadow-lg">
-                    <img src="{{ asset('images/app-colorful.min.png') }}" x-data="{ src: '{{ asset('images/app-colorful-dark.min.png') }}' }"
-                        x-bind:src="src" alt="" class="hidden dark:block">
-                </div>
-            </div>
-        </section>
-
-        <section class="relative w-full pt-24 pb-16">
-            <div class="relative flex flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
-                <div class="w-3/4">
-                    <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-compare.min.png') }}' }"
-                        x-bind:src="src" alt="" class="dark:hidden shadow-lg">
-                    <img src="{{ asset('images/app-compare.min.png') }}" x-data="{ src: '{{ asset('images/app-compare-dark.min.png') }}' }"
-                        x-bind:src="src" alt="" class="hidden dark:block">
-                </div>
-                <div class="w-1/4 mr-0 ml-2 smart-card">
-                    <h2 class="text-3xl font-bold mr-0 text-end">对比学习</h2>
-                    <p class="mt-4 leading-6 text-end">同时学多语言</p>
-                    <p class="mt-4 leading-6 text-end">印象更深刻</p>
-                    <p class="mt-4 leading-6 text-end">事半功倍</p>
-                    <p class="mt-4 leading-6 text-end">真不错</p>
-                    <p class="mt-4 leading-6 text-end">快来</p>
-                    <p class="mt-4 leading-6 text-end">看</p>
-                </div>
-            </div>
-        </section>
-
-        <div class="hero w-full my-36">
-            <div class="hero-content text-center">
+        <div class="hero w-full pt-12 pb-24">
+            <div class="hero-content text-center flex flex-col items-center">
                 <div class="w-full">
-                    <div class="smart-card">
-                        <h1 class="text-5xl font-bold">深入浅出</h1>
-                        <p class="pt-6">知其然，知其所以然</p>
-                        <p class="py-1">这就是</p>
-                        <div class="mt-2 text-3xl flex flex-col gap-2">
-                            <div class="text-primary hover:scale-105 transition duration-200 ease-in-out">快</div>
-                            <div class="text-primary hover:scale-105 transition duration-200 ease-in-out">易</div>
-                            <div class="text-primary hover:scale-105 transition duration-200 ease-in-out">知</div>
-                        </div>
-                    </div>
+                    <h1
+                        class="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-green-500 text-transparent bg-clip-text transition duration-300 ease-in-out transform hover:scale-105">
+                        快易知</h1>
+                    <p
+                        class="text-2xl mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text transition duration-300 ease-in-out transform hover:scale-105">
+                        沉浸式学习平台，帮您构建完整的知识网络</p>
 
-                    <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-easy.min.png') }}' }"
-                        x-bind:src="src" alt="" class="dark:hidden">
-                    <img src="{{ asset('images/app-easy.min.png') }}" x-data="{ src: '{{ asset('images/app-easy-dark.min.png') }}' }"
-                        x-bind:src="src" alt="" class="hidden dark:block">
+                    <div class="flex flex-row justify-center gap-4">
+                        <a class="self-center w-56 mt-12 smart-link btn btn-lg btn-info transition duration-300 ease-in-out transform hover:scale-105"
+                            href="/ideas">在线学习</a>
+                    </div>
+                </div>
+
+                <img src="{{ asset('images/doc.png') }}" alt=""
+                    class="w-2/3 mt-12 shadow-2xl ring-1 ring-indigo-500 rounded-xl transition duration-300 ease-in-out transform hover:scale-105">
+            </div>
+        </div>
+
+        <div class="hero w-full mt-0 pt-12 mb-12 smart-card">
+            <div class="hero-content flex items-center">
+                <div class="w-1/2">
+                    <h2 class="text-4xl font-bold mb-12">全面、立体的知识体系</h2>
+                    <p class="text-lg mb-6">
+                        我们的平台致力于提供一个全面、立体的知识体系。每个节点都是一篇详细的文章，包含图片、文字和代码块，帮助您深入理解每个知识点。
+                    </p>
+                </div>
+                <div class="w-1/2">
+                    <svg class="mx-auto mb-6" width="200" height="200" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="22" height="22" rx="2" stroke="#4A5568"
+                            stroke-width="2" />
+                        <path d="M4 4H20V20H4V4Z" fill="#A0AEC0" />
+                        <path d="M6 6H18V18H6V6Z" fill="#EDF2F7" />
+                        <path d="M8 8H16V16H8V8Z" fill="#E2E8F0" />
+                        <path d="M10 10H14V14H10V10Z" fill="#CBD5E0" />
+                    </svg>
                 </div>
             </div>
         </div>
 
+        <div class="hero w-full mt-0 pt-12 mb-12 smart-card">
+            <div class="hero-content flex items-center">
+                <div class="w-1/2">
+                    <svg class="mx-auto mb-6" width="200" height="200" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="#4A5568" stroke-width="2" />
+                        <path d="M12 2V12H22" stroke="#4A5568" stroke-width="2" />
+                        <path d="M12 12L16 16" stroke="#4A5568" stroke-width="2" />
+                        <path d="M12 12L8 16" stroke="#4A5568" stroke-width="2" />
+                    </svg>
+                </div>
+                <div class="w-1/2">
+                    <h2 class="text-4xl font-bold mb-12">知识的关联性</h2>
+                    <p class="text-lg mb-6">
+                        知识是相互关联的，单独学习一个知识点可能会让您错过整个知识体系。我们鼓励您探索知识的各个方面，构建一个完整的知识网络。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero w-full mt-0 pt-12 mb-12 smart-card">
+            <div class="hero-content flex items-center">
+                <div class="w-1/2">
+                    <h2 class="text-4xl font-bold mb-12">高质量的内容与用户体验</h2>
+                    <p class="text-lg mb-6">
+                        我们的平台不仅提供高质量的内容，还注重用户体验。通过精心设计的界面和功能，我们希望为您提供一个愉快的学习过程。
+                    </p>
+                </div>
+                <div class="w-1/2">
+                    <svg class="mx-auto mb-6" width="200" height="200" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 4H20V20H4V4Z" fill="#A0AEC0" />
+                        <path d="M6 6H18V18H6V6Z" fill="#EDF2F7" />
+                        <path d="M8 8H16V16H8V8Z" fill="#E2E8F0" />
+                        <path d="M10 10H14V14H10V10Z" fill="#CBD5E0" />
+                        <path d="M12 2V12H22" stroke="#4A5568" stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero w-full mt-0 pt-12 mb-12 smart-card">
+            <div class="hero-content flex items-center">
+                <div class="w-1/2">
+                    <svg class="mx-auto mb-6" width="200" height="200" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z"
+                            fill="#A0AEC0" />
+                        <path
+                            d="M12 6C9.79 6 8 7.79 8 10C8 12.21 9.79 14 12 14C14.21 14 16 12.21 16 10C16 7.79 14.21 6 12 6ZM12 12C10.9 12 10 11.1 10 10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 11.1 13.1 12 12 12Z"
+                            fill="#4A5568" />
+                    </svg>
+                </div>
+                <div class="w-1/2">
+                    <h2 class="text-4xl font-bold mb-12">适合所有用户</h2>
+                    <p class="text-lg mb-6">
+                        无论您是初学者还是有经验的专业人士，我们的平台都能满足您的需求，帮助您在知识的海洋中畅游。
+                    </p>
+                </div>
+            </div>
+        </div>
 
         <div class="hero w-full mt-0 pt-12 mb-12 smart-card">
             <div class="hero-content text-center">
                 <div class="w-full">
-                    <h1 class="text-5xl font-bold mb-24">客户评价</h1>
+                    <h2 class="text-5xl font-bold mb-24 bg-clip-text">
+                        客户评价</h2>
                     <x-speak>
                         <x-slot name="speakerName">小猿猿</x-slot>
                         <x-slot name="speakerTitle">软件工程师</x-slot>
