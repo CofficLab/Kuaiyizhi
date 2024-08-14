@@ -3,12 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Idea;
-use Illuminate\Http\Request;
-use Livewire\Attributes\Lazy;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
-#[Lazy]
+// 如果懒加载，爬虫抓不到
 class SideBar extends Component
 {
     public $root;
