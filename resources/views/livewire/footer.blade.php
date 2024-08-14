@@ -15,9 +15,7 @@
         </div>
     </div>
 
-    <hr class="border-cyan-500/10 my-12">
-
-    <div class="z-50 flex flex-col justify-center gap-4 py-8">
+    <div class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner mt-12">
         <a href="/" class="flex items-center self-center w-auto text-lg font-bold smart-link">
             <div class="flex flex-row items-center w-full">
                 <img src="/logo.png" alt="" class="h-8 mt-1 fill-current">
