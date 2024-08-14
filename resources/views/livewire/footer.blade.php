@@ -9,7 +9,7 @@
         </div>
 
         <div class="flex flex-row justify-center gap-4">
-            <a class="self-center w-56 mt-12 smart-link btn btn-lg" href="/ideas">在线学习</a>
+            <a class="self-center w-56 mt-12 smart-link btn btn-lg" href="/ideas" wire:navigate>在线学习</a>
             <a class="self-center w-56 mt-12 smart-link btn btn-lg"
                 href="https://apps.apple.com/app/快易知/id6457892799">macOS APP</a>
         </div>

@@ -12,7 +12,7 @@
 
                     <div class="flex flex-row justify-center gap-4">
                         <a class="self-center w-56 mt-12 smart-link btn btn-lg btn-info transition duration-300 ease-in-out transform hover:scale-105"
-                            href="/ideas">在线学习</a>
+                            href="/ideas" wire:navigate>在线学习</a>
                     </div>
                 </div>
 
