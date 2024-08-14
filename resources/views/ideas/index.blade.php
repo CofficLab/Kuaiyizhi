@@ -3,7 +3,7 @@
         知识库 - {{ config('app.name') }}
     @endsection
 
-    <main class="container mx-auto">
+    <main class="container mx-auto mt-12">
         @if (count($ideas) > 0)
             <div class="flex flex-col pb-24 justify-center">
                 <div
