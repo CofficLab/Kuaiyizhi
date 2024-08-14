@@ -12,7 +12,7 @@
             @endif
         @endif
 
-        <div class="lg:ml-72">
+        <div class="lg:ml-72 w-full">
             @livewire('idea-show', ['idea' => $idea])
         </div>
     </div>

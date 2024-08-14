@@ -19,7 +19,7 @@
             </div>
         @else
             <div class="container flex justify-center items-center flex-row h-screen">
-                <div class="card bg-base-100 shadow-xl w-56">
+                <div class="card bg-base-100 shadow-xl w-56 smart-card">
                     <div class="card-body flex justify-center">
                         <h2 class="card-title flex justify-center">暂无数据</h2>
                     </div>
