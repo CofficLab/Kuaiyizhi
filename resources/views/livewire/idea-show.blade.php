@@ -9,6 +9,7 @@
         <div class="bg-yellow-800/90 rounded-lg p-6 flex flex-col items-center">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             <p class="mt-4">加载中...</p>
+            <p class="text-sm mt-2">图片较多时加载可能会比较慢</p>
         </div>
     </div>
 </div>
