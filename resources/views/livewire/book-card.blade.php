@@ -1,4 +1,4 @@
-<a href="{{ $link }}" class="justify-center flex">
+<a href="{{ $link }}" class="justify-center flex" wire:navigate>
     <div class="w-56 h-80">
         {{-- 背景层 --}}
         <div class="bg-gradient-to-br w-full h-full from-green-900/90 to-cyan-900/40 rounded-3xl shadow-lg">

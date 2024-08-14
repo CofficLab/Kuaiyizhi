@@ -11,9 +11,9 @@
         </div>
 
         <div class="gap-4 navbar-center p-0">
-            <a class="smart-link" href="{{ url('/') }}">首页</a>
-            <a class="smart-link" href="{{ url('/app') }}">APP</a>
-            <a class="smart-link" href="{{ route('ideas.index') }}">知识库</a>
+            <a class="smart-link" href="{{ url('/') }}" wire:navigate>首页</a>
+            <a class="smart-link" href="{{ url('/app') }}" wire:navigate>APP</a>
+            <a class="smart-link" href="{{ route('ideas.index') }}" wire:navigate>知识库</a>
         </div>
 
         <div class="navbar-end">
