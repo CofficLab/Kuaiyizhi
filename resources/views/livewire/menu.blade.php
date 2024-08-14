@@ -1,8 +1,8 @@
 <div>
     @if ($idea->children->count() == 0)
         <li>
-            <a class="{{ $active ? 'active' : '' }}" href="javascript:void(0)" wire.id="{{ $idea->uuid }}"
-                wire:click.prevent="goto">
+            <a :class="currentUUID == '{{ $idea->uuid }}' ? 'active' : ''" href="javascript:void(0)"
+                wire.id="{{ $idea->uuid }}" @click="setCurrentUUID('{{ $idea->uuid }}')" wire:click='goto'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round"
