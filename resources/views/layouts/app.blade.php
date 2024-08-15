@@ -25,7 +25,7 @@
         @livewire('header')
     </div>
 
-    <main class="flex justify-center h-auto min-h-screen px-2 pt-12 lg:px-24 bg-gradient-to-b from-base-100/60">
+    <main class="flex justify-center h-auto min-h-screen px-2 pt-12 lg:px-24 bg-gradient-to-b from-base-100/30">
         {{ $slot }}
     </main>
 
