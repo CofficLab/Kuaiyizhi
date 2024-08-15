@@ -23,6 +23,39 @@ class Idea extends Model
         'is_page',
     ];
 
+    public function getContent(): string {
+        $content = $this->content;
+        $imageCounter = 0; // 初始化计数器
+
+        // 使用正则表达式提取 base64 图片并保存到磁盘
+        preg_match_all("/<img[^>]+src='data:image\/([^;]+);base64,([^']+)'/", $content, $matches);
+
+        foreach ($matches[0] as $match) {
+            $imageCounter++; // 增加计数器
+
+            // 获取图片类型和 base64 数据
+            $imageType = $matches[1][$imageCounter - 1];
+            $base64Data = $matches[2][$imageCounter - 1];
+
+            // 解码 base64 数据
+            $imageData = base64_decode($base64Data);
+
+            // 生成文件名和存储路径
+            $fileName = $this->uuid . '-' . $imageCounter . '.' . $imageType; // 采用 x-y 格式
+            $filePath = '/cache/' . $fileName; // 存储在 images 目录中
+            $storePath = public_path($filePath);
+
+            // 将图片数据写入文件
+            file_put_contents($storePath, $imageData);
+
+            // 替换 HTML 中的 img src
+            $content = str_replace($match, '<img src="' . $filePath . '"', $content);
+        }
+
+        return $content;
+    }
+
+
     public function parent()
     {
         return $this->belongsTo(self::class, 'parent_id', 'uuid');
