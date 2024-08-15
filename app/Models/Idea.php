@@ -28,7 +28,7 @@ class Idea extends Model
         $imageCounter = 0; // 初始化计数器
 
         // 使用正则表达式提取 base64 图片并保存到磁盘
-        preg_match_all("/<img[^>]+src='data:image\/([^;]+);base64,([^']+)'/", $content, $matches);
+        preg_match_all("/<img[^>]+src=\"data:image\/([^;]+);base64,([^\"']+)\"/", $content, $matches);
 
         foreach ($matches[0] as $match) {
             $imageCounter++; // 增加计数器

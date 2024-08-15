@@ -59,6 +59,6 @@ class IdeaFactory extends Factory
 
     private function makeBase64Content()
     {
-        return "<img src='data:image/png;base64," . base64_encode(file_get_contents(public_path('favicon.ico'))) . "' alt='Image'>";
+        return "<img src=\"data:image/png;base64," . base64_encode(file_get_contents(public_path('favicon.ico'))) . "\" alt='Image'>";
     }
 }
