@@ -20,7 +20,7 @@
 
 <body class="font-sans antialiased">
     <div class="fixed top-0 z-50 w-full h-12">
-        @livewire('header')
+        @include('layouts.header')
     </div>
 
     <main class="flex justify-center h-auto min-h-screen px-2 pt-12 lg:px-24 bg-gradient-to-b from-base-100/30">
@@ -29,7 +29,7 @@
 
     <footer class="p-16 mt-48">
         <div class="flex flex-col gap-16 shadow-2xl bg-base-100/40 backdrop-blur rounded-3xl">
-            @livewire('footer')
+            @include('layouts.footer')
         </div>
     </footer>
 

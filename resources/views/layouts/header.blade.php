@@ -17,10 +17,7 @@
         </div>
 
         <div class="navbar-end">
-            @auth
-                @livewire('nav-end')
-            @else
-            @endauth
+            <livewire:nav-end lazy />
         </div>
     </div>
 </header>
