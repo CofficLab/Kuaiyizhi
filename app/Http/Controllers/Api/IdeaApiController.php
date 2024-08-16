@@ -8,6 +8,7 @@ use App\Http\Resources\IdeaCollection;
 use App\Http\Resources\IdeaResource;
 use App\Models\Idea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -129,12 +130,6 @@ class IdeaApiController extends Controller
      */
     public function sync(Request $request, string $id)
     {
-        Log::debug("同步节点", [
-            'uuid'    => $id,
-            'title'   => $request->title,
-            'content' => Str::of($request->content)->limit(100),
-        ]);
-
         Idea::query()->updateOrCreate([
             'uuid' => $id,
         ], [
@@ -144,7 +139,7 @@ class IdeaApiController extends Controller
             'priority'  => $request->priority ?? 0,
         ]);
 
-        Log::debug("同步成功");
+        Artisan::call('page-cache:clear ideas/' . $id);
 
         return response()->json([
             'message' => 'Synced successfully',
