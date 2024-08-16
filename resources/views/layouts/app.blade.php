@@ -7,12 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="keywords" content="知识, 学习, 资源, 教育">
     <meta name="description" content="{{ config('app.name') }}是一个提供丰富知识和资源的平台，帮助用户探索和学习各种主题。">
-
     <meta property="og:title" content="一棵知识大树">
     <meta property="og:description" content="丰富的知识和资源平台">
     <meta property="og:image" content="https://www.kuaiyizhi.cn/logo.png">
     <meta property="og:url" content="https://www.kuaiyizhi.cn">
-
 
     <title>@yield('title', config('app.name') . ' - 一棵知识大树')</title>
 
@@ -39,12 +37,13 @@
     @livewireScripts
     @stack('scripts')
 
-    @php
-        $files = glob(public_path('/editor/assets') . '/index*.js');
-        $js = basename($files[0]);
-    @endphp
-
-    <script type="module" crossorigin src="/editor/assets/{{ $js }}"></script>
+    @if (request()->routeIs('ideas.show'))
+        @php
+            $files = glob(public_path('/editor/assets') . '/index*.js');
+            $js = basename($files[0]);
+        @endphp
+        <script type="module" crossorigin src="/editor/assets/{{ $js }}"></script>
+    @endif
 
     <script type="application/ld+json">
     {
