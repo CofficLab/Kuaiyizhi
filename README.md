@@ -64,6 +64,10 @@
 
 ## 部署
 
+### 缓存
+
+使用了 <https://github.com/JosephSilber/page-cache> 做页面缓存，需要手动更新缓存。
+
 ### Caddy
 
 参考`.devcontainer`中的`Caddyfile`

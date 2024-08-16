@@ -134,6 +134,8 @@ jobs:
         run: php $RELEASE_DIR/artisan migrate
       - name: 生成缓存
         run: php $RELEASE_DIR/artisan optimize
+      - name: 清理HTML缓存
+        run: php $RELEASE_DIR/artisan page-cache:clear
 
   link:
     needs: [prepare]
