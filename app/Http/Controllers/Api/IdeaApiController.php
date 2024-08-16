@@ -139,8 +139,6 @@ class IdeaApiController extends Controller
             'priority'  => $request->priority ?? 0,
         ]);
 
-        Artisan::call('page-cache:clear ideas/' . $id);
-
         return response()->json([
             'message' => 'Synced successfully',
         ]);
