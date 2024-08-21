@@ -1,6 +1,6 @@
 <x-app-layout>
     @section('title')
-        关于我们 - {{ config('app.name') }}
+        关于我们 | {{ config('app.name') }}
     @endsection
 
     <x-article title="关于我们">

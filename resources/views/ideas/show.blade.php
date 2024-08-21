@@ -1,6 +1,6 @@
 <x-app-layout>
     @section('title')
-        {{ $idea->title }} - {{ config('app.name') }}
+        {{ $idea->title }} | {{ config('app.name') }}
     @endsection
 
     <div class="flex flex-row flex-grow">

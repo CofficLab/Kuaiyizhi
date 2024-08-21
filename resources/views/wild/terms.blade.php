@@ -1,6 +1,6 @@
 <x-app-layout>
     @section('title')
-        服务条款 - {{ config('app.name') }}
+        服务条款 | {{ config('app.name') }}
     @endsection
 
     <x-article title="服务条款">

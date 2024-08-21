@@ -1,6 +1,6 @@
 <x-app-layout>
     @section('title')
-        反馈建议 - {{ config('app.name') }}
+        反馈建议 | {{ config('app.name') }}
     @endsection
 
     <div class="flex flex-col container mx-auto">
