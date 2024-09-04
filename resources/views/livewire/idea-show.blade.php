@@ -1,5 +1,5 @@
 <div class="flex flex-col">
-    <juice-editor wire:loading.class="opacity-40" drawio="/editor/drawio/index.html?" readonly
+    <juice-editor wire:loading.class="opacity-40" drawio="/editor/drawio/index.html?" readonly mode="slot"
         class="z-30 flex flex-col flex-grow w-full overflow-y-auto">
         {!! $idea->getContent() !!}
     </juice-editor>
