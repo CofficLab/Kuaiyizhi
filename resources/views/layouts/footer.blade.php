@@ -24,8 +24,8 @@
         </a>
 
         <div class="flex flex-col w-full">
-            <div class="flex flex-col sm:flex-row justify-center w-full gap-8 sm:gap-16 p-4 sm:p-8">
-                <ul class="flex flex-col gap-4 sm:gap-8 items-center sm:items-start">
+            <div class="flex flex-col md:flex-row justify-center w-full gap-8 md:gap-16 p-4 md:p-8">
+                <ul class="flex flex-col gap-4 md:gap-8 items-center md:items-start">
                     <li>
                         <a href="{{ route('privacy') }}" class="smart-link" target="_blank">隐私条款</a>
                     </li>
@@ -40,7 +40,7 @@
                     </li>
                 </ul>
 
-                <ul class="flex flex-col gap-4 sm:gap-8 items-center sm:items-start">
+                <ul class="flex flex-col gap-4 md:gap-8 items-center md:items-start">
                     <li>
                         <a href="https://www.kuaiyc.com" class="smart-link" target="_blank">快易查</a>
                     </li>
@@ -54,7 +54,7 @@
                         <a href="https://cofficlab.github.io" class="smart-link" target="_blank">Coffic 系列软件</a>
                     </li>
                 </ul>
-                <ul class="flex flex-col gap-4 sm:gap-8 items-center sm:items-start">
+                <ul class="flex flex-col gap-4 md:gap-8 items-center md:items-start">
                     <li>
                         <a href="https://github.com/cofficlab" class="smart-link" target="_blank">GitHub</a>
                     </li>
