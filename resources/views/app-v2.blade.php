@@ -27,28 +27,28 @@
         </div>
 
         <section class="relative w-full pt-24 pb-16">
-            <div class="relative flex flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
-                <div class="w-3/4">
+            <div class="relative flex flex-col lg:flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
+                <div class="w-full lg:w-3/4 mb-8 lg:mb-0">
                     <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-runner.min.png') }}' }"
-                        x-bind:src="src" alt="" class="dark:hidden shadow-lg">
+                        x-bind:src="src" alt="" class="dark:hidden shadow-lg w-full">
                     <img src="{{ asset('images/app-runner.min.png') }}" x-data="{ src: '{{ asset('images/app-runner-dark.min.png') }}' }"
-                        x-bind:src="src" alt="" class="hidden dark:block">
+                        x-bind:src="src" alt="" class="hidden dark:block w-full">
                 </div>
-                <div class="w-1/4 mr-0 ml-2 smart-card">
-                    <h2 class="text-3xl font-bold mr-0 text-end">就地运行</h2>
-                    <p class="mt-4 leading-6 text-end">运行实验代码</p>
-                    <p class="mt-4 leading-6 text-end">无需编辑器</p>
-                    <p class="mt-4 leading-6 text-end">如此简洁</p>
-                    <p class="mt-4 leading-6 text-end">真方便</p>
-                    <p class="mt-4 leading-6 text-end">快速</p>
-                    <p class="mt-4 leading-6 text-end">赞</p>
+                <div class="w-full lg:w-1/4 lg:mr-0 lg:ml-2 smart-card">
+                    <h2 class="text-3xl font-bold lg:text-end">就地运行</h2>
+                    <p class="mt-4 leading-6 lg:text-end">运行实验代码</p>
+                    <p class="mt-4 leading-6 lg:text-end">无需编辑器</p>
+                    <p class="mt-4 leading-6 lg:text-end">如此简洁</p>
+                    <p class="mt-4 leading-6 lg:text-end">真方便</p>
+                    <p class="mt-4 leading-6 lg:text-end">快速</p>
+                    <p class="mt-4 leading-6 lg:text-end">赞</p>
                 </div>
             </div>
         </section>
 
         <section class="relative w-full pt-24 pb-16">
-            <div class="relative flex flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
-                <div class="w-1/4 smart-card mr-2">
+            <div class="relative flex flex-col lg:flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
+                <div class="w-full lg:w-1/4  mb-8 lg:mb-0 smart-card mr-2">
                     <h2 class="text-3xl font-bold">万紫千红</h2>
                     <p class="mt-4 leading-6">还有暗黑模式</p>
                     <p class="mt-4 leading-6">一图胜万言</p>
@@ -57,7 +57,7 @@
                     <p class="mt-4 leading-6">厉害</p>
                     <p class="mt-4 leading-6">酷</p>
                 </div>
-                <div class="w-3/4">
+                <div class="w-full lg:w-3/4">
                     <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-colorful.min.png') }}' }"
                         x-bind:src="src" alt="" class="dark:hidden shadow-lg">
                     <img src="{{ asset('images/app-colorful.min.png') }}" x-data="{ src: '{{ asset('images/app-colorful-dark.min.png') }}' }"
@@ -67,14 +67,14 @@
         </section>
 
         <section class="relative w-full pt-24 pb-16">
-            <div class="relative flex flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
-                <div class="w-3/4">
+            <div class="relative flex flex-col lg:flex-row justify-between px-8 mx-auto sm:items-center max-w-7xl xl:px-5">
+                <div class="w-full lg:w-3/4 mb-8 lg:mb-0">
                     <img src="{{ asset('images/app-firstsight.min.png') }}" x-data="{ src: '{{ asset('images/app-compare.min.png') }}' }"
                         x-bind:src="src" alt="" class="dark:hidden shadow-lg">
                     <img src="{{ asset('images/app-compare.min.png') }}" x-data="{ src: '{{ asset('images/app-compare-dark.min.png') }}' }"
                         x-bind:src="src" alt="" class="hidden dark:block">
                 </div>
-                <div class="w-1/4 mr-0 ml-2 smart-card">
+                <div class="w-full lg:w-1/4 mr-0 ml-2 smart-card">
                     <h2 class="text-3xl font-bold mr-0 text-end">对比学习</h2>
                     <p class="mt-4 leading-6 text-end">同时学多语言</p>
                     <p class="mt-4 leading-6 text-end">印象更深刻</p>
