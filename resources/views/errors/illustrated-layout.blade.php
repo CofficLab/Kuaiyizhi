@@ -451,33 +451,65 @@
                 background-position: center;
             }
         }
+
+        /* Add dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a202c;
+                color: #e2e8f0;
+            }
+
+            .dark\:bg-gray-900 {
+                background-color: #1a202c;
+            }
+
+            .dark\:text-white {
+                color: #fff;
+            }
+
+            .dark\:text-gray-300 {
+                color: #d1d5db;
+            }
+
+            .dark\:border-gray-700 {
+                border-color: #4a5568;
+            }
+
+            .dark\:hover\:border-gray-500:hover {
+                border-color: #718096;
+            }
+
+            .dark\:hidden {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body class="antialiased font-sans">
     <div class="md:flex min-h-screen">
-        <div class="w-full md:w-1/2 bg-white flex items-center justify-center">
+        <div class="w-full md:w-1/2 bg-white dark:bg-gray-900 flex items-center justify-center">
             <div class="max-w-sm m-8">
-                <div class="text-black text-5xl md:text-15xl font-black">
+                <div class="text-black dark:text-white text-5xl md:text-15xl font-black">
                     @yield('code', __('Oh no'))
                 </div>
 
                 <div class="w-16 h-1 bg-purple-light my-3 md:my-6"></div>
 
-                <p class="text-grey-darker text-2xl md:text-3xl font-light mb-8 leading-normal">
+                <p class="text-grey-darker dark:text-gray-300 text-2xl md:text-3xl font-light mb-8 leading-normal">
                     @yield('message')
                 </p>
 
                 <a href="{{ app('router')->has('home') ? route('home') : url('/') }}">
                     <button
-                        class="bg-transparent text-grey-darkest font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light hover:border-grey rounded-lg">
+                        class="bg-transparent text-grey-darkest dark:text-white font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light dark:border-gray-700 hover:border-grey dark:hover:border-gray-500 rounded-lg">
                         回首页
                     </button>
                 </a>
             </div>
         </div>
 
-        <div class="relative pb-full md:flex md:pb-0 md:min-h-screen w-full md:w-1/2">
+        <div class="relative pb-full md:flex md:pb-0 md:min-h-screen w-full md:w-1/2 dark:hidden">
             <img src="@yield('image')" class="w-full max-w-3xl sm:w-auto">
         </div>
     </div>
