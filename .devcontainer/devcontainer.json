@@ -1,0 +1,35 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.217.4/containers/docker-existing-docker-compose
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+{
+	"name": "${localWorkspaceFolderBasename}",
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"service": "app",
+	"workspaceFolder": "/workdir",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"bmewburn.vscode-intelephense-client",
+				"codingyu.laravel-goto-view",
+				"austenc.laravel-blade-spacer",
+				"amirmarmul.laravel-blade-vscode",
+				"onecentlin.laravel-blade",
+				"onecentlin.laravel-extension-pack",
+				"amiralizadeh9480.laravel-extra-intellisense",
+				"kokororin.vscode-phpfmt",
+				"bradlc.vscode-tailwindcss",
+				"ahmadalli.vscode-nginx-conf",
+				"esbenp.prettier-vscode",
+				"jock.svg",
+				"csstools.postcss",
+				"yy0931.vscode-sqlite3-editor",
+				"Vue.volar",
+				"adrianwilczynski.alpine-js-intellisense",
+				"michelemelluso.code-beautifier",
+				"matthewpi.caddyfile-support"
+			]
+		}
+	}
+}

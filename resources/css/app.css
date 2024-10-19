@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+  display: none;
+}
+
+h1,
+.h1 {
+  @apply text-3xl;
+}
+h2,
+.h2 {
+  @apply text-xl;
+}
+h3,
+.h3 {
+  @apply text-lg;
+}
+h4,
+.h4 {
+  @apply text-base;
+}
+h5 {
+  @apply text-sm;
+}
+h6 {
+  @apply text-xs;
+}
+
+body {
+  @apply bg-cyan-200/20 dark:bg-slate-800;
+}
+
+.smart-link {
+  @apply px-4 py-2 rounded-xl ring-white/50 
+  hover:ring-1 hover:shadow-2xl hover:bg-green-600/10 hover:backdrop-blur
+  transform duration-100;
+}
+
+.smart-card {
+  @apply p-4 rounded-2xl text-white
+  dark:text-gray-500
+  bg-gradient-to-br
+  from-gray-900/30 via-gray-800/40 to-gray-800/50
+  dark:from-gray-900/30 dark:via-gray-900/40 dark:to-gray-800/50
+  backdrop-blur-3xl 
+  border-r border-gray-50/30 dark:border-gray-600/50 dark:border
+  hover:ring-0 hover:shadow-2xl
+  transform duration-100;
+}
+
+.smart-button {
+  @apply p-4 rounded-2xl text-white/80
+  dark:text-gray-500
+  bg-gradient-to-br
+  from-gray-900/30 via-gray-800/40 to-gray-800/50
+  dark:from-gray-900/30 dark:via-gray-900/40 dark:to-gray-800/50
+  backdrop-blur-3xl 
+  border-r border-gray-50/30 dark:border-gray-600/50 dark:border
+  hover:ring-0 hover:shadow-2xl
+  transform duration-100;
+}

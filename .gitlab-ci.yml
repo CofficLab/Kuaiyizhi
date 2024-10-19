@@ -1,0 +1,107 @@
+cache:
+  paths:
+    - vendor/
+    - node_modules/
+
+before_script:
+  - whoami
+  - hostname
+
+variables:
+  DOMAIN: www.kuaiyizhi.cn
+  WORK_DIR: /www/wwwroot/${DOMAIN}/production
+  RELEASE_DIR: /www/wwwroot/${DOMAIN}/${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
+  SCHEDULE_NAME: ${CI_PROJECT_NAME}-任务调度
+  SCHEDULE_SHELL: php ${WORK_DIR}/artisan schedule:run
+
+stages:
+  - config
+  - build
+  - sync
+  - prepare
+  - link
+  - clear
+
+config:
+  stage: config
+  # tags:
+  #   - tencent
+  script:
+    - eval "$(awk '{print "echo "$0}' .env.example)" > .env
+  artifacts:
+    paths:
+      - .env
+    expire_in: 20 mins
+
+build frontend:
+  stage: build
+  # image: node
+  tags:
+    - tencent
+  only:
+    - main
+  script:
+    - npm i --registry=https://registry.npm.taobao.org
+    - npm run build
+  artifacts:
+    paths:
+      - public
+    expire_in: 20 mins
+
+build backend:
+  stage: build
+  tags:
+    - tencent
+  only:
+    - main
+  script:
+    - composer install
+  artifacts:
+    paths:
+      - vendor
+    expire_in: 20 mins
+
+sync:
+  stage: sync
+  tags:
+    - tencent
+  only:
+    - main
+  script:
+    - mkdir -p $RELEASE_DIR
+    - rsync -rapq ./ $RELEASE_DIR
+
+prepare:
+  stage: prepare
+  tags:
+    - tencent
+  only:
+    - main
+  script: |
+    cd $RELEASE_DIR
+    rm -rf database/blogs.db && ln -s /www/database/blogs.db database/blogs.db
+    rm -rf database/lessons.db && ln -s /www/database/lessons.db database/lessons.db
+    rm -rf storage && ln -s /www/storage/$DOMAIN storage
+    rm -rf public/uploads && ln -s /www/storage/$DOMAIN/uploads public/uploads
+    rm -rf public/apps && ln -s /www/storage/kuaiyizhi_desktop public/apps
+    chown -R www:www storage
+    php artisan optimize
+    php artisan migrate --force
+
+link:
+  stage: link
+  tags:
+    - tencent
+  only:
+    - main
+  script:
+    - ln -snf ${RELEASE_DIR} ${WORK_DIR}
+
+clear:
+  stage: clear
+  tags:
+    - tencent
+  only:
+    - main
+  script:
+    - cd ${RELEASE_DIR}/.. && ls -lt | grep ^d | awk 'NR>2' | xargs rm -rf

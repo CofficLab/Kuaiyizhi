@@ -1,0 +1,206 @@
+---
+#--------------------------------------------------
+#  发布 Laravel 生产环境
+#--------------------------------------------------
+#
+
+name: Deploy Laravel(Prod)
+
+# 这里定义的环境变量会影响 Laravel
+env:
+  RELEASE_DIR: /www/wwwroot/www.kuaiyizhi.cn/${{ github.sha }}
+  DEPLOY_DIR: /www/wwwroot/www.kuaiyizhi.cn/production
+  STORAGE_DIR: /www/storage/www.kuaiyizhi.cn
+  DATABASE_FILE_PATH: /www/database/www.kuaiyizhi.cn.db
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 当前用户
+        run: whoami
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: NPM 版本
+        run: npm -v
+      - name: NPM 安装
+        run: npm i
+      - name: NPM 构建
+        run: npm run build
+      - name: 上传构件
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: public/build/
+
+  build:
+    runs-on: self-hosted
+    needs: [npm]
+    steps:
+      - name: 当前用户
+        run: whoami
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: 下载构件
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: public/build
+      - name: 检查构件
+        run: ls -lah public/build
+      - name: 生成 .env 文件
+        run: cp .env.example .env
+      - name: 安装依赖
+        run: composer install --no-dev --no-progress
+
+  # 在服务器上运行
+  # build:
+  #   runs-on: self-hosted
+  #   steps:
+  #     - name: 当前用户
+  #       run: whoami
+  #     # - name: 测试网络
+  #     #   run: curl https://www.github.com
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: NPM 版本
+  #       run: npm -v
+  #     - name: NPM 安装
+  #       run: npm i
+  #     - name: NPM 构建
+  #       run: npm run build
+  #     - name: 生成 .env 文件
+  #       run: cp .env.example .env
+  #     - name: 安装依赖
+  #       run: composer install --no-dev --no-progress
+
+  sync:
+    needs: [build]
+    runs-on: self-hosted
+    steps:
+      - name: 当前用户
+        run: whoami
+      - name: 确认文件夹存在
+        run: |
+          if [ ! -d $RELEASE_DIR ]; then
+            mkdir -p $RELEASE_DIR
+          fi
+      - name: 同步到发布文件夹
+        run: |
+          rsync -rapq \
+            --exclude '.devcontainer/' \
+            --exclude '.editorconfig' \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.vscode/' \
+            --exclude 'vite.config.js' \
+            --exclude 'package-lock.json' \
+            --exclude 'package.json' \
+            --exclude 'docker-compose.yml' \
+            --exclude '.env.example' \
+            --exclude '.gitignore' \
+            --exclude '.gitattributes' \
+            --exclude '.gitlab-ci.yml' \
+            --exclude 'phpunit.xml' \
+            --exclude 'postcss.config.js' \
+            --exclude 'tailwind.config.js' \
+            --exclude 'node_modules/' \
+            --exclude 'pnpm-lock.yaml' \
+            --exclude 'tests/' \
+            --exclude 'storage/' \
+            ./ $RELEASE_DIR
+
+  prepare:
+    needs: [sync]
+    runs-on: self-hosted
+    steps:
+      - name: 当前用户
+        run: whoami
+      - name: 准备数据库文件
+        run: ln -s $DATABASE_FILE_PATH $RELEASE_DIR/database/database.db
+      - name: 准备storage文件夹
+        run: ln -s $STORAGE_DIR $RELEASE_DIR/storage
+      - name: 更新数据库
+        run: php $RELEASE_DIR/artisan migrate
+      - name: 生成缓存
+        run: php $RELEASE_DIR/artisan optimize
+
+  link:
+    needs: [prepare]
+    runs-on: self-hosted
+    steps:
+      - name: 当前用户
+        run: whoami
+      - name: 设置软链接
+        run: ln -snf $RELEASE_DIR $DEPLOY_DIR
+
+  tag:
+    needs: [link]
+    runs-on: self-hosted
+    steps:
+      - name: 当前用户
+        run: whoami
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 生成标签
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          npm version patch -m "👷 CI: Upgrade to v%s"
+          git push origin main --tags
+
+  rebase_pre:
+    needs:
+      - tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取 pre 分支
+        uses: actions/checkout@v3
+        with:
+          ref: pre
+      - name: 拉取 main 分支
+        run: git fetch origin main
+      - name: Rebase pre on main
+        continue-on-error: true
+        run: git rebase origin/main
+      - name: Push the rebased pre branch
+        continue-on-error: true
+        run: git push origin pre
+
+  rebase_dev:
+    needs:
+      - rebase_pre
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取 dev 分支
+        uses: actions/checkout@v3
+        with:
+          ref: dev
+      - name: 拉取 pre 分支
+        run: git fetch origin pre
+      - name: Rebase dev on pre
+        continue-on-error: true
+        run: git rebase origin/pre
+      - name: Push the rebased dev branch
+        continue-on-error: true
+        run: git push origin dev
+
+  clear:
+    needs: [link]
+    runs-on: self-hosted
+    steps:
+      - name: 当前用户
+        run: whoami
+      - name: 清理发布文件夹
+        run: cd ${RELEASE_DIR}/.. && ls -lt | grep ^d | awk 'NR>2' | xargs rm -rf || true
