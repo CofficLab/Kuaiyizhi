@@ -19,6 +19,6 @@
     },
     "dependencies": {
         "daisyui": "^3.9.4",
-        "juice-editor": "^0.9.43"
+        "@coffic/juice-editor": "^0.9.43"
     }
 }

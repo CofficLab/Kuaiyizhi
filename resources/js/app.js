@@ -1,4 +1,4 @@
 import './bootstrap';
-import { defineJuiceEditor } from 'juice-editor';
+import { defineJuiceEditor } from '@coffic/juice-editor';
 
 defineJuiceEditor();
