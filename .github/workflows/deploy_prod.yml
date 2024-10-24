@@ -1,12 +1,6 @@
 ---
-#--------------------------------------------------
-#  发布 Laravel 生产环境
-#--------------------------------------------------
-#
+name: 🖥️ Deploy
 
-name: Deploy Laravel(Prod)
-
-# 这里定义的环境变量会影响 Laravel
 env:
   RELEASE_DIR: /www/wwwroot/www.kuaiyizhi.cn/${{ github.sha }}
   DEPLOY_DIR: /www/wwwroot/www.kuaiyizhi.cn/production

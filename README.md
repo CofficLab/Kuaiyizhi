@@ -2,6 +2,10 @@
 
 A website for showcasing and sharing knowledge.
 
+And this is a case of using [JuiceEditor](https://github.com/CofficLab/JuiceEditor) in the website.
+
+![Hero](docs/hero.png)
+
 ## Development
 
 ### Tech Stack
