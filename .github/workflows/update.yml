@@ -11,14 +11,12 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: 当前用户
-        run: whoami
       - name: Checkout
         uses: actions/checkout@v4
-      - name: NPM 版本
-        run: npm -v
-      - name: 安装PNPM
-        run: npm i -g pnpm
+      - name: Prepare
+        run: |
+          npm -v
+          npm i -g pnpm
       - name: Update
         run: |
           pnpm update
@@ -36,6 +34,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "👷 CI: Update Hero Picture"
+            git commit -m "👷 CI: Update Package"
             git push origin main
           fi

@@ -13,6 +13,11 @@ on:
     branches: [main]
     tags:
       - '*'
+  workflow_run:
+    workflows:
+      - '⬆️ Update'
+    types:
+      - completed
 
 permissions:
   contents: write
