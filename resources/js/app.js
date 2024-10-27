@@ -1,4 +1,6 @@
 import './bootstrap';
-import { defineJuiceEditor } from 'juice-editor';
+import editor from '@coffic/juice-editor';
 
-defineJuiceEditor();
+editor.onCreate(() => {
+  console.log('editor created');
+});
