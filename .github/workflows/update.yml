@@ -1,0 +1,39 @@
+---
+name: ⬆️ Update
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare
+        run: |
+          npm -v
+          npm i -g pnpm
+      - name: Update
+        run: |
+          pnpm update
+          pnpm run build
+      - name: Update Hero Picture
+        run: |
+          git clone https://github.com/CofficLab/JuiceEditor
+          cp -f JuiceEditor/docs/hero.png ./docs/hero.png
+          rm -rf JuiceEditor
+      - name: Commit
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "👷 CI: Update Package"
+            git push origin main
+          fi

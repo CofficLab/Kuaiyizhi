@@ -1,76 +1,78 @@
-# 快易知（网站版）
+# KuaiYiZhi
 
-[生产环境链接](https://www.kuaiyizhi.cn)
+A website for showcasing and sharing knowledge.
 
-## 开发
+And this is a case of using [JuiceEditor](https://github.com/CofficLab/JuiceEditor) in the website.
 
-### 技术栈
+![Hero](docs/hero.png)
+
+## Development
+
+### Tech Stack
 
 - Caddy
 - Laravel
 - Laravel Livewire
 
-### 在本机开发
+### Local Development
 
-- 准备
+- Preparation
 
-  ```
+  ```shell
   cp .env.example .env
   composer install
   php artisan key:generate
   php artisan migrate
   ```
 
-- 安装 NPM 依赖
+- Install NPM Dependencies
 
-  统一使用 pnpm，不使用 npm
-
-  ```
+  ```shell
   pnpm i
   ```
 
-- 后端启动监听
+- Start Backend Server
 
   ```shell
   php artisan serve
   ```
 
-- 前端启动服务
+- Start Frontend Service
 
   ```shell
   npm run dev
   ```
 
-- 填充数据
+- Seed Data
 
   ```shell
   php artisan db:seed
   ```
 
-### 在容器中开发
+### Development in Container
 
-#### 镜像
+#### Image
 
-在`.devcontainer`文件夹中定义。
+Defined in the `.devcontainer` folder.
 
-#### 配合 VS Code 使用
+#### Use with VS Code
 
-1. 安装 DevContainer 扩展
-2. 点击左下角在容器中打开即可
+1. Install DevContainer extension
+2. Click bottom-left corner to open in container
 
-#### 配合 OrbStack 使用
+#### Use with OrbStack
 
-容器中的 Caddy 已启动监听，OrbStack 会自动分配一个域名并解析，打开这个域名即可看到页面。
+Caddy in the container is already listening. OrbStack will automatically assign and resolve a domain. Open this domain to view the page.
 
-## 部署
+## Deployment
 
-### 缓存
+### Cache
 
-使用了 <https://github.com/JosephSilber/page-cache> 做页面缓存，需要手动更新缓存。
+Using <https://github.com/JosephSilber/page-cache> for page caching. Manual cache update required.
 
 ### Caddy
 
-参考`.devcontainer`中的`Caddyfile`
+Refer to `Caddyfile` in `.devcontainer`
 
 ## Maintainers
 

@@ -1,12 +1,6 @@
 ---
-#--------------------------------------------------
-#  发布 Laravel 生产环境
-#--------------------------------------------------
-#
+name: 🖥️ Deploy
 
-name: Deploy Laravel(Prod)
-
-# 这里定义的环境变量会影响 Laravel
 env:
   RELEASE_DIR: /www/wwwroot/www.kuaiyizhi.cn/${{ github.sha }}
   DEPLOY_DIR: /www/wwwroot/www.kuaiyizhi.cn/production
@@ -19,6 +13,11 @@ on:
     branches: [main]
     tags:
       - '*'
+  workflow_run:
+    workflows:
+      - '⬆️ Update'
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -158,43 +157,8 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           NEW_VERSION=$(npm version patch -m "👷 CI: Upgrade to v%s")
+          git push origin main
           git push origin $NEW_VERSION
-
-  rebase_pre:
-    needs:
-      - tag
-    runs-on: ubuntu-latest
-    steps:
-      - name: 拉取 pre 分支
-        uses: actions/checkout@v3
-        with:
-          ref: pre
-      - name: 拉取 main 分支
-        run: git fetch origin main
-      - name: Rebase pre on main
-        continue-on-error: true
-        run: git rebase origin/main
-      - name: Push the rebased pre branch
-        continue-on-error: true
-        run: git push origin pre
-
-  rebase_dev:
-    needs:
-      - rebase_pre
-    runs-on: ubuntu-latest
-    steps:
-      - name: 拉取 dev 分支
-        uses: actions/checkout@v3
-        with:
-          ref: dev
-      - name: 拉取 pre 分支
-        run: git fetch origin pre
-      - name: Rebase dev on pre
-        continue-on-error: true
-        run: git rebase origin/pre
-      - name: Push the rebased dev branch
-        continue-on-error: true
-        run: git push origin dev
 
   clear:
     needs: [link]
