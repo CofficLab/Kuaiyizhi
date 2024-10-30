@@ -1,6 +1,10 @@
 import './bootstrap';
-import editor from '@coffic/juice-editor';
+import { Editor, EditorFactory } from '@coffic/juice-editor';
 
-editor.onCreate(() => {
-  console.log('editor created');
+EditorFactory.register('juice-editor', {
+  onCreate: (editor) => {
+    console.log('editor created');
+    editor.enableLog();
+    editor.setReadOnly();
+  },
 });

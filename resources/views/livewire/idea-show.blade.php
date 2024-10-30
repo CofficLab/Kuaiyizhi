@@ -1,6 +1,6 @@
 <div class="flex flex-col">
     <div wire:loading.class="opacity-40" class="z-30 flex flex-col flex-grow w-full overflow-y-auto">
-        <juice-editor readonly mode="slot">
+        <juice-editor>
             {!! $idea->getContent() !!}
         </juice-editor>
     </div>

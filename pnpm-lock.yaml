@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@coffic/juice-editor':
         specifier: ^0.9.96
-        version: 0.9.96(sass@1.80.4)(terser@5.36.0)
+        version: 0.9.99(sass@1.80.4)(terser@5.36.0)
       daisyui:
         specifier: ^3.9.4
         version: 3.9.4
@@ -29,7 +29,7 @@ importers:
         version: 1.7.7
       laravel-vite-plugin:
         specifier: ^0.8.1
-        version: 0.8.1(vite@4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0))
+        version: 0.8.1(vite@4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0))
       postcss:
         specifier: ^8.4.47
         version: 8.4.47
@@ -38,7 +38,7 @@ importers:
         version: 3.4.14
       vite:
         specifier: ^4.5.5
-        version: 4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0)
+        version: 4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0)
 
 packages:
 
@@ -63,8 +63,8 @@ packages:
     resolution: {integrity: sha512-Z/yiTPj+lDVnF7lWeKCIJzaIkI0vYO87dMpZ4bg4TDrFe4XXLFWL1TbXU27gBP3QccxV9mZICCrnjnYlJjXHOA==}
     engines: {node: '>=6.9.0'}
 
-  '@coffic/juice-editor@0.9.96':
-    resolution: {integrity: sha512-vEiSJO69mYqoVfpqbia8wtLtoDPLvXgDxH0aR9SXHX2v6gF0qWzT2+hL3bOs7FtdUahuVIMj8hIYvjTkemWAVg==}
+  '@coffic/juice-editor@0.9.99':
+    resolution: {integrity: sha512-fx7AWgd8ukgU7DFxCIsb5VwXmzonk9E5pR2iN7Rzp5N6EisgNM98YeTz6S9YlC0Vubxf39Rsryf5fBWO8fjGkA==}
 
   '@csstools/selector-resolve-nested@1.1.0':
     resolution: {integrity: sha512-uWvSaeRcHyeNenKg8tp17EVDRkpflmdyvbE0DHo6D/GdBb6PDnCYYU6gRpXhtICMGMcahQmj2zGxwFM/WC8hCg==}
@@ -279,35 +279,30 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-glibc@2.4.1':
     resolution: {integrity: sha512-BJ7mH985OADVLpbrzCLgrJ3TOpiZggE9FMblfO65PlOCdG++xJpKUJ0Aol74ZUIYfb8WsRlUdgrZxKkz3zXWYA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.4.1':
     resolution: {integrity: sha512-p4Xb7JGq3MLgAfYhslU2SjoV9G0kI0Xry0kuxeG/41UfpjHGOhv7UoUDAz/jb1u2elbhazy4rRBL8PegPJFBhA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.4.1':
     resolution: {integrity: sha512-s9O3fByZ/2pyYDPoLM6zt92yu6P4E39a03zvO0qCHOTjxmt3GHRMLuRZEWhWLASTMSrrnVNWdVI/+pUElJBBBg==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.4.1':
     resolution: {integrity: sha512-L2nZTYR1myLNST0O632g0Dx9LyMNHrn6TOt76sYxWLdff3cB22/GZX2UPtJnaqQPdCRoszoY5rcOj4oMTtp5fQ==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.4.1':
     resolution: {integrity: sha512-Uq2BPp5GWhrq/lcuItCHoqxjULU1QYEcyjSO5jqqOK8RNFDBQnenMMx4gAl3v8GiWa59E9+uDM7yZ6LxwUIfRg==}
@@ -341,8 +336,8 @@ packages:
   '@remirror/core-constants@3.0.0':
     resolution: {integrity: sha512-42aWfPrimMfDKDi4YegyS7x+/0tlzaqwPQCULLanv3DMIlu96KTJR0fM5isWX2UViOqlGnX6YFgqWepcX+XMNg==}
 
-  '@remixicon/vue@4.4.0':
-    resolution: {integrity: sha512-aMrZLY31NFS2RSNOrHVJzBwXROokQlI7+TMYJW6kUWF1nzHqHRYIpL0TWWbAFb4Z9CEJhi2OHGuGgzuctmp/Hg==}
+  '@remixicon/vue@4.5.0':
+    resolution: {integrity: sha512-pXIfHwk8LbKI1mresIx0ifwj3+i7+3Ns0AAPuXhQvGnnrNfbFTyNt+x9HcNxGVIKc9r+d15e8aMDSyGO5s/aVQ==}
     peerDependencies:
       vue: '>= 3'
 
@@ -600,8 +595,8 @@ packages:
   '@types/mdurl@2.0.0':
     resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
 
-  '@types/node@22.8.1':
-    resolution: {integrity: sha512-k6Gi8Yyo8EtrNtkHXutUu2corfDf9su95VYVP10aGYMMROM6SAItZi0w1XszA6RtWTHSVp5OeFof37w0IEqCQg==}
+  '@types/node@22.8.4':
+    resolution: {integrity: sha512-SpNNxkftTJOPk0oN+y2bIqurEXHTA2AOZ3EJDDKeJ5VzkvvORSvmQXGQarcOzWV1ac7DCaPBEdMDxBsM+d8jWw==}
 
   '@types/turndown@5.0.5':
     resolution: {integrity: sha512-TL2IgGgc7B5j78rIccBtlYAnkuv8nUQqhQc+DSYV5j9Be9XOcm/SKOVRuA47xAVI3680Tk9B1d8flK2GWT2+4w==}
@@ -811,8 +806,8 @@ packages:
     resolution: {integrity: sha512-fvi2RGH4YV617/6DntOVGcOugOPym9jTGWW2XySb5ZpvdWO4L7bEG77VHirrnbRUEWvIEVXkBpxUz2KFj0rVnA==}
     engines: {node: '>=16.9.0'}
 
-  daisyui@4.12.13:
-    resolution: {integrity: sha512-BnXyQoOByUF/7wSdIKubyhXxbtL8gxwY3u2cNMkxGP39TSVJqMmlItqtpY903fQnLI/NokC+bc+ZV+PEPsppPw==}
+  daisyui@4.12.14:
+    resolution: {integrity: sha512-hA27cdBasdwd4/iEjn+aidoCrRroDuo3G5W9NDKaVCJI437Mm/3eSL/2u7MkZ0pt8a+TrYF3aT2pFVemTS3how==}
     engines: {node: '>=16.9.0'}
 
   de-indent@1.0.2:
@@ -1242,8 +1237,8 @@ packages:
   prosemirror-transform@1.10.2:
     resolution: {integrity: sha512-2iUq0wv2iRoJO/zj5mv8uDUriOHWzXRnOTVgCzSXnktS/2iQRa3UUQwVlkBlYZFtygw6Nh1+X4mGqoYBINn5KQ==}
 
-  prosemirror-view@1.34.3:
-    resolution: {integrity: sha512-mKZ54PrX19sSaQye+sef+YjBbNu2voNwLS1ivb6aD2IRmxRGW64HU9B644+7OfJStGLyxvOreKqEgfvXa91WIA==}
+  prosemirror-view@1.35.0:
+    resolution: {integrity: sha512-Umtbh22fmUlpZpRTiOVXA0PpdRZeYEeXQsLp51VfnMhjkJrqJ0n8APinIZrRAD5Jr3UxH8FnOaUqRylSuMsqHA==}
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
@@ -1501,9 +1496,9 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@coffic/juice-editor@0.9.96(sass@1.80.4)(terser@5.36.0)':
+  '@coffic/juice-editor@0.9.99(sass@1.80.4)(terser@5.36.0)':
     dependencies:
-      '@remixicon/vue': 4.4.0(vue@3.5.12(typescript@5.1.6))
+      '@remixicon/vue': 4.5.0(vue@3.5.12(typescript@5.1.6))
       '@tailwindcss/typography': 0.5.15(tailwindcss@3.4.14)
       '@tiptap/core': 2.9.1(@tiptap/pm@2.9.1)
       '@tiptap/extension-blockquote': 2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))
@@ -1547,26 +1542,26 @@ snapshots:
       '@tiptap/extension-underline': 2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))
       '@tiptap/pm': 2.9.1
       '@tiptap/vue-3': 2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))(@tiptap/pm@2.9.1)(vue@3.5.12(typescript@5.1.6))
-      '@types/node': 22.8.1
+      '@types/node': 22.8.4
       '@types/turndown': 5.0.5
       '@types/uuid': 9.0.8
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0))(vue@3.5.12(typescript@5.1.6))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0))(vue@3.5.12(typescript@5.1.6))
       autoprefixer: 10.4.20(postcss@8.4.47)
       axios: 1.7.7
-      daisyui: 4.12.13(postcss@8.4.47)
+      daisyui: 4.12.14(postcss@8.4.47)
       html2canvas: 1.4.1
       monaco-editor: 0.52.0
       postcss: 8.4.47
       postcss-nesting: 12.1.5(postcss@8.4.47)
       prosemirror-model: 1.23.0
       prosemirror-state: 1.4.3
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
       tailwindcss: 3.4.14
       tsc-alias: 1.8.10
       turndown: 7.2.0
       typescript: 5.1.6
       uuid: 9.0.1
-      vite: 4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0)
+      vite: 4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0)
       vue: 3.5.12(typescript@5.1.6)
       vue-tsc: 1.8.27(typescript@5.1.6)
     transitivePeerDependencies:
@@ -1763,7 +1758,7 @@ snapshots:
 
   '@remirror/core-constants@3.0.0': {}
 
-  '@remixicon/vue@4.4.0(vue@3.5.12(typescript@5.1.6))':
+  '@remixicon/vue@4.5.0(vue@3.5.12(typescript@5.1.6))':
     dependencies:
       vue: 3.5.12(typescript@5.1.6)
 
@@ -1983,9 +1978,9 @@ snapshots:
       prosemirror-schema-list: 1.4.1
       prosemirror-state: 1.4.3
       prosemirror-tables: 1.6.0
-      prosemirror-trailing-node: 3.0.0(prosemirror-model@1.23.0)(prosemirror-state@1.4.3)(prosemirror-view@1.34.3)
+      prosemirror-trailing-node: 3.0.0(prosemirror-model@1.23.0)(prosemirror-state@1.4.3)(prosemirror-view@1.35.0)
       prosemirror-transform: 1.10.2
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
 
   '@tiptap/vue-3@2.9.1(@tiptap/core@2.9.1(@tiptap/pm@2.9.1))(@tiptap/pm@2.9.1)(vue@3.5.12(typescript@5.1.6))':
     dependencies:
@@ -2004,7 +1999,7 @@ snapshots:
 
   '@types/mdurl@2.0.0': {}
 
-  '@types/node@22.8.1':
+  '@types/node@22.8.4':
     dependencies:
       undici-types: 6.19.8
 
@@ -2012,9 +2007,9 @@ snapshots:
 
   '@types/uuid@9.0.8': {}
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0))(vue@3.5.12(typescript@5.1.6))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0))(vue@3.5.12(typescript@5.1.6))':
     dependencies:
-      vite: 4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0)
+      vite: 4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0)
       vue: 3.5.12(typescript@5.1.6)
 
   '@volar/language-core@1.11.1':
@@ -2243,7 +2238,7 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
-  daisyui@4.12.13(postcss@8.4.47):
+  daisyui@4.12.14(postcss@8.4.47):
     dependencies:
       css-selector-tokenizer: 0.8.0
       culori: 3.3.0
@@ -2416,10 +2411,10 @@ snapshots:
 
   jiti@1.21.6: {}
 
-  laravel-vite-plugin@0.8.1(vite@4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0)):
+  laravel-vite-plugin@0.8.1(vite@4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0)):
     dependencies:
       picocolors: 1.1.1
-      vite: 4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0)
+      vite: 4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0)
       vite-plugin-full-reload: 1.2.0
 
   lilconfig@2.1.0: {}
@@ -2601,20 +2596,20 @@ snapshots:
     dependencies:
       prosemirror-state: 1.4.3
       prosemirror-transform: 1.10.2
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
 
   prosemirror-gapcursor@1.3.2:
     dependencies:
       prosemirror-keymap: 1.2.2
       prosemirror-model: 1.23.0
       prosemirror-state: 1.4.3
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
 
   prosemirror-history@1.4.1:
     dependencies:
       prosemirror-state: 1.4.3
       prosemirror-transform: 1.10.2
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
       rope-sequence: 1.3.4
 
   prosemirror-inputrules@1.4.0:
@@ -2658,7 +2653,7 @@ snapshots:
     dependencies:
       prosemirror-model: 1.23.0
       prosemirror-transform: 1.10.2
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
 
   prosemirror-tables@1.6.0:
     dependencies:
@@ -2666,21 +2661,21 @@ snapshots:
       prosemirror-model: 1.23.0
       prosemirror-state: 1.4.3
       prosemirror-transform: 1.10.2
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
 
-  prosemirror-trailing-node@3.0.0(prosemirror-model@1.23.0)(prosemirror-state@1.4.3)(prosemirror-view@1.34.3):
+  prosemirror-trailing-node@3.0.0(prosemirror-model@1.23.0)(prosemirror-state@1.4.3)(prosemirror-view@1.35.0):
     dependencies:
       '@remirror/core-constants': 3.0.0
       escape-string-regexp: 4.0.0
       prosemirror-model: 1.23.0
       prosemirror-state: 1.4.3
-      prosemirror-view: 1.34.3
+      prosemirror-view: 1.35.0
 
   prosemirror-transform@1.10.2:
     dependencies:
       prosemirror-model: 1.23.0
 
-  prosemirror-view@1.34.3:
+  prosemirror-view@1.35.0:
     dependencies:
       prosemirror-model: 1.23.0
       prosemirror-state: 1.4.3
@@ -2881,13 +2876,13 @@ snapshots:
       picocolors: 1.1.1
       picomatch: 2.3.1
 
-  vite@4.5.5(@types/node@22.8.1)(sass@1.80.4)(terser@5.36.0):
+  vite@4.5.5(@types/node@22.8.4)(sass@1.80.4)(terser@5.36.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.47
       rollup: 3.29.5
     optionalDependencies:
-      '@types/node': 22.8.1
+      '@types/node': 22.8.4
       fsevents: 2.3.3
       sass: 1.80.4
       terser: 5.36.0
