@@ -13,12 +13,12 @@
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.7",
         "laravel-vite-plugin": "^0.8.1",
-        "postcss": "^8.4.47",
-        "tailwindcss": "^3.4.14",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^3.4.15",
         "vite": "^4.5.5"
     },
     "dependencies": {
-        "@coffic/juice-editor": "^0.9.101",
+        "@coffic/juice-editor": "^0.9.109",
         "daisyui": "^3.9.4"
     }
 }
