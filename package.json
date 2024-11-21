@@ -18,7 +18,7 @@
         "vite": "^4.5.5"
     },
     "dependencies": {
-        "@coffic/juice-editor": "^0.9.109",
+        "@coffic/juice-editor": "^0.9.112",
         "daisyui": "^3.9.4"
     }
 }
