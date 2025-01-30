@@ -1,0 +1,43 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import Products from '../components/Coffic/Products.vue';
+import Members from '../components/Coffic/Members.vue';
+import FooterVue from '../components/Footer.vue';
+
+const lang = Astro.currentLocale ?? 'en';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'CofficLab Studio',
+    description: 'Coffic',
+    template: 'splash',
+    draft: true,
+    hero: {
+      actions: [
+        {
+          text: 'GitHub',
+          link: 'https://github.com/cofficlab',
+          icon: 'right-arrow',
+        },
+      ],
+      tagline: 'with coffee and music',
+      title: 'CofficLab Studio',
+      image: {
+        file: {
+          src: '/images/coffic/logo4.png',
+          width: 100,
+          height: 100,
+          format: 'png',
+        },
+      },
+    },
+  }}
+  hasSidebar={false}
+  headings={[]}
+/>
+
+<Products lang={lang} />
+<Members lang={lang} />
+
+<FooterVue lang={lang} />

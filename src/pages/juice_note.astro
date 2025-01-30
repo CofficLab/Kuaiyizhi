@@ -1,0 +1,22 @@
+---
+import FooterVue from '../components/Footer.vue';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import JuiceNotePage from '../components/JuiceNote/JuiceNotePage.vue';
+import '../styles/hide_main.css';
+const lang = Astro.currentLocale ?? 'en';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'JuiceNote',
+    description: '简洁笔记',
+    template: 'splash',
+    draft: false,
+  }}
+  hasSidebar={false}
+  headings={[]}
+/>
+
+<JuiceNotePage lang={lang} />
+
+<FooterVue lang={lang} />

@@ -1,0 +1,22 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import TravelModePage from '../components/TravelMode/TravelModePage.vue';
+import FooterVue from '../components/Footer.vue';
+import '../styles/hide_main.css';
+const lang = Astro.currentLocale ?? 'en';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'TravelMode',
+    description: '简洁旅行模式',
+    template: 'splash',
+    draft: false,
+  }}
+  hasSidebar={false}
+  headings={[]}
+/>
+
+<TravelModePage lang={lang} />
+
+<FooterVue lang={lang} />
