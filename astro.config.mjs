@@ -8,20 +8,12 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://cofficlab.github.io',
-  redirects: {
-    '/zh/juiceEditor': '/juiceEditor',
-  },
   integrations: [
     starlight({
       customCss: ['./src/styles/custom.css'],
       title: '快易知',
-      defaultLocale: 'en',
+      defaultLocale: 'zh-cn',
       locales: {
-        // 英文文档在 `src/content/docs/en/` 中。
-        en: {
-          label: 'English',
-        },
-        // 简体中文文档在 `src/content/docs/zh-cn/` 中。
         'zh-cn': {
           label: '简体中文',
           lang: 'zh-CN',
@@ -36,8 +28,8 @@ export default defineConfig({
       },
       sidebar: [
         {
-          label: 'JuiceEditor',
-          autogenerate: { directory: 'juiceEditor' },
+          label: 'Laravel',
+          autogenerate: { directory: 'laravel_learn' },
         },
       ],
     }),
