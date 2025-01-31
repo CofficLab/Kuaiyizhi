@@ -31,6 +31,10 @@ export default defineConfig({
           label: 'Laravel',
           autogenerate: { directory: 'laravel_learn' },
         },
+        {
+          label: 'Kong',
+          autogenerate: { directory: 'kong' },
+        },
       ],
     }),
     vue({
