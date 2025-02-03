@@ -35,6 +35,10 @@ export default defineConfig({
           label: 'Kong',
           autogenerate: { directory: 'kong' },
         },
+        {
+          label: 'Vue',
+          autogenerate: { directory: 'vue' },
+        },
       ],
     }),
     vue({

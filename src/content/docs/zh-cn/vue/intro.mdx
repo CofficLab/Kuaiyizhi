@@ -1,0 +1,266 @@
+---
+title: Vue 入门：现代化的渐进式 JavaScript 框架
+description: 从零开始了解 Vue.js，一个易学易用、性能出色、适应性强的前端框架
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import TextReverseDemo from '../../../../components/vue/TextReverseDemo.vue';
+
+# Vue 入门：现代化的渐进式 JavaScript 框架
+
+## 什么是 Vue？
+
+Vue（发音为 /vjuː/，类似于 "view"）是一个用于构建用户界面的 JavaScript 框架。它建立在标准的 HTML、CSS 和 JavaScript 之上，并提供了一个声明式的、组件化的编程模型，帮助你高效地开发用户界面。
+
+### 为什么选择 Vue？
+
+1. **易学易用**
+   - 如果你懂 HTML、CSS 和 JavaScript 基础，就能快速上手
+   - 详尽的中文文档和活跃的中文社区
+   - 渐进式设计，可以根据需要逐步采用
+
+2. **灵活强大**
+   - 可以像 jQuery 一样简单地引入使用
+   - 也可以构建完整的企业级应用
+   - 丰富的生态系统，有大量现成的组件和工具
+
+3. **性能出色**
+   - 虚拟 DOM 实现高效更新
+   - 响应式系统自动追踪依赖
+   - 体积小巧，加载快速
+
+## 一个简单的例子
+
+让我们从一个最简单的例子开始，感受 Vue 的魅力：
+
+<TextReverseDemo client:load />
+
+<Tabs>
+    <TabItem label="HTML">
+    ```html
+    <div id="app">
+      <h1>{{ message }}</h1>
+      <button @click="reverseMessage">反转文字</button>
+    </div>
+    ```
+    </TabItem>
+    <TabItem label="JavaScript">
+    ```js
+    const { createApp, ref } = Vue
+
+    createApp({
+      setup() {
+        const message = ref('Hello Vue!')
+        
+        function reverseMessage() {
+          message.value = message.value.split('').reverse().join('')
+        }
+        
+        return {
+          message,
+          reverseMessage
+        }
+      }
+    }).mount('#app')
+    ```
+    </TabItem>
+    <TabItem label="效果">
+    ```
+    ┌─────────────────┐
+    │   Hello Vue!    │
+    │                 │
+    │ [反转文字]      │
+    └─────────────────┘
+    
+    点击按钮后：
+    
+    ┌─────────────────┐
+    │   !euV olleH    │
+    │                 │
+    │ [反转文字]      │
+    └─────────────────┘
+    ```
+    </TabItem>
+</Tabs>
+
+这个简单的例子展示了 Vue 的几个核心特性：
+
+1. **声明式渲染**：使用模板语法 `{{ }}` 声明式地将数据渲染到 DOM
+2. **响应式数据**：当 `message` 改变时，视图会自动更新
+3. **事件处理**：使用 `@click` 轻松处理用户交互
+
+## Vue 的核心概念
+
+### 1. 组件化开发
+
+Vue 应用是由组件构建的。组件是可复用的代码块，包含了 HTML、CSS 和 JavaScript：
+
+```vue
+<!-- UserCard.vue -->
+<template>
+  <div class="user-card">
+    <img :src="user.avatar" :alt="user.name">
+    <h2>{{ user.name }}</h2>
+    <p>{{ user.bio }}</p>
+    <button @click="followUser">关注</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const props = defineProps({
+  user: Object
+})
+
+function followUser() {
+  // 处理关注逻辑
+}
+</script>
+
+<style scoped>
+.user-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+}
+</style>
+```
+
+### 2. 响应式系统
+
+Vue 的响应式系统让数据和视图保持同步变得简单：
+
+```js
+import { ref, computed } from 'vue'
+
+// 响应式数据
+const count = ref(0)
+
+// 计算属性
+const doubleCount = computed(() => count.value * 2)
+
+// 修改数据时，相关的视图会自动更新
+function increment() {
+  count.value++
+}
+```
+
+### 3. 模板语法
+
+Vue 使用基于 HTML 的模板语法，让你能够声明式地将数据绑定到 DOM：
+
+```vue
+<template>
+  <div>
+    <!-- 文本插值 -->
+    <p>{{ message }}</p>
+    
+    <!-- 属性绑定 -->
+    <img :src="imageUrl">
+    
+    <!-- 条件渲染 -->
+    <p v-if="showMessage">这是一条消息</p>
+    
+    <!-- 列表渲染 -->
+    <ul>
+      <li v-for="item in items" :key="item.id">
+        {{ item.text }}
+      </li>
+    </ul>
+    
+    <!-- 事件处理 -->
+    <button @click="handleClick">点击我</button>
+  </div>
+</template>
+```
+
+## 开始使用 Vue
+
+### 方式一：直接在 HTML 中使用
+
+最简单的方式是直接在 HTML 中通过 CDN 引入 Vue：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 示例</title>
+  <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>{{ message }}</h1>
+  </div>
+  
+  <script>
+    const { createApp } = Vue
+    
+    createApp({
+      setup() {
+        return {
+          message: 'Hello Vue!'
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>
+```
+
+### 方式二：创建 Vue 项目
+
+对于更大的项目，推荐使用官方的脚手架工具：
+
+```bash
+# 创建 Vue 项目
+npm create vue@latest
+
+# 按提示操作
+# 选择需要的功能（TypeScript、路由、状态管理等）
+
+# 进入项目目录
+cd your-project-name
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+```
+
+## Vue 的生态系统
+
+Vue 有丰富的生态系统支持：
+
+1. **Vue Router**：官方路由管理器
+2. **Pinia**：状态管理库
+3. **Nuxt**：Vue 的全栈框架
+4. **Vite**：现代前端构建工具
+5. **Element Plus**：流行的 UI 组件库
+
+## 下一步学什么？
+
+1. **掌握基础概念**
+   - 组件
+   - 响应式系统
+   - 生命周期
+   - 计算属性和侦听器
+
+2. **学习进阶特性**
+   - 组合式函数（Composables）
+   - 依赖注入
+   - 自定义指令
+   - 插件系统
+
+3. **探索生态系统**
+   - 路由管理
+   - 状态管理
+   - 测试工具
+   - UI 框架
+
+## 结语
+
+Vue 是一个现代化的 JavaScript 框架，它既易于入门，又足够强大。通过渐进式的设计，你可以根据项目需求逐步采用 Vue 的特性。无论是构建简单的交互页面，还是开发复杂的企业应用，Vue 都是一个优秀的选择。
+
+随着你对 Vue 的深入了解，你会发现它不仅提供了优秀的开发体验，还培养了一种清晰、可维护的编码方式。现在，就让我们开始 Vue 的学习之旅吧！
