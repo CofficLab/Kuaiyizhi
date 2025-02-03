@@ -39,6 +39,10 @@ export default defineConfig({
           label: 'Vue',
           autogenerate: { directory: 'vue' },
         },
+        {
+          label: 'Caddy',
+          autogenerate: { directory: 'caddy' },
+        },
       ],
     }),
     vue({

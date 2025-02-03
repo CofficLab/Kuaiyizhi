@@ -1,0 +1,87 @@
+---
+title: Caddy 安装指南
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Caddy 是一个现代化的 Web 服务器，因其易用性和强大的功能而受到欢迎。本文将介绍如何在不同平台上安装 Caddy。
+
+## 安装方法
+
+### 1. 使用包管理器安装
+
+#### macOS
+
+在 macOS 上，你可以使用 Homebrew 来安装 Caddy：
+
+```bash
+brew install caddy
+```
+
+#### Linux
+
+在 Linux 上，你可以使用包管理器来安装 Caddy：
+
+<Tabs>
+<TabItem label="Debian/Ubuntu" default>
+
+```bash
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo apt-key add -
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt update
+sudo apt install caddy
+```
+
+</TabItem>
+
+<TabItem label="RHEL/CentOS">
+
+```bash
+sudo yum install yum-plugin-copr
+sudo yum copr enable @caddy/caddy
+sudo yum install caddy
+```
+
+</TabItem>
+</Tabs>
+
+### 2. 使用 Docker 安装
+
+如果你使用 Docker，可以通过以下命令运行 Caddy：
+
+```bash
+docker run -d -p 80:80 -p 443:443 caddy
+```
+
+这将启动一个 Caddy 容器，并将 HTTP 和 HTTPS 端口映射到主机。
+
+### 3. 下载二进制文件
+
+你也可以直接从 Caddy 的官方网站下载预编译的二进制文件。
+
+1. 访问 [Caddy 下载页面](https://caddyserver.com/download)
+2. 选择你的操作系统和架构
+3. 下载并解压缩文件
+4. 将 `caddy` 可执行文件移动到系统的 `PATH` 中，例如 `/usr/local/bin`
+
+```bash
+# 以 Linux 为例
+wget https://caddyserver.com/api/download?os=linux&arch=amd64 -O caddy.tar.gz
+tar -xzf caddy.tar.gz
+sudo mv caddy /usr/local/bin/
+```
+
+## 验证安装
+
+安装完成后，你可以通过以下命令验证 Caddy 是否安装成功：
+
+```bash
+caddy version
+```
+
+如果安装成功，你将看到 Caddy 的版本信息。
+
+## 结语
+
+通过以上方法，你可以在不同的平台上安装 Caddy。选择适合你的安装方式，开始体验 Caddy 带来的高效和便捷。无论是通过包管理器、Docker 还是直接下载二进制文件，Caddy 都能为你的 Web 服务提供强大的支持。 
