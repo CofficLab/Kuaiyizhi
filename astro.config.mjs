@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vue from '@astrojs/vue';
 import tailwind from '@astrojs/tailwind';
+import { sidebar } from './astro.sidebar';
 import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
@@ -34,28 +35,7 @@ export default defineConfig({
       social: {
         github: 'https://github.com/cofficlab',
       },
-      sidebar: [
-        {
-          label: 'Laravel',
-          autogenerate: { directory: 'laravel_learn' },
-        },
-        {
-          label: 'Kong',
-          autogenerate: { directory: 'kong' },
-        },
-        {
-          label: 'Vue',
-          autogenerate: { directory: 'vue' },
-        },
-        {
-          label: 'Caddy',
-          autogenerate: { directory: 'caddy' },
-        },
-        {
-          label: 'Build Your Own Web Toolbox',
-          autogenerate: { directory: 'build_your_own_web_toolbox' },
-        },
-      ],
+      sidebar,
     }),
     vue({
       include: ['**/*.vue'], // 明确包含Vue组件
