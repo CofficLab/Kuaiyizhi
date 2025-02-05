@@ -11,7 +11,8 @@
 		"vscode": {
 			"extensions": [
 				"astro-build.astro-vscode",
-				"Vue.volar"
+				"Vue.volar",
+				"unifiedjs.vscode-mdx"
 			]
 		}
 	},

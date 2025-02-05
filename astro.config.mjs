@@ -2,12 +2,11 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vue from '@astrojs/vue';
-
 import tailwind from '@astrojs/tailwind';
-import smartStylePlugin from './plugins/smart-style/index.ts';
 import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
+import smartStylePlugin from './plugins/smart-style/index.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,10 +16,10 @@ export default defineConfig({
       title: '快易知',
       defaultLocale: 'zh-cn',
       plugins: [
+        smartStylePlugin(),
         smartSearchPlugin(),
         smartHeaderPlugin(),
-        smartPagePlugin(),
-        // smartStylePlugin(),
+        smartPagePlugin()
       ],
       locales: {
         'zh-cn': {
@@ -29,8 +28,8 @@ export default defineConfig({
         },
       },
       logo: {
-        light: './src/assets/coffic/logo4.min.png',
-        dark: './src/assets/coffic/logo4.min.png',
+        light: './src/assets/logo.png',
+        dark: './src/assets/logo.png',
       },
       social: {
         github: 'https://github.com/cofficlab',
