@@ -1,0 +1,10 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/Header.astro';
+
+const props = Astro.props as Props;
+---
+
+<div class="bg-red-400 dark:bg-slate-800">
+    <Default {...props} />
+</div>
