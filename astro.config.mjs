@@ -4,7 +4,6 @@ import starlight from '@astrojs/starlight';
 import vue from '@astrojs/vue';
 
 import tailwind from '@astrojs/tailwind';
-import homeHideSearchPlugin from './plugins/home-hide-search/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
 import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
@@ -18,10 +17,9 @@ export default defineConfig({
       title: '快易知',
       defaultLocale: 'zh-cn',
       plugins: [
-        // homeHideSearchPlugin(),
-        // smartStylePlugin(),
+        smartStylePlugin(),
         smartHeaderPlugin(),
-        smartSearchPlugin()
+        smartSearchPlugin(),
       ],
       locales: {
         'zh-cn': {

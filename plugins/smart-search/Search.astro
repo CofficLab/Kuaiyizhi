@@ -3,8 +3,13 @@ import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/Search.astro';
 
 const props = Astro.props as Props;
+const isHome = Astro.props.id === '';
 ---
 
-<div class="bg-red-400/0 flex flex-row justify-end w-full">
-    <Default {...props} />
-</div>
+{
+    !isHome && (
+        <div class="bg-red-400/0 flex flex-row justify-end w-full">
+            <Default {...props} />
+        </div>
+    )
+}
