@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.31.1",
-    "@astrojs/tailwind": "^5.1.5",
+    "@astrojs/starlight-tailwind": "^3.0.0",
+    "@astrojs/tailwind": "^6.0.0",
     "@astrojs/vue": "^5.0.6",
     "@remixicon/vue": "^4.6.0",
     "astro": "^5.1.5",

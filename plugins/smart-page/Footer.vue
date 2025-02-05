@@ -1,6 +1,6 @@
 <template>
     <footer
-        class="mt-24 bg-gradient-to-br from-gray-400/20 to-gray-400/10 dark:from-slate-800 dark:to-gray-800/80 z-50">
+        class="mt-24 bg-gradient-to-br from-gray-400/20 to-gray-400/10 dark:from-slate-800 dark:to-gray-800/80 z-50 no-underline">
         <div class="flex flex-col justify-center">
             <a href="/" class="flex items-center self-center w-auto text-lg font-bold smart-link my-6">
                 <div class="flex flex-row justify-center w-full">
@@ -64,3 +64,13 @@ defineProps({
     },
 });
 </script>
+
+<style scoped lang="postcss">
+li {
+    @apply list-none;
+}
+
+.smart-link {
+    @apply px-4 py-2 rounded-xl ring-white/50 no-underline hover:ring-1 hover:shadow-2xl hover:bg-green-600/10 hover:backdrop-blur transform duration-100;
+}
+</style>

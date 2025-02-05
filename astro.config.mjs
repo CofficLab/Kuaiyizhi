@@ -61,6 +61,8 @@ export default defineConfig({
     vue({
       include: ['**/*.vue'], // 明确包含Vue组件
     }),
-    tailwind(),
+    tailwind({
+      applyBaseStyles: true,
+    }),
   ],
 });
