@@ -5,6 +5,7 @@ import vue from '@astrojs/vue';
 
 import tailwind from '@astrojs/tailwind';
 import hideSearchPlugin from './plugins/hide-search/index.ts';
+import homeHideSearchPlugin from './plugins/home-hide-search/index.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,7 +15,10 @@ export default defineConfig({
       customCss: ['./src/styles/custom.css'],
       title: '快易知',
       defaultLocale: 'zh-cn',
-      plugins: [hideSearchPlugin()],
+      plugins: [
+        // hideSearchPlugin(),
+        homeHideSearchPlugin()
+      ],
       locales: {
         'zh-cn': {
           label: '简体中文',
