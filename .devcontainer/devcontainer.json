@@ -1,35 +1,32 @@
-pnpm // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.217.4/containers/docker-existing-docker-compose
-// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "${localWorkspaceFolderBasename}",
-	"dockerComposeFile": [
-		"docker-compose.yml"
-	],
-	"service": "app",
-	"workspaceFolder": "/workdir",
+	"name": "Node.js & TypeScript",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+	"features": {
+		"ghcr.io/devcontainers-extra/features/pnpm:2": {}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"bmewburn.vscode-intelephense-client",
-				"codingyu.laravel-goto-view",
-				"austenc.laravel-blade-spacer",
-				"amirmarmul.laravel-blade-vscode",
-				"onecentlin.laravel-blade",
-				"onecentlin.laravel-extension-pack",
-				"amiralizadeh9480.laravel-extra-intellisense",
-				"kokororin.vscode-phpfmt",
-				"bradlc.vscode-tailwindcss",
-				"ahmadalli.vscode-nginx-conf",
-				"esbenp.prettier-vscode",
-				"jock.svg",
-				"csstools.postcss",
-				"yy0931.vscode-sqlite3-editor",
-				"Vue.volar",
-				"adrianwilczynski.alpine-js-intellisense",
-				"michelemelluso.code-beautifier",
-				"matthewpi.caddyfile-support"
+				"astro-build.astro-vscode"
 			]
 		}
 	}
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "yarn install",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
 }
