@@ -1,0 +1,368 @@
+---
+title: 天气查询功能实现
+description: 实现天气查询页面、天气卡片组件和城市搜索功能
+---
+
+## 天气查询功能概述
+
+在这一节中，我们将实现一个完整的天气查询功能。主要包括以下内容：
+
+1. 设计和实现天气查询页面
+2. 创建天气卡片组件
+3. 集成聚合数据天气 API
+4. 实现城市搜索功能
+
+### 准备工作
+
+1. 注册聚合数据账号并获取 API Key：
+   - 访问 [聚合数据官网](https://www.juhe.cn/)
+   - 注册账号并实名认证
+   - 申请天气预报 API
+   - 获取 API Key
+
+2. 创建环境变量文件：
+
+```bash
+# .env
+JUHE_WEATHER_KEY=your_api_key_here
+```
+
+## 天气卡片组件
+
+首先，我们创建一个可复用的天气卡片组件：
+
+```vue
+<!-- components/WeatherCard.vue -->
+<script setup lang="ts">
+import { computed } from 'vue'
+
+// 定义组件属性
+interface Props {
+  weather: {
+    city: string
+    date: string
+    temperature: string
+    weather: string
+    wind: string
+    humidity: string
+  }
+}
+
+const props = defineProps<Props>()
+
+// 根据天气状况选择图标
+const weatherIcon = computed(() => {
+  const weather = props.weather.weather
+  if (weather.includes('晴')) return '☀️'
+  if (weather.includes('多云')) return '⛅'
+  if (weather.includes('阴')) return '☁️'
+  if (weather.includes('雨')) return '🌧️'
+  if (weather.includes('雪')) return '🌨️'
+  return '🌤️'
+})
+</script>
+
+<template>
+  <div class="card w-96 bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl">
+        {{ weather.city }}
+        <span class="text-3xl">{{ weatherIcon }}</span>
+      </h2>
+      <div class="text-lg space-y-2">
+        <p>{{ weather.date }}</p>
+        <p>温度：{{ weather.temperature }}℃</p>
+        <p>天气：{{ weather.weather }}</p>
+        <p>风况：{{ weather.wind }}</p>
+        <p>湿度：{{ weather.humidity }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+## 天气查询页面
+
+接下来，创建天气查询页面：
+
+```vue
+<!-- pages/weather/index.vue -->
+<script setup lang="ts">
+import { ref } from 'vue'
+
+// 城市搜索
+const searchQuery = ref('')
+const searchResults = ref<string[]>([])
+const selectedCity = ref('')
+const loading = ref(false)
+const error = ref('')
+
+// 天气数据
+const weatherData = ref<any>(null)
+
+// 热门城市
+const popularCities = [
+  '北京',
+  '上海',
+  '广州',
+  '深圳',
+  '杭州',
+  '成都',
+  '武汉',
+  '西安'
+]
+
+// 搜索城市
+async function searchCity() {
+  if (!searchQuery.value) return
+  
+  try {
+    loading.value = true
+    error.value = ''
+    
+    // 调用城市搜索 API
+    const response = await fetch(`/api/weather/cities?query=${encodeURIComponent(searchQuery.value)}`)
+    const data = await response.json()
+    
+    if (data.error) {
+      error.value = data.error
+      return
+    }
+    
+    searchResults.value = data.cities
+  } catch (e) {
+    error.value = '搜索失败，请稍后重试'
+  } finally {
+    loading.value = false
+  }
+}
+
+// 获取天气数据
+async function getWeather(city: string) {
+  try {
+    loading.value = true
+    error.value = ''
+    selectedCity.value = city
+    searchQuery.value = ''
+    searchResults.value = []
+    
+    // 调用天气查询 API
+    const response = await fetch(`/api/weather?city=${encodeURIComponent(city)}`)
+    const data = await response.json()
+    
+    if (data.error) {
+      error.value = data.error
+      return
+    }
+    
+    weatherData.value = data
+  } catch (e) {
+    error.value = '获取天气信息失败，请稍后重试'
+  } finally {
+    loading.value = false
+  }
+}
+</script>
+
+<template>
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">天气查询</h1>
+    
+    <!-- 搜索框 -->
+    <div class="form-control w-full max-w-lg mb-8">
+      <div class="input-group">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="输入城市名称..."
+          class="input input-bordered w-full"
+          @input="searchCity"
+        />
+        <button
+          class="btn btn-primary"
+          :disabled="loading"
+          @click="searchCity"
+        >
+          搜索
+        </button>
+      </div>
+      
+      <!-- 搜索结果 -->
+      <ul
+        v-if="searchResults.length > 0"
+        class="menu bg-base-200 w-full mt-2 rounded-box"
+      >
+        <li v-for="city in searchResults" :key="city">
+          <a @click="getWeather(city)">{{ city }}</a>
+        </li>
+      </ul>
+      
+      <!-- 错误提示 -->
+      <div v-if="error" class="alert alert-error mt-4">
+        {{ error }}
+      </div>
+    </div>
+    
+    <!-- 热门城市 -->
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-4">热门城市</h2>
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="city in popularCities"
+          :key="city"
+          class="btn btn-outline"
+          @click="getWeather(city)"
+        >
+          {{ city }}
+        </button>
+      </div>
+    </div>
+    
+    <!-- 天气信息 -->
+    <div v-if="weatherData" class="flex justify-center">
+      <WeatherCard :weather="weatherData" />
+    </div>
+    
+    <!-- 加载状态 -->
+    <div
+      v-if="loading"
+      class="flex justify-center items-center h-40"
+    >
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  </div>
+</template>
+```
+
+## API 路由
+
+创建天气相关的 API 路由：
+
+```typescript
+// server/api/weather/index.ts
+import { defineEventHandler, getQuery } from 'h3'
+
+export default defineEventHandler(async (event) => {
+  try {
+    const query = getQuery(event)
+    const city = query.city as string
+    
+    if (!city) {
+      return {
+        error: '请提供城市名称'
+      }
+    }
+    
+    // 调用聚合数据天气 API
+    const apiKey = process.env.JUHE_WEATHER_KEY
+    const response = await fetch(
+      `http://apis.juhe.cn/simpleWeather/query?city=${encodeURIComponent(city)}&key=${apiKey}`
+    )
+    
+    const data = await response.json()
+    
+    if (data.error_code !== 0) {
+      return {
+        error: data.reason || '获取天气信息失败'
+      }
+    }
+    
+    // 格式化返回数据
+    const weather = data.result.realtime
+    return {
+      city,
+      date: new Date().toLocaleDateString('zh-CN'),
+      temperature: weather.temperature,
+      weather: weather.info,
+      wind: `${weather.direct} ${weather.power}`,
+      humidity: weather.humidity
+    }
+  } catch (error) {
+    console.error('Weather API Error:', error)
+    return {
+      error: '服务器错误，请稍后重试'
+    }
+  }
+})
+
+// server/api/weather/cities.ts
+import { defineEventHandler, getQuery } from 'h3'
+
+// 城市数据（实际项目中可以使用数据库或完整的城市数据文件）
+const cities = [
+  '北京', '上海', '广州', '深圳', '杭州', '南京', '成都', '重庆',
+  '武汉', '西安', '天津', '苏州', '长沙', '郑州', '青岛', '大连'
+]
+
+export default defineEventHandler(async (event) => {
+  try {
+    const query = getQuery(event)
+    const searchQuery = (query.query as string || '').toLowerCase()
+    
+    if (!searchQuery) {
+      return {
+        cities: []
+      }
+    }
+    
+    // 搜索匹配的城市
+    const matchedCities = cities.filter(city =>
+      city.toLowerCase().includes(searchQuery)
+    )
+    
+    return {
+      cities: matchedCities
+    }
+  } catch (error) {
+    console.error('Cities API Error:', error)
+    return {
+      error: '搜索失败，请稍后重试'
+    }
+  }
+})
+```
+
+## 使用说明
+
+1. 用户可以通过以下方式查询天气：
+   - 在搜索框输入城市名称
+   - 点击热门城市列表中的城市
+   - 从搜索结果中选择城市
+
+2. 天气信息展示：
+   - 城市名称
+   - 天气图标
+   - 当前日期
+   - 实时温度
+   - 天气状况
+   - 风向和风力
+   - 空气湿度
+
+## 优化建议
+
+1. 数据缓存
+   - 使用 Redis 或浏览器缓存存储天气数据
+   - 设置合理的缓存过期时间
+
+2. 错误处理
+   - 添加更详细的错误提示
+   - 实现请求重试机制
+
+3. 用户体验
+   - 添加定位功能，自动获取当前城市
+   - 支持收藏常用城市
+   - 添加天气预报功能
+
+4. 性能优化
+   - 使用防抖处理搜索输入
+   - 优化城市数据的存储和查询
+   - 实现组件懒加载
+
+## 下一步
+
+接下来，我们将：
+
+1. 实现快递查询功能
+2. 设计快递查询页面
+3. 集成快递查询 API
+4. 添加查询历史记录功能

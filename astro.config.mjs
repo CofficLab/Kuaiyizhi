@@ -43,6 +43,10 @@ export default defineConfig({
           label: 'Caddy',
           autogenerate: { directory: 'caddy' },
         },
+        {
+          label: 'Build Your Own Web Toolbox',
+          autogenerate: { directory: 'build_your_own_web_toolbox' },
+        },
       ],
     }),
     vue({
