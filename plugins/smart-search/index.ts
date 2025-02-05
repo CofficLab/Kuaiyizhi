@@ -9,6 +9,7 @@ export default function smartSearchPlugin(): StarlightPlugin {
 
                 updateConfig({
                     components: {
+                        ...config.components,
                         Search: './plugins/smart-search/Search.astro'
                     }
                 });

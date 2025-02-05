@@ -1,0 +1,18 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/PageFrame.astro';
+import FooterVue from './Footer.vue';
+
+const props = Astro.props as Props;
+const lang = Astro.url.pathname.split('/')[1];
+---
+
+<div class="flex flex-col h-full">
+    <Default {...props}>
+        <slot name="sidebar" slot="sidebar" />
+        <slot name="header" slot="header" />
+        <slot />
+    </Default>
+
+    <FooterVue lang={lang} />
+</div>
