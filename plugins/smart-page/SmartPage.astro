@@ -14,5 +14,5 @@ const lang = Astro.url.pathname.split('/')[1];
         <slot />
     </Default>
 
-    <FooterVue lang={lang} />
+    {props.id === '' && <FooterVue lang={lang} />}
 </div>
