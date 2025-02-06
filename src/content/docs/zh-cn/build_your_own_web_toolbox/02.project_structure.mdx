@@ -138,6 +138,66 @@ export default {
    - 在任意组件中使用 DaisyUI 的组件类名
    - 确认样式是否正确应用
 
+### 第五步：安装配置 Vue
+
+1. 安装 Vue 集成：
+
+```bash
+# 安装 Astro Vue 集成
+pnpm astro add vue
+```
+
+2. 验证安装：
+   - 创建一个 Vue 组件（`src/components/Counter.vue`）：
+
+```vue
+<template>
+  <div class="counter">
+    <button @click="count--">-</button>
+    <span>{{ count }}</span>
+    <button @click="count++">+</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const count = ref(0)
+</script>
+
+<style scoped>
+.counter {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>
+```
+
+3. 在 Astro 页面中使用 Vue 组件：
+
+```astro
+---
+import Counter from '../components/Counter.vue';
+---
+
+<div>
+  <Counter client:load />
+</div>
+```
+
+注意：在 Astro 中使用 Vue 组件时，需要添加 `client:` 指令来指定组件的加载策略。常用的指令包括：
+- `client:load`：页面加载完成后立即加载组件
+- `client:idle`：浏览器空闲时加载组件
+- `client:visible`：组件进入视口时加载
+- `client:media`：满足媒体查询条件时加载
+- `client:only`：仅在客户端渲染，跳过服务器端渲染
+
 4. 创建 `.gitignore` 文件：
 
 ```plaintext
