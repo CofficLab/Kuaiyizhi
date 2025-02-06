@@ -1,25 +1,264 @@
 ---
-title: 项目结构设计
-description: 详细介绍 Nuxt.js 项目的目录结构和设计规范
+title: 项目初始化
+description: 使用 pnpm 和 Vite 初始化项目，并详细介绍项目的目录结构和设计规范
 ---
+
+## 项目初始化
+
+在开始开发之前，我们需要先初始化项目。我们将按照以下三个主要步骤来进行：
+
+1. 使用 pnpm 创建 Vite 项目
+2. 配置 Git 和 GitHub
+3. 安装配置 Tailwind CSS 和 DaisyUI
+
+### 第一步：创建 Vite 项目
+
+1. 安装 pnpm（如果尚未安装）：
+
+```bash
+# 使用 npm 安装 pnpm
+npm install -g pnpm
+
+# 验证安装
+pnpm --version
+```
+
+2. 创建 Vite 项目：
+
+```bash
+# 创建项目
+pnpm create vite web-toolbox
+
+# 按键盘上的上下键选择框架，回车确认
+# 选择 Vue
+# 选择 TypeScript
+
+# 进入项目目录
+cd web-toolbox
+
+# 安装依赖
+pnpm install
+```
+
+3. 启动项目并查看：
+
+```bash
+pnpm dev
+```
+
+### 第二步：配置 Git 和 GitHub
+
+1. 初始化 Git 仓库：
+
+```bash
+# 初始化仓库
+git init
+
+# 创建 .gitignore 文件
+cat > .gitignore << EOL
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+
+# Build
+dist
+dist-ssr
+*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+EOL
+
+# 添加文件到 Git
+git add .
+
+# 创建首次提交
+git commit -m "初始化项目"
+```
+
+2. 在 GitHub 上创建仓库：
+- 访问 [GitHub](https://github.com)
+- 点击 "New repository"
+- 填写仓库名称：web-toolbox
+- 添加描述：在线工具箱项目
+- 选择公开仓库
+- 点击 "Create repository"
+
+3. 关联远程仓库：
+
+```bash
+# 添加远程仓库
+git remote add origin git@github.com:你的用户名/web-toolbox.git
+
+# 推送代码到 GitHub
+git push -u origin main
+```
+
+### 第三步：安装配置 Tailwind CSS 和 DaisyUI
+
+1. 安装 Tailwind CSS：
+
+```bash
+# 安装 Tailwind CSS 及其依赖
+pnpm install -D tailwindcss postcss autoprefixer
+
+# 初始化 Tailwind CSS 配置
+pnpm dlx tailwindcss init -p
+```
+
+2. 安装 DaisyUI：
+
+```bash
+# 安装 DaisyUI
+pnpm add -D daisyui
+```
+
+3. 配置 Tailwind CSS（`tailwind.config.js`）：
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: true,
+  },
+}
+```
+
+2. 创建 CSS 文件（`src/style.css`）：
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+3. 在 `main.ts` 中引入样式：
+
+```typescript
+import './style.css'
+```
+
+4. 创建 `.gitignore` 文件：
+
+```plaintext
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+```
+
+### 配置 Git 和 GitHub
+
+1. 安装 GitHub Desktop：
+   - 访问 [GitHub Desktop 官网](https://desktop.github.com/)
+   - 下载并安装 GitHub Desktop
+   - 使用 GitHub 账号登录
+
+2. 初始化本地 Git 仓库：
+
+```bash
+# 初始化仓库
+git init
+
+# 添加文件
+git add .
+
+# 创建首次提交
+git commit -m "初始化项目"
+```
+
+3. 创建 GitHub 仓库：
+   - 打开 GitHub Desktop
+   - 点击 "File" > "New Repository"
+   - 填写仓库信息：
+     - Name: web-toolbox
+     - Description: 在线工具箱项目
+     - Local Path: 选择项目所在目录
+     - Initialize with README: 勾选
+     - Git Ignore: Node
+     - License: MIT
+   - 点击 "Create Repository"
+
+4. 推送到 GitHub：
+   - 在 GitHub Desktop 中点击 "Publish repository"
+   - 确认仓库名称和描述
+   - 选择是否保持仓库私有
+   - 点击 "Publish Repository"
+
+现在你的项目已经成功托管到 GitHub 上了。你可以通过 GitHub Desktop 方便地进行代码的提交、推送和拉取操作。
+
+### 启动开发服务器
+
+```bash
+# 启动开发服务器
+pnpm dev
+```
+
+访问 `http://localhost:5173` 查看项目。
 
 ## 目录结构
 
-在上一节中，我们已经初始化了一个基础的 Nuxt.js 项目。现在让我们深入了解项目的目录结构，以及如何组织我们的代码。
+让我们来了解项目的目录结构，以及如何组织我们的代码。
 
 ### 核心目录
 
 ```bash
 web-toolbox/
-├── components/     # 可复用组件
-├── pages/          # 页面组件
-├── layouts/        # 布局组件
-├── composables/    # 组合式函数
-├── stores/         # 状态管理
-├── utils/          # 工具函数
-├── types/          # TypeScript 类型定义
-├── public/         # 静态资源
-└── server/         # API 路由
+├── src/
+│   ├── components/     # 可复用组件
+│   ├── pages/          # 页面组件
+│   ├── layouts/        # 布局组件
+│   ├── composables/    # 组合式函数
+│   ├── stores/         # 状态管理
+│   ├── utils/          # 工具函数
+│   ├── types/          # TypeScript 类型定义
+│   └── assets/         # 项目资源
+├── public/             # 静态资源
+└── server/             # API 路由
 ```
 
 让我们详细了解每个目录的用途：
@@ -59,15 +298,20 @@ web-toolbox/
    - 接口类型
    - 通用类型
 
-8. **public/**
-   - 静态资源文件
-   - 直接通过 URL 访问
+8. **assets/**
+   - 项目资源文件
+   - 需要经过构建工具处理的资源
    - 图片、字体等资源
 
-9. **server/**
-   - API 路由处理
-   - 中间件
-   - 服务端工具函数
+9. **public/**
+   - 静态资源文件
+   - 直接通过 URL 访问
+   - 不需要构建的资源
+
+10. **server/**
+    - API 路由处理
+    - 中间件
+    - 服务端工具函数
 
 ## 组件设计规范
 
@@ -226,7 +470,7 @@ export const useWeatherStore = defineStore('weather', {
 
 ## 路由设计
 
-Nuxt.js 使用基于文件的路由系统。以下是我们的路由结构：
+Vite + Vue Router 使用基于文件的路由系统。以下是我们的路由结构：
 
 ```bash
 pages/
@@ -245,7 +489,7 @@ pages/
 
 ## 下一步
 
-现在我们已经了解了项目的基础结构，接下来我们将：
+现在我们已经完成了项目的初始化和基础结构设计，接下来我们将：
 
 1. 实现基础布局
 2. 开发导航菜单

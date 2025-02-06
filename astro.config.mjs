@@ -3,11 +3,12 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vue from '@astrojs/vue';
 import tailwind from '@astrojs/tailwind';
-import { sidebar } from './astro.sidebar';
+import { sidebar } from './config/astro.sidebar.ts';
 import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
+import starlightSidebarTopics from 'starlight-sidebar-topics';
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,7 +21,8 @@ export default defineConfig({
         smartStylePlugin(),
         smartSearchPlugin(),
         smartHeaderPlugin(),
-        smartPagePlugin()
+        smartPagePlugin(),
+        starlightSidebarTopics(sidebar),
       ],
       locales: {
         'zh-cn': {
@@ -35,7 +37,6 @@ export default defineConfig({
       social: {
         github: 'https://github.com/cofficlab',
       },
-      sidebar,
     }),
     vue({
       include: ['**/*.vue'], // 明确包含Vue组件
