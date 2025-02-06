@@ -69,7 +69,7 @@ export const sidebar =
         },
         {
             label: 'Docker',
-            icon: 'docker',
+            icon: 'seti:docker',
             items: [
                 {
                     label: '目录',
@@ -79,8 +79,8 @@ export const sidebar =
             link: '/docker',
         },
         {
-            label: 'flutter',
-            icon: 'seti:flutter',
+            label: 'Flutter',
+            icon: 'seti:dart',
             items: [
                 {
                     label: '目录',
@@ -123,29 +123,18 @@ export const sidebar =
             link: '/javascript',
         },
         {
-            label: 'macOS',
-            icon: 'seti:apple',
-            items: [
-                {
-                    label: '目录',
-                    autogenerate: { directory: 'macOS' },
-                },
-            ],
-            link: '/macOS',
-        },
-        {
             label: 'SwiftUI',
             icon: 'seti:swift',
             items: [
                 {
                     label: '目录',
-                    autogenerate: { directory: 'swiftUI' },
+                    autogenerate: { directory: 'swift_ui' },
                 },
             ],
-            link: '/swiftUI',
+            link: '/swift_ui',
         },
         {
-            label: 'php',
+            label: 'PHP',
             icon: 'seti:php',
             items: [
                 {
