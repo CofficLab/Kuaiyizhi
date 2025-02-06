@@ -67,4 +67,92 @@ export const sidebar =
             ],
             link: '/caddy',
         },
+        {
+            label: 'Docker',
+            icon: 'docker',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'docker' },
+                },
+            ],
+            link: '/docker',
+        },
+        {
+            label: 'flutter',
+            icon: 'seti:flutter',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'flutter' },
+                },
+            ],
+            link: '/flutter',
+        },
+        {
+            label: 'Golang',
+            icon: 'seti:go',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'golang' },
+                },
+            ],
+            link: '/golang',
+        },
+        {
+            label: 'Java',
+            icon: 'seti:java',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'java' },
+                },
+            ],
+            link: '/java',
+        },
+        {
+            label: 'JavaScript',
+            icon: 'seti:javascript',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'javascript' },
+                },
+            ],
+            link: '/javascript',
+        },
+        {
+            label: 'macOS',
+            icon: 'seti:apple',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'macOS' },
+                },
+            ],
+            link: '/macOS',
+        },
+        {
+            label: 'SwiftUI',
+            icon: 'seti:swift',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'swiftUI' },
+                },
+            ],
+            link: '/swiftUI',
+        },
+        {
+            label: 'php',
+            icon: 'seti:php',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'php' },
+                },
+            ],
+            link: '/php',
+        }
     ];
