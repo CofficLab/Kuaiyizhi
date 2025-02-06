@@ -13,6 +13,9 @@ import starlightSidebarTopics from 'starlight-sidebar-topics';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://cofficlab.github.io',
+  prefetch: {
+    prefetchAll: true,
+  },
   integrations: [
     starlight({
       title: '快易知',

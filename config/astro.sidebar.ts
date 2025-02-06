@@ -12,6 +12,17 @@ export const sidebar =
             link: '/build_your_own_web_toolbox',
         },
         {
+            label: 'Astro',
+            icon: 'open-book',
+            items: [
+                {
+                    label: '目录',
+                    autogenerate: { directory: 'astro' },
+                },
+            ],
+            link: '/astro',
+        },
+        {
             label: 'Laravel',
             icon: 'seti:php',
             items: [
