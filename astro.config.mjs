@@ -16,6 +16,13 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
   },
+  vite: {
+    server: {
+      hmr: {
+        overlay: false,
+      },
+    },
+  },
   integrations: [
     starlight({
       title: '快易知',
