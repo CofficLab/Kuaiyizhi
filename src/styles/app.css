@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义全局样式 */
+body {
+  @apply min-h-screen bg-base-100;
+}
+
+/* 导航栏样式 */
+.navbar {
+  @apply sticky top-0 z-50;
+}
+
+/* 页脚样式 */
+.footer {
+  @apply mt-auto;
+}

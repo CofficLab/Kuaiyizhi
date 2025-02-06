@@ -7,137 +7,122 @@ description: 使用 pnpm 和 Vite 初始化项目，并详细介绍项目的目�
 
 在开始开发之前，我们需要先初始化项目。我们将按照以下三个主要步骤来进行：
 
-1. 使用 pnpm 创建 Vite 项目
-2. 配置 Git 和 GitHub
+1. 使用 pnpm 创建 Astro 项目
+2. 使用 GitHub Desktop 推送项目
 3. 安装配置 Tailwind CSS 和 DaisyUI
 
-### 第一步：创建 Vite 项目
+### 第一步：创建 Astro 项目
 
-1. 安装 pnpm（如果尚未安装）：
-
-```bash
-# 使用 npm 安装 pnpm
-npm install -g pnpm
-
-# 验证安装
-pnpm --version
-```
-
-2. 创建 Vite 项目：
+1. 创建 Astro 项目：
 
 ```bash
 # 创建项目
-pnpm create vite web-toolbox
+pnpm create astro@latest web-toolbox
 
-# 按键盘上的上下键选择框架，回车确认
-# 选择 Vue
-# 选择 TypeScript
+# 按照提示进行配置：
+# 1. 选择基础模板
+# 2. 选择安装依赖
+# 3. 选择使用 TypeScript（推荐）
+# 4. 选择 Strict 类型检查（推荐）
 
 # 进入项目目录
 cd web-toolbox
-
-# 安装依赖
-pnpm install
 ```
 
-3. 启动项目并查看：
+2. 启动项目并查看：
 
 ```bash
 pnpm dev
 ```
 
-### 第二步：配置 Git 和 GitHub
+打开其中展示的网址，会看到以下界面：
 
-1. 初始化 Git 仓库：
+![Astro 项目初始化成功](./images/1.png)
 
-```bash
-# 初始化仓库
-git init
+### 第二步：使用 GitHub Desktop 推送项目
 
-# 创建 .gitignore 文件
-cat > .gitignore << EOL
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+由于 Astro 在初始化项目时已经完成了 Git 仓库的配置，我们只需要使用 GitHub Desktop 将项目推送到 GitHub 即可。
 
-# Dependencies
-node_modules
+1. 添加本地项目：
+   - 打开 GitHub Desktop
+   - 点击 "File" > "Add Local Repository"
+   - 选择项目所在目录（web-toolbox 文件夹）
+   - GitHub Desktop 会自动识别这是一个 Git 仓库
 
-# Build
-dist
-dist-ssr
-*.local
+2. 创建 GitHub 仓库：
+   - 点击 "Publish repository"
+   - 填写仓库信息：
+     - Name: web-toolbox
+     - Description: 在线工具箱项目
+     - 选择是否保持仓库私有（推荐选择 Public）
+   - 点击 "Publish Repository"
 
-# Editor
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-EOL
+现在你的项目已经成功托管到 GitHub 上了。你可以通过 GitHub Desktop 方便地进行代码的提交、推送和拉取操作。
 
-# 添加文件到 Git
-git add .
+### 第三步：安装配置 Tailwind CSS
 
-# 创建首次提交
-git commit -m "初始化项目"
-```
-
-2. 在 GitHub 上创建仓库：
-- 访问 [GitHub](https://github.com)
-- 点击 "New repository"
-- 填写仓库名称：web-toolbox
-- 添加描述：在线工具箱项目
-- 选择公开仓库
-- 点击 "Create repository"
-
-3. 关联远程仓库：
+1. 安装 Tailwind CSS 集成：
 
 ```bash
-# 添加远程仓库
-git remote add origin git@github.com:你的用户名/web-toolbox.git
-
-# 推送代码到 GitHub
-git push -u origin main
+# 安装 Astro Tailwind 集成
+pnpm astro add tailwind
 ```
 
-### 第三步：安装配置 Tailwind CSS 和 DaisyUI
+2. 配置 Tailwind CSS（`tailwind.config.mjs`）：
 
-1. 安装 Tailwind CSS：
-
-```bash
-# 安装 Tailwind CSS 及其依赖
-pnpm install -D tailwindcss postcss autoprefixer
-
-# 初始化 Tailwind CSS 配置
-pnpm dlx tailwindcss init -p
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  theme: {
+    extend: {},
+  },
+}
 ```
 
-2. 安装 DaisyUI：
+3. 创建全局样式文件（`src/styles/global.css`）：
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+4. 在布局文件中引入样式（`src/layouts/Layout.astro`）：
+
+```astro
+---
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>在线工具箱</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+```
+
+### 第四步：安装配置 DaisyUI
+
+1. 安装 DaisyUI：
 
 ```bash
 # 安装 DaisyUI
 pnpm add -D daisyui
 ```
 
-3. 配置 Tailwind CSS（`tailwind.config.js`）：
+2. 在 Tailwind CSS 配置中添加 DaisyUI 插件（`tailwind.config.mjs`）：
 
 ```javascript
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
-  ],
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {},
   },
@@ -148,19 +133,10 @@ export default {
 }
 ```
 
-2. 创建 CSS 文件（`src/style.css`）：
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-3. 在 `main.ts` 中引入样式：
-
-```typescript
-import './style.css'
-```
+3. 验证安装：
+   - 重启开发服务器
+   - 在任意组件中使用 DaisyUI 的组件类名
+   - 确认样式是否正确应用
 
 4. 创建 `.gitignore` 文件：
 
@@ -191,46 +167,6 @@ dist-ssr
 *.sw?
 ```
 
-### 配置 Git 和 GitHub
-
-1. 安装 GitHub Desktop：
-   - 访问 [GitHub Desktop 官网](https://desktop.github.com/)
-   - 下载并安装 GitHub Desktop
-   - 使用 GitHub 账号登录
-
-2. 初始化本地 Git 仓库：
-
-```bash
-# 初始化仓库
-git init
-
-# 添加文件
-git add .
-
-# 创建首次提交
-git commit -m "初始化项目"
-```
-
-3. 创建 GitHub 仓库：
-   - 打开 GitHub Desktop
-   - 点击 "File" > "New Repository"
-   - 填写仓库信息：
-     - Name: web-toolbox
-     - Description: 在线工具箱项目
-     - Local Path: 选择项目所在目录
-     - Initialize with README: 勾选
-     - Git Ignore: Node
-     - License: MIT
-   - 点击 "Create Repository"
-
-4. 推送到 GitHub：
-   - 在 GitHub Desktop 中点击 "Publish repository"
-   - 确认仓库名称和描述
-   - 选择是否保持仓库私有
-   - 点击 "Publish Repository"
-
-现在你的项目已经成功托管到 GitHub 上了。你可以通过 GitHub Desktop 方便地进行代码的提交、推送和拉取操作。
-
 ### 启动开发服务器
 
 ```bash
@@ -242,250 +178,48 @@ pnpm dev
 
 ## 目录结构
 
-让我们来了解项目的目录结构，以及如何组织我们的代码。
+让我们来了解 Astro 项目的目录结构，以及如何组织我们的代码。
 
 ### 核心目录
 
 ```bash
 web-toolbox/
 ├── src/
-│   ├── components/     # 可复用组件
-│   ├── pages/          # 页面组件
+│   ├── components/     # 可复用组件（.astro, .vue, .jsx 等）
 │   ├── layouts/        # 布局组件
-│   ├── composables/    # 组合式函数
-│   ├── stores/         # 状态管理
-│   ├── utils/          # 工具函数
-│   ├── types/          # TypeScript 类型定义
-│   └── assets/         # 项目资源
+│   ├── pages/          # 页面组件（基于文件的路由）
+│   ├── styles/         # 全局样式
 ├── public/             # 静态资源
-└── server/             # API 路由
+└── astro.config.mjs    # Astro 配置文件
 ```
 
 让我们详细了解每个目录的用途：
 
 1. **components/**
-   - 存放可复用的 Vue 组件
-   - 支持自动导入，无需手动注册
+   - 存放可复用的 Astro 组件
+   - 支持多种框架组件（.astro, .vue, .jsx 等）
    - 建议按功能模块分组
 
 2. **pages/**
    - 基于文件的路由系统
    - 文件路径即 URL 路径
    - 支持动态路由和嵌套路由
+   - 支持 .astro, .md, .mdx 等多种文件格式
 
 3. **layouts/**
    - 页面布局模板
    - 包含公共元素（如导航栏、页脚）
-   - 可以定义多个布局并动态切换
+   - 可以定义多个布局并在页面中使用
 
-4. **composables/**
-   - Vue 3 组合式函数
-   - 提取和复用组件逻辑
-   - 支持自动导入
+4. **styles/**
+   - 全局样式文件
+   - CSS 和 Tailwind 配置
+   - 主题相关样式
 
-5. **stores/**
-   - 使用 Pinia 进行状态管理
-   - 存放全局状态定义
-   - 按功能模块组织
-
-6. **utils/**
-   - 通用工具函数
-   - API 请求封装
-   - 常量定义
-
-7. **types/**
-   - TypeScript 类型定义
-   - 接口类型
-   - 通用类型
-
-8. **assets/**
-   - 项目资源文件
-   - 需要经过构建工具处理的资源
-   - 图片、字体等资源
-
-9. **public/**
+5. **public/**
    - 静态资源文件
    - 直接通过 URL 访问
    - 不需要构建的资源
-
-10. **server/**
-    - API 路由处理
-    - 中间件
-    - 服务端工具函数
-
-## 组件设计规范
-
-### 组件命名
-
-1. **使用 PascalCase 命名法**
-```vue
-<!-- 正确 -->
-<WeatherCard />
-<ExpressTracker />
-
-<!-- 错误 -->
-<weatherCard />
-<express-tracker />
-```
-
-2. **组件文件命名与组件名一致**
-```bash
-components/
-├── WeatherCard.vue
-├── ExpressTracker.vue
-└── common/
-    ├── BaseButton.vue
-    └── BaseInput.vue
-```
-
-### 组件结构
-
-1. **基础组件结构**
-```vue
-<script setup lang="ts">
-// 1. 类型导入
-import type { PropType } from 'vue'
-
-// 2. Props 定义
-const props = defineProps<{
-  title: string
-  loading?: boolean
-}>()
-
-// 3. Emits 定义
-const emit = defineEmits<{
-  (e: 'update', value: string): void
-  (e: 'submit'): void
-}>()
-
-// 4. 组合式函数
-const { data, loading } = useAsyncData()
-
-// 5. 计算属性和方法
-const computedValue = computed(() => {})
-function handleClick() {}
-</script>
-
-<template>
-  <div class="weather-card">
-    <!-- 组件内容 -->
-  </div>
-</template>
-```
-
-2. **Props 验证**
-```vue
-const props = defineProps({
-  status: {
-    type: String as PropType<'success' | 'error' | 'loading'>,
-    required: true,
-    validator: (value: string) => {
-      return ['success', 'error', 'loading'].includes(value)
-    }
-  }
-})
-```
-
-### 组件通信
-
-1. **Props 向下传递**
-```vue
-<template>
-  <WeatherCard
-    :city="currentCity"
-    :loading="isLoading"
-    @update="handleUpdate"
-  />
-</template>
-```
-
-2. **Events 向上传递**
-```vue
-<script setup lang="ts">
-const emit = defineEmits<{
-  (e: 'update', value: string): void
-}>()
-
-function handleInput(event: Event) {
-  const value = (event.target as HTMLInputElement).value
-  emit('update', value)
-}
-</script>
-```
-
-3. **使用 Provide/Inject**
-```vue
-<!-- 父组件 -->
-<script setup lang="ts">
-import { provide } from 'vue'
-
-provide('theme', 'dark')
-</script>
-
-<!-- 子组件 -->
-<script setup lang="ts">
-import { inject } from 'vue'
-
-const theme = inject('theme', 'light') // 提供默认值
-</script>
-```
-
-## 状态管理
-
-我们使用 Pinia 作为状态管理方案。以下是一个典型的 store 示例：
-
-```typescript
-// stores/weather.ts
-import { defineStore } from 'pinia'
-
-export const useWeatherStore = defineStore('weather', {
-  state: () => ({
-    currentCity: '',
-    weatherData: null as WeatherData | null,
-    loading: false,
-    error: null as string | null
-  }),
-
-  getters: {
-    isLoading: (state) => state.loading,
-    hasError: (state) => state.error !== null
-  },
-
-  actions: {
-    async fetchWeather(city: string) {
-      this.loading = true
-      this.error = null
-      try {
-        this.weatherData = await fetchWeatherData(city)
-        this.currentCity = city
-      } catch (err) {
-        this.error = (err as Error).message
-      } finally {
-        this.loading = false
-      }
-    }
-  }
-})
-```
-
-## 路由设计
-
-Vite + Vue Router 使用基于文件的路由系统。以下是我们的路由结构：
-
-```bash
-pages/
-├── index.vue           # 首页 (/)
-├── weather/
-│   ├── index.vue       # 天气查询页 (/weather)
-│   └── [city].vue      # 城市天气详情页 (/weather/beijing)
-├── express/
-│   ├── index.vue       # 快递查询页 (/express)
-│   └── [id].vue        # 快递详情页 (/express/123456)
-└── tools/
-    ├── index.vue       # 工具列表页 (/tools)
-    ├── qrcode.vue      # 二维码工具页 (/tools/qrcode)
-    └── currency.vue    # 汇率转换页 (/tools/currency)
-```
 
 ## 下一步
 

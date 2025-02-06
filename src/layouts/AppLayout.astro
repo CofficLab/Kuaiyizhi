@@ -7,11 +7,11 @@ import FooterVue from '../components/Footer.vue';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body>
-    <main>
+  <body class="min-h-screen flex flex-col">
+    <main class="flex-grow">
       <slot />
     </main>
 
-    <FooterVue lang="en" />
+    <FooterVue lang="en" class="mt-auto" />
   </body>
 </html>

@@ -1,0 +1,188 @@
+---
+title: Caddy 文件服务器配置指南
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Caddy 文件服务器简介
+
+Caddy 内置了强大的文件服务器功能，可以轻松地为静态文件提供服务。本文将详细介绍如何配置和使用 Caddy 的文件服务器功能，从基础配置到高级特性，帮助你充分利用这一功能。
+
+## 基础配置
+
+### 1. 简单的文件服务器
+
+最基本的文件服务器配置非常简单，只需要几行代码：
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    file_server
+}
+```
+
+这个配置中：
+- `root *` 设置文件根目录
+- `file_server` 启用文件服务器功能
+
+### 2. 启用目录浏览
+
+如果你希望用户能够浏览目录内容，可以启用目录浏览功能：
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    file_server browse
+}
+```
+
+## 高级配置
+
+### 1. 访问控制
+
+#### 基于 IP 的访问控制
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    @blocked {
+        remote_ip 192.168.1.0/24
+    }
+    file_server
+    handle @blocked {
+        abort
+    }
+}
+```
+
+#### 基于密码的访问控制
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    basicauth {
+        user JDJhJDE0JE91S1FrN0Z0VEsyWmhrQVpON1VzdE9NZkJZNHB6RTFpM3RLYk1PQUZkc0hzY3c4WFhIVHJL
+    }
+    file_server
+}
+```
+
+### 2. 隐藏文件过滤
+
+你可以配置哪些文件或目录应该被隐藏：
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    file_server {
+        hide .git .env *.log
+    }
+}
+```
+
+### 3. 自定义索引文件
+
+设置自定义的索引文件：
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    file_server
+    try_files {path} {path}/index.html index.htm
+}
+```
+
+## 性能优化
+
+### 1. 启用压缩
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    file_server
+    encode gzip zstd
+}
+```
+
+### 2. 配置缓存控制
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    file_server
+    header Cache-Control "max-age=3600"
+}
+```
+
+## 实用示例
+
+### 1. 多目录配置
+
+```caddyfile
+example.com {
+    handle /downloads/* {
+        root * /path/to/downloads
+        file_server
+    }
+
+    handle /docs/* {
+        root * /path/to/documents
+        file_server
+    }
+}
+```
+
+### 2. 文件类型限制
+
+```caddyfile
+example.com {
+    root * /path/to/files
+    @allowed_files {
+        path *.pdf *.doc *.docx
+    }
+    file_server {
+        hide *
+    }
+    handle @allowed_files {
+        file_server
+    }
+}
+```
+
+## 最佳实践
+
+1. **安全性考虑**
+   - 始终使用 HTTPS（Caddy 默认启用）
+   - 限制对敏感文件的访问
+   - 定期更新 Caddy 到最新版本
+
+2. **性能优化**
+   - 启用适当的压缩
+   - 配置合理的缓存策略
+   - 使用 CDN 加速静态文件
+
+3. **监控和日志**
+   - 配置访问日志
+   - 监控服务器性能
+   - 定期检查错误日志
+
+## 故障排除
+
+### 常见问题
+
+1. **403 Forbidden 错误**
+   - 检查文件和目录权限
+   - 验证访问控制配置
+
+2. **404 Not Found 错误**
+   - 确认文件路径正确
+   - 检查 root 指令配置
+
+3. **性能问题**
+   - 检查文件大小和数量
+   - 优化缓存配置
+   - 考虑使用 CDN
+
+## 结语
+
+Caddy 的文件服务器功能强大而灵活，通过本文的配置指南，你应该能够根据需求搭建一个安全、高效的文件服务器。记住要根据实际情况调整配置，确保安全性和性能的平衡。如果遇到问题，可以查看 Caddy 的官方文档或社区获取更多帮助。
