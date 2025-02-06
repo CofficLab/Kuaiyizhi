@@ -9,6 +9,9 @@ import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
 import starlightSidebarTopics from 'starlight-sidebar-topics';
+import starlightUtils from "@lorenzo_lewis/starlight-utils";
+import smartSidebarPlugin from './plugins/smart-sidebar/index.ts';
+import starlightBlog from 'starlight-blog';
 
 // https://astro.build/config
 export default defineConfig({
@@ -32,9 +35,19 @@ export default defineConfig({
         smartSearchPlugin(),
         smartHeaderPlugin(),
         smartPagePlugin(),
-        starlightSidebarTopics(sidebar),
+        starlightBlog(),
+        starlightUtils({
+          multiSidebar: {
+            switcherStyle: "dropdown",
+          },
+        }),
+        smartSidebarPlugin(),
       ],
       locales: {
+        'en': {
+          label: 'English',
+          lang: 'en',
+        },
         'zh-cn': {
           label: '简体中文',
           lang: 'zh-CN',

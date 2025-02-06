@@ -1,0 +1,22 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import BlogSidebar from 'starlight-blog/overrides/Sidebar.astro';
+import MultiSidebar from '@lorenzo_lewis/starlight-utils/components/Sidebar.astro';
+const { slug } = Astro.props;
+const isBlog = slug.includes('blog');
+---
+
+{
+  isBlog && (
+    <BlogSidebar {...Astro.props}>
+      <slot />
+    </BlogSidebar>
+  )
+}
+{
+  !isBlog && (
+    <MultiSidebar {...Astro.props}>
+      <slot />
+    </MultiSidebar>
+  )
+}
