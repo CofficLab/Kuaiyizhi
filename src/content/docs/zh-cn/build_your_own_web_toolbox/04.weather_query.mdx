@@ -276,6 +276,151 @@ const exampleWeather = {
 3. 使用 AppLayout 保持页面布局一致
 4. 添加响应式样式确保良好的展示效果
 
+## API 路由实现
+
+在 `src/pages/api` 目录下创建天气相关的 API 路由：
+
+<Tabs>
+<TabItem label="天气查询接口">
+
+```ts
+// pages/api/weather/index.ts
+import type { APIRoute } from 'astro'
+
+interface WeatherResponse {
+  city: string
+  date: string
+  temperature: string
+  weather: string
+  wind: string
+  humidity: string
+}
+
+export const GET: APIRoute = async ({ request }) => {
+  try {
+    const url = new URL(request.url)
+    const city = url.searchParams.get('city')
+
+    if (!city) {
+      return new Response(
+        JSON.stringify({
+          error: '请提供城市名称'
+        }),
+        { status: 400 }
+      )
+    }
+
+    const JUHE_WEATHER_KEY = import.meta.env.JUHE_WEATHER_KEY
+    const apiUrl = `http://apis.juhe.cn/simpleWeather/query?city=${encodeURIComponent(city)}&key=${JUHE_WEATHER_KEY}`
+
+    const response = await fetch(apiUrl)
+    const data = await response.json()
+
+    if (data.error_code !== 0) {
+      return new Response(
+        JSON.stringify({
+          error: data.reason || '获取天气信息失败'
+        }),
+        { status: 500 }
+      )
+    }
+
+    const weatherInfo = data.result.realtime
+    const weatherData: WeatherResponse = {
+      city,
+      date: new Date().toLocaleDateString('zh-CN'),
+      temperature: weatherInfo.temperature,
+      weather: weatherInfo.info,
+      wind: `${weatherInfo.direct} ${weatherInfo.power}`,
+      humidity: weatherInfo.humidity
+    }
+
+    return new Response(
+      JSON.stringify(weatherData),
+      { status: 200 }
+    )
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: '服务器内部错误'
+      }),
+      { status: 500 }
+    )
+  }
+}
+```
+
+</TabItem>
+<TabItem label="城市搜索接口">
+
+```ts
+// pages/api/weather/cities.ts
+import type { APIRoute } from 'astro'
+
+interface CitySearchResponse {
+  cities: string[]
+}
+
+// 模拟城市数据库
+const cityDatabase = [
+  '北京', '上海', '广州', '深圳', '杭州', '南京', '成都', '武汉',
+  '西安', '重庆', '天津', '苏州', '长沙', '郑州', '青岛', '大连',
+  '宁波', '厦门', '福州', '济南', '合肥', '昆明', '哈尔滨', '沈阳'
+]
+
+export const GET: APIRoute = async ({ request }) => {
+  try {
+    const url = new URL(request.url)
+    const query = url.searchParams.get('query')
+
+    if (!query) {
+      return new Response(
+        JSON.stringify({
+          cities: []
+        }),
+        { status: 200 }
+      )
+    }
+
+    // 简单的模糊搜索实现
+    const matchedCities = cityDatabase.filter(city =>
+      city.toLowerCase().includes(query.toLowerCase())
+    )
+
+    const response: CitySearchResponse = {
+      cities: matchedCities
+    }
+
+    return new Response(
+      JSON.stringify(response),
+      { status: 200 }
+    )
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: '服务器内部错误'
+      }),
+      { status: 500 }
+    )
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+这两个 API 端点的功能说明：
+
+1. 天气查询接口 (`/api/weather`)：
+   - 接收城市名称作为查询参数
+   - 调用聚合数据天气 API 获取实时天气信息
+   - 返回格式化后的天气数据
+
+2. 城市搜索接口 (`/api/weather/cities`)：
+   - 接收搜索关键词作为查询参数
+   - 在预设的城市数据中进行模糊搜索
+   - 返回匹配的城市列表
+
 ## 下一步
 
 接下来，我们将：

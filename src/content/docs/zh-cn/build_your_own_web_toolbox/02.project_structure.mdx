@@ -138,7 +138,92 @@ export default {
    - 在任意组件中使用 DaisyUI 的组件类名
    - 确认样式是否正确应用
 
-### 第五步：安装配置 Vue
+### 第五步：启用 SSR 模式
+
+由于我们的在线工具箱需要通过后端 API 获取远程数据（如天气、汇率等），为了确保：
+
+1. 更好的 SEO 优化
+2. 更快的首屏加载
+3. 避免客户端 API 密钥泄露
+4. 统一的数据获取方式
+
+我们需要启用 Astro 的 SSR（服务端渲染）模式。
+
+1. 修改 `astro.config.mjs` 配置：
+
+```javascript
+import { defineConfig } from 'astro/config';
+import vue from '@astrojs/vue';
+import tailwind from '@astrojs/tailwind';
+
+export default defineConfig({
+  output: 'server',  // 启用 SSR 模式
+  adapter: 'node',   // 使用 Node.js 适配器
+  integrations: [
+    vue(),
+    tailwind(),
+  ],
+});
+```
+
+2. 创建环境变量文件（`.env`）：
+
+```plaintext
+# API 配置
+JUHE_API_KEY=你的聚合数据API密钥
+API_BASE_URL=https://apis.juhe.cn
+
+# 服务器配置
+HOST=0.0.0.0
+PORT=3000
+```
+
+3. 在 `.gitignore` 中添加环境变量文件：
+
+```plaintext
+# 环境变量
+.env
+.env.*
+!.env.example
+```
+
+4. 创建环境变量类型声明（`src/env.d.ts`）：
+
+```typescript
+/// <reference types="astro/client" />
+
+interface ImportMetaEnv {
+  readonly JUHE_API_KEY: string;
+  readonly API_BASE_URL: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+```
+
+5. 使用环境变量示例：
+
+```typescript
+// src/pages/api/weather.ts
+export async function GET({ params, request }) {
+  const apiKey = import.meta.env.JUHE_API_KEY;
+  const baseUrl = import.meta.env.API_BASE_URL;
+  
+  // 使用环境变量中的配置调用 API
+  const response = await fetch(`${baseUrl}/weather?key=${apiKey}`);
+  const data = await response.json();
+  
+  return new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}
+```
+
+### 第六步：安装配置 Vue
 
 1. 安装 Vue 集成：
 
