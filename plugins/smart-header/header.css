@@ -9,3 +9,7 @@ header img {
 header .site-title span {
     @apply hover:scale-110 transition-all duration-300;
 }
+
+header .site-title span {
+    @apply text-gray-300 dark:text-gray-600;
+}

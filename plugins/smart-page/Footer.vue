@@ -98,7 +98,7 @@ ul {
 }
 
 a {
-    @apply text-white;
+    @apply text-gray-500 dark:text-gray-400;
 }
 
 .smart-link {
