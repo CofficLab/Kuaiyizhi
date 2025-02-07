@@ -3,19 +3,17 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vue from '@astrojs/vue';
 import tailwind from '@astrojs/tailwind';
-import { sidebar } from './config/astro.sidebar.ts';
 import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
-import starlightSidebarTopics from 'starlight-sidebar-topics';
-import starlightUtils from "@lorenzo_lewis/starlight-utils";
+import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import smartSidebarPlugin from './plugins/smart-sidebar/index.ts';
 import starlightBlog from 'starlight-blog';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://cofficlab.github.io',
+  site: 'https://www.kuaiyizhi.cn',
   prefetch: {
     prefetchAll: true,
   },
@@ -38,13 +36,13 @@ export default defineConfig({
         starlightBlog(),
         starlightUtils({
           multiSidebar: {
-            switcherStyle: "dropdown",
+            switcherStyle: 'dropdown',
           },
         }),
         smartSidebarPlugin(),
       ],
       locales: {
-        'en': {
+        en: {
           label: 'English',
           lang: 'en',
         },
