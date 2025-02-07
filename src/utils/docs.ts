@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 
 async function getTopLevelPosts() {
     // 获取所有文章
@@ -13,4 +14,12 @@ async function getTopLevelPosts() {
     return topLevelPosts;
 }
 
-export { getTopLevelPosts };
+const getTags = (posts: CollectionEntry<'docs'>[]): string[] => {
+    const tags = new Set<string>();
+    posts.forEach(post => {
+        post.data.tags?.forEach(tag => tags.add(tag));
+    });
+    return Array.from(tags);
+}
+
+export { getTopLevelPosts, getTags };
