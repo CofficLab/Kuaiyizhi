@@ -12,7 +12,8 @@
 			"extensions": [
 				"astro-build.astro-vscode",
 				"Vue.volar",
-				"unifiedjs.vscode-mdx"
+				"unifiedjs.vscode-mdx",
+				"bradlc.vscode-tailwindcss"
 			]
 		}
 	}

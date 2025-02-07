@@ -11,8 +11,8 @@ header .site-title span {
 }
 
 header a,
-header .site-title,
+header .site-title span,
 header svg,
 header select {
-  @apply text-gray-300 dark:text-gray-600;
+  @apply text-gray-300 dark:text-gray-300;
 }

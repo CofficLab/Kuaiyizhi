@@ -29,9 +29,7 @@ export default defineConfig({
       title: '快易知',
       defaultLocale: 'zh-cn',
       plugins: [
-        smartStylePlugin(),
         smartSearchPlugin(),
-        smartHeaderPlugin(),
         smartPagePlugin(),
         starlightBlog(),
         starlightUtils({
@@ -39,7 +37,9 @@ export default defineConfig({
             switcherStyle: 'dropdown',
           },
         }),
+        smartHeaderPlugin(),
         smartSidebarPlugin(),
+        smartStylePlugin(),
       ],
       locales: {
         en: {

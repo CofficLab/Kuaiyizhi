@@ -11,7 +11,7 @@ export default function smartSidebarPlugin(): StarlightPlugin {
                     components: {
                         ...config.components,
                         Sidebar: './plugins/smart-sidebar/Sidebar.astro'
-                    }
+                    },
                 });
             }
         }

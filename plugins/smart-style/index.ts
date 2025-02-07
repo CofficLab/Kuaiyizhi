@@ -1,11 +1,11 @@
 import type { StarlightPlugin } from '@astrojs/starlight/types'
 
-export default function smartHeaderPlugin(): StarlightPlugin {
+export default function smartStylePlugin(): StarlightPlugin {
     return {
-        name: 'smart-header',
+        name: 'smart-style',
         hooks: {
             setup({ logger, updateConfig, config }) {
-                logger.info('Smart Header Plugin initialized!');
+                logger.info('Smart Style Plugin initialized!');
 
                 updateConfig({
                     customCss: ['./plugins/smart-style/style.css']

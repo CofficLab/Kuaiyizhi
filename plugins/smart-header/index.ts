@@ -12,7 +12,6 @@ export default function smartHeaderPlugin(): StarlightPlugin {
                         ...config.components,
                         Header: './plugins/smart-header/SmartHeader.astro'
                     },
-                    customCss: ['./plugins/smart-header/header.css']
                 });
             }
         }
