@@ -9,7 +9,9 @@ const isHome = Astro.props.id === '';
 {
     !isHome && (
         <div class="bg-red-400/0 flex flex-row justify-end w-full">
-            <Default {...props} />
+            <div class="w-30 h-2/3 flex justify-center items-center my-auto">
+                <Default {...props} />
+            </div>
         </div>
     )
 }

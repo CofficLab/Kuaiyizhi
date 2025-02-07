@@ -5,14 +5,14 @@ description: 实现天气查询页面、天气卡片组件和城市搜索功能
 
 import { Tabs, TabItem } from '@astrojs/starlight/components'
 
-## 天气查询功能概述
-
 在这一节中，我们将实现一个完整的天气查询功能。主要包括以下内容：
 
 1. 设计和实现天气查询页面
 2. 创建天气卡片组件
 3. 集成聚合数据天气 API
 4. 实现城市搜索功能
+
+![weather_query](./images/3.png)
 
 ### 准备工作
 
@@ -87,11 +87,10 @@ const weatherIcon = computed(() => {
 </TabItem>
 <TabItem label="天气查询页面">
 
-```vue
-<!-- components/WeatherPage.vue -->
+```vue 
 <script setup lang="ts">
 import { ref } from 'vue'
-import WeatherCard from '../../components/WeatherCard.vue'
+import WeatherCard from './WeatherCard.vue'
 
 // 热门城市
 const popularCities = [
@@ -106,7 +105,7 @@ const popularCities = [
 ]
 
 // 响应式状态
-const searchQuery = ref('')
+const searchQuery = ref('北京')
 const searchResults = ref([])
 const selectedCity = ref('')
 const loading = ref(false)
@@ -116,20 +115,20 @@ const weatherData = ref(null)
 // 搜索城市
 async function searchCity() {
   if (!searchQuery.value) return
-  
+
   try {
     loading.value = true
     error.value = ''
-    
+
     // 调用城市搜索 API
     const response = await fetch(`/api/weather/cities?query=${encodeURIComponent(searchQuery.value)}`)
     const data = await response.json()
-    
+
     if (data.error) {
       error.value = data.error
       return
     }
-    
+
     searchResults.value = data.cities
   } catch (e) {
     error.value = '搜索失败，请稍后重试'
@@ -140,22 +139,23 @@ async function searchCity() {
 
 // 获取天气数据
 async function getWeather(city: string) {
+  console.log('getWeather', city)
   try {
     loading.value = true
     error.value = ''
     selectedCity.value = city
     searchQuery.value = ''
     searchResults.value = []
-    
+
     // 调用天气查询 API
-    const response = await fetch(`/api/weather?city=${encodeURIComponent(city)}`)
+    const response = await fetch(`/api/weather?city=${city}`)
     const data = await response.json()
-    
+
     if (data.error) {
       error.value = data.error
       return
     }
-    
+
     weatherData.value = data
   } catch (e) {
     error.value = '获取天气信息失败，请稍后重试'
@@ -168,59 +168,45 @@ async function getWeather(city: string) {
 <template>
   <div class="max-w-4xl mx-auto">
     <h1 class="text-3xl font-bold mb-8">天气查询</h1>
-    
+
     <!-- 搜索框 -->
     <div class="form-control w-full max-w-lg mb-8">
-      <div class="input-group">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="输入城市名称..."
-          class="input input-bordered w-full"
-          @input="searchCity"
-        />
-        <button
-          class="btn btn-primary"
-          :disabled="loading"
-          @click="searchCity"
-        >
+      <div class="input-group flex flex-row gap-2">
+        <input v-model="searchQuery" type="text" placeholder="输入城市名称..." class="input input-bordered w-full"
+          @input="searchCity" />
+        <button class="btn btn-primary" :disabled="loading" @click="searchCity">
           搜索
         </button>
       </div>
-      
+
       <!-- 搜索结果 -->
       <ul v-if="searchResults.length > 0" class="menu bg-base-200 w-full mt-2 rounded-box">
         <li v-for="city in searchResults" :key="city">
           <a @click="getWeather(city)">{{ city }}</a>
         </li>
       </ul>
-      
+
       <!-- 错误提示 -->
       <div v-if="error" class="alert alert-error mt-4">
         {{ error }}
       </div>
     </div>
-    
+
     <!-- 热门城市 -->
     <div class="mb-8">
       <h2 class="text-xl font-bold mb-4">热门城市</h2>
       <div class="flex flex-wrap gap-2">
-        <button
-          v-for="city in popularCities"
-          :key="city"
-          class="btn btn-outline"
-          @click="getWeather(city)"
-        >
+        <button v-for="city in popularCities" :key="city" class="btn btn-outline" @click="getWeather(city)">
           {{ city }}
         </button>
       </div>
     </div>
-    
+
     <!-- 天气信息 -->
     <div v-if="weatherData" class="flex justify-center">
       <WeatherCard :weather="weatherData" />
     </div>
-    
+
     <!-- 加载状态 -->
     <div v-if="loading" class="flex justify-center items-center h-40">
       <span class="loading loading-spinner loading-lg"></span>
@@ -420,12 +406,3 @@ export const GET: APIRoute = async ({ request }) => {
    - 接收搜索关键词作为查询参数
    - 在预设的城市数据中进行模糊搜索
    - 返回匹配的城市列表
-
-## 下一步
-
-接下来，我们将：
-
-1. 实现快递查询功能
-2. 设计快递查询页面
-3. 集成快递查询 API
-4. 添加查询历史记录功能
