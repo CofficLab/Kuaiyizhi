@@ -1,12 +1,15 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
 import HomePage from '../../components/HomePage.vue';
+import { getTopLevelPosts } from '../../utils/docs';
 
-const props = Astro.props;
-
-console.log(props);
+const posts = await getTopLevelPosts();
+const topLevelPosts = posts.map((post) => ({
+    link: post.id,
+    title: post.data.title,
+}));
 ---
 
 <AppLayout title="CofficLab Studio" description="Coffic">
-    <HomePage client:load />
+    <HomePage client:load books={topLevelPosts} />
 </AppLayout>

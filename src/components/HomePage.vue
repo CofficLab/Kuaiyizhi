@@ -9,11 +9,10 @@
 <script setup lang="ts">
 import BookCard from './BookCard.vue';
 
-const books = [
-    { link: '/zh-cn/laravel_learn', title: 'Laravel' },
-    { link: '/zh-cn/kong', title: 'Kong' },
-    { link: '/zh-cn/vue', title: 'Vue' },
-    { link: '/zh-cn/caddy', title: 'Caddy' },
-    { link: '/zh-cn/build_your_own_web_toolbox', title: 'Build Your Own Web Toolbox' },
-];
+defineProps<{
+    books: Array<{
+        link: string;
+        title: string;
+    }>;
+}>();
 </script>
