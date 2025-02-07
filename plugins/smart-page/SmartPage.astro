@@ -1,10 +1,9 @@
 ---
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/PageFrame.astro';
-import FooterVue from './Footer.vue';
+import FooterVue from '../../src/components/Footer.vue';
 
 const props = Astro.props as Props;
-const lang = Astro.url.pathname.split('/')[1];
 ---
 
 <div class="flex flex-col h-full">
@@ -14,5 +13,5 @@ const lang = Astro.url.pathname.split('/')[1];
         <slot />
     </Default>
 
-    {props.hasSidebar === false && <FooterVue lang={lang} />}
+    {props.hasSidebar === false && <FooterVue lang={props.locale} />}
 </div>

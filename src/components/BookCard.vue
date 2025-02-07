@@ -9,7 +9,7 @@
                             <img src="/images/book2.png" alt="" class="h-3/5">
                             <div class="">
                                 <h2 class="text-lg text-center">{{ book.title }}</h2>
-                                <p class="text-center text-sm">共 {{ childrenCount }} 篇章节</p>
+                                <!-- <p class="text-center text-sm">共 {{ childrenCount }} 篇章节</p> -->
                             </div>
                         </div>
                     </div>
