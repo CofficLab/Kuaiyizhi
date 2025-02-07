@@ -144,13 +144,39 @@ const selectedTag = Astro.url.searchParams.get('tag') || '';
 </ul>
 ```
 
-## 6. 完成项目
+## 6. 按照标签展示文章列表
 
-现在，你已经完成了一个简单的博客系统，支持按照标签分类的功能。你可以根据需要进一步扩展功能，例如：
+为了实现按照标签展示文章列表的功能，我们可以创建一个新的页面来动态过滤和展示基于 URL 中标签的文章。
 
-- 添加文章的分页功能
-- 实现搜索功能
-- 美化页面样式
+首先，在 `src/pages/blogs` 目录下创建一个新的文件 `tags.astro`，用于根据标签展示文章：
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+const { params } = Astro.url;
+const tag = params.tag;
+const posts = await getCollection('docs');
+const filteredPosts = posts.filter(post => post.data.tags.includes(tag));
+---
+
+<h1>标签: {tag}</h1>
+
+<h2>文章列表</h2>
+<ul>
+  {filteredPosts.map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>标签: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+通过这种方式，用户可以访问类似 `/blogs/tags/golang` 的 URL 来查看所有带有 "golang" 标签的文章。
 
 ## 结论
 

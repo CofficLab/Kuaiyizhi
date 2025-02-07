@@ -2,19 +2,21 @@
 interface Props {
     title: string;
     description: string;
+    template: string;
+    hasSidebar: boolean;
 }
 
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-const { title, description, frontmatter } = Astro.props;
+const { title, description, frontmatter, template, hasSidebar } = Astro.props;
 ---
 
 <StarlightPage
     frontmatter={{
         title: title ?? frontmatter.title,
         description: description ?? frontmatter.description,
-        template: 'splash',
+        template: template ?? 'splash',
     }}
-    hasSidebar={false}
+    hasSidebar={hasSidebar ?? false}
     headings={[]}>
     <slot />
 </StarlightPage>

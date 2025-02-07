@@ -14,7 +14,7 @@ async function getTopLevelPosts() {
     return topLevelPosts;
 }
 
-const getTags = (posts: CollectionEntry<'docs'>[]): string[] => {
+const getBlogTags = (posts: CollectionEntry<'blogs'>[]): string[] => {
     const tags = new Set<string>();
     posts.forEach(post => {
         post.data.tags?.forEach(tag => tags.add(tag));
@@ -22,4 +22,4 @@ const getTags = (posts: CollectionEntry<'docs'>[]): string[] => {
     return Array.from(tags);
 }
 
-export { getTopLevelPosts, getTags };
+export { getTopLevelPosts, getBlogTags as getTags };

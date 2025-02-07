@@ -1,0 +1,44 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/SiteTitle.astro';
+
+const props = Astro.props as Props;
+---
+
+<div
+    class="bg-gradient-to-r
+    from-emerald-900/80 to-indigo-900/70
+    dark:from-emerald-900/95 dark:to-indigo-900/95
+    flex flex-row justify-between
+    rounded-lg px-2 gap-8">
+    <Default {...props} />
+    <div class="flex flex-row gap-4 items-center">
+        <a
+            class="nav-link text-sm no-underline
+            px-2 py-1 rounded-md
+            hover:text-primary
+            hover:scale-105
+            hover:bg-cyan-500/20
+            transition-all duration-300"
+            href="/">首页</a
+        >
+        <a
+            class="nav-link text-sm no-underline
+            px-2 py-1 rounded-md
+            hover:text-primary
+            hover:scale-105
+            hover:bg-cyan-500/20
+            transition-all duration-300"
+            href="/courses">课程</a
+        >
+        <a
+            class="nav-link text-sm no-underline
+            px-2 py-1 rounded-md
+            hover:text-primary
+            hover:scale-105
+            hover:bg-cyan-500/20
+            transition-all duration-300"
+            href="/blogs">博客</a
+        >
+    </div>
+</div>

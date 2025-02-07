@@ -1,39 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import { getTags } from '../utils/docs';
-import AppLayout from '../layouts/AppLayout.astro';
-
+import BlogList from '../components/BlogList.vue';
+import BlogLayout from '../layouts/BlogLayout.astro';
 const posts = await getCollection('blogs');
-console.log(posts);
-const tags = getTags(posts);
 ---
 
-<AppLayout title="我的博客" description="我的博客">
-    <h1>我的博客</h1>
-
-    <h2>标签</h2>
-    <ul>
-        {
-            tags.map((tag) => (
-                <li>
-                    <a href={`#${tag}`}>{tag}</a>
-                </li>
-            ))
-        }
-    </ul>
-
-    <h2>文章列表</h2>
-    <ul>
-        {
-            posts.map((post) => (
-                <li>
-                    <a href={`/docs/${post.slug}`}>
-                        <h3>{post.data.title}</h3>
-                        <p>{post.data.date}</p>
-                        <p>标签: {post.data.tags?.join(', ')}</p>
-                    </a>
-                </li>
-            ))
-        }
-    </ul>
-</AppLayout>
+<BlogLayout title="所有文章" description="我的博客">
+    <BlogList posts={posts} />
+</BlogLayout>

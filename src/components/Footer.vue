@@ -1,16 +1,5 @@
 <template>
     <div>
-        <div class="w-full z-50 mx-auto">
-            <div class="mt-0 hero smart-card">
-                <div class="text-center hero-content">
-                    <div class="max-w-md flex flex-row justify-center items-center mx-auto">
-                        <h1 class="text-2xl md:text-3xl font-bold">
-                            {{ t('slogan') }}
-                        </h1>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner mt-12 bg-gray-900/10 backdrop-blur-3xl">
             <a :href="`/${lang}/`" class="flex items-center self-center w-auto text-lg font-bold smart-link">
@@ -88,6 +77,19 @@
                 </div>
             </div>
 
+
+            <div class="w-full z-50 mx-auto">
+                <div class="mt-0 hero smart-card">
+                    <div class="text-center hero-content">
+                        <div class="max-w-md flex flex-row justify-center items-center mx-auto">
+                            <h1 class="text-2xl md:text-3xl font-bold">
+                                {{ t('slogan') }}
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="self-center my-4 text-sm sm:text-base">
                 <a href="http://beian.miit.gov.cn" class="smart-link" id="beian-www.kuaiyc.com" target="_blank">
                     {{ t('icp') }}
@@ -100,6 +102,8 @@
                 </a>
             </div>
         </div>
+
+
     </div>
 </template>
 

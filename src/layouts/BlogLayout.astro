@@ -1,0 +1,28 @@
+---
+import AppLayout from './AppLayout.astro';
+import TagList from '../components/TagList.vue';
+import { getCollection } from 'astro:content';
+import { getTags } from '../utils/docs';
+interface Props {
+    title: string;
+    description: string;
+}
+const { title, description } = Astro.props as Props;
+const posts = await getCollection('blogs');
+const tags = getTags(posts);
+---
+
+<AppLayout
+    title={title}
+    description={description}
+    template="doc"
+    hasSidebar={true}>
+    <div class="flex flex-row gap-4">
+        <!-- <div class="fixed top-48 left-0 w-64 h-full ml-8">
+            <TagList tags={tags} />
+        </div> -->
+        <div class="flex-1 ml-0">
+            <slot />
+        </div>
+    </div>
+</AppLayout>

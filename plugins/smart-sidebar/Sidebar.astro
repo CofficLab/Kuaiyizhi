@@ -1,19 +1,18 @@
 ---
 import type { Props } from '@astrojs/starlight/props';
-import BlogSidebar from 'starlight-blog/overrides/Sidebar.astro';
+// import BlogSidebar from 'starlight-blog/overrides/Sidebar.astro';
 import MultiSidebar from '@lorenzo_lewis/starlight-utils/components/Sidebar.astro';
 import DefaultSidebar from '@astrojs/starlight/components/Sidebar.astro';
+import TagList from '../../src/components/TagList.vue';
+import { getTags } from '../../src/utils/docs';
+import { getCollection } from 'astro:content';
 const { slug } = Astro.props;
 const isBlog = slug.includes('blog');
+const posts = await getCollection('blogs');
+const tags = getTags(posts);
 ---
 
-{
-  isBlog && (
-    <BlogSidebar {...Astro.props}>
-      <slot />
-    </BlogSidebar>
-  )
-}
+{isBlog && <TagList tags={tags} />}
 
 {
   !isBlog && (

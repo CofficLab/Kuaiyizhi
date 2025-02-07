@@ -9,7 +9,7 @@ import smartPagePlugin from './plugins/smart-page/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import smartSidebarPlugin from './plugins/smart-sidebar/index.ts';
-import starlightBlog from 'starlight-blog';
+import smartTitlePlugin from './plugins/smart-title/index.ts';  
 
 // https://astro.build/config
 export default defineConfig({
@@ -31,7 +31,6 @@ export default defineConfig({
       plugins: [
         smartSearchPlugin(),
         smartPagePlugin(),
-        starlightBlog(),
         starlightUtils({
           multiSidebar: {
             switcherStyle: 'dropdown',
@@ -40,6 +39,7 @@ export default defineConfig({
         smartHeaderPlugin(),
         smartSidebarPlugin(),
         smartStylePlugin(),
+        smartTitlePlugin(),
       ],
       locales: {
         en: {
