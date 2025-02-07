@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a :href="link" class="justify-center flex no-underline" wire:navigate>
+        <a :href="link" class="justify-center flex no-underline text-gray-100">
             <div class="w-56 h-80">
                 <div class="bg-gradient-to-br w-full h-full from-green-900/90 to-cyan-900/40 rounded-3xl shadow-lg">
                     <div class="bg-base-100/40 w-full h-full rounded-3xl border border-white/50

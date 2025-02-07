@@ -8,5 +8,7 @@ const currentLocale = Astro.currentLocale;
 // 使用 preferredLocale 如果存在，否则使用 currentLocale
 const locale = preferredLocale || currentLocale;
 
-return Astro.redirect(locale == undefined ? '/zh-cn' : `/${locale}`);
+return Astro.redirect(
+    locale == undefined ? '/zh-cn/privacy' : `/${locale}/privacy`,
+);
 ---

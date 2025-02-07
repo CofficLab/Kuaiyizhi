@@ -175,7 +175,7 @@ const translations = {
 };
 
 const t = (key: keyof typeof translations) => {
-    const language = (props.lang || 'en').toLowerCase();
+    const language = props.lang.toLowerCase();
     return translations[key][language.startsWith('zh') ? 'zh' : 'en'];
 };
 
