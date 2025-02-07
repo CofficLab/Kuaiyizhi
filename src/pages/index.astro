@@ -1,8 +1,10 @@
 ---
-import AppLayout from '../layouts/AppLayout.astro';
-import HomePage from '../components/HomePage.vue';
----
+// 获取浏览器首选语言
+const preferredLocale = Astro.preferredLocale;
+const currentLocale = Astro.currentLocale;
 
-<AppLayout title="CofficLab Studio" description="Coffic">
-    <HomePage client:load />
-</AppLayout>
+// 使用 preferredLocale 如果存在，否则使用 currentLocale
+const locale = preferredLocale || currentLocale;
+
+return Astro.rewrite(locale == undefined ? '/zh-cn' : `/${locale}`);
+---
