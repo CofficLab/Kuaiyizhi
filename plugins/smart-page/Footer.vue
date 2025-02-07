@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        <div class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner mt-12">
+        <div class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner mt-12 bg-gray-900/10 backdrop-blur-3xl">
             <a href="/" class="flex items-center self-center w-auto text-lg font-bold smart-link">
                 <div class="flex flex-row items-center w-full">
                     <img src="/logo.png" alt="" class="h-6 sm:h-8 mt-1 fill-current">
@@ -22,16 +22,17 @@
                 <div class="flex flex-col md:flex-row justify-center w-full gap-8 md:gap-16 p-4 md:p-8">
                     <ul class="flex flex-col gap-4 md:gap-8 items-center md:items-start">
                         <li>
-                            <a href="{{ route('privacy') }}" class="smart-link" target="_blank">隐私条款</a>
+                            <a href="/privacy" class="smart-link" target="_blank">隐私条款</a>
                         </li>
                         <li>
-                            <a href="{{ route('terms') }}" class="smart-link" target="_blank">服务条款</a>
+                            <a href="/terms" class="smart-link" target="_blank">服务条款</a>
                         </li>
                         <li>
-                            <a href="{{ route('about') }}" class="smart-link">关于我们</a>
+                            <a href="/about" class="smart-link">关于我们</a>
                         </li>
                         <li>
-                            <a href="{{ route('advice') }}" class="smart-link">留言</a>
+                            <a href="https://github.com/CofficLab" class="smart-link">GitHub
+                                留言</a>
                         </li>
                     </ul>
 
