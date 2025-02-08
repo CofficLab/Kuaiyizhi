@@ -1,0 +1,253 @@
+---
+title: Caddy 插件开发指南
+---
+
+本文将介绍如何为 Caddy 开发插件，包括基本概念、开发流程和最佳实践。
+
+## 插件基础
+
+### 插件类型
+
+Caddy 支持多种类型的插件：
+
+1. **HTTP 处理器**：处理 HTTP 请求
+2. **中间件**：在请求处理过程中进行拦截和修改
+3. **存储后端**：提供配置存储功能
+4. **DNS 提供商**：支持 DNS 验证
+5. **TLS 集成**：扩展 TLS 功能
+
+## 开发环境搭建
+
+### 准备工作
+
+```bash
+# 安装 Go
+wget https://golang.org/dl/go1.21.0.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+
+# 设置 GOPATH
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+
+# 安装 xcaddy
+go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+```
+
+## 创建插件
+
+### 基本结构
+
+```go
+package myplugin
+
+import (
+    "github.com/caddyserver/caddy/v2"
+    "github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
+    "github.com/caddyserver/caddy/v2/modules/caddyhttp"
+)
+
+func init() {
+    caddy.RegisterModule(MyHandler{})
+}
+
+// MyHandler 实现自定义处理器
+type MyHandler struct {
+    // 配置字段
+    ConfigField string `json:"config_field,omitempty"`
+}
+
+// CaddyModule 返回 Caddy 模块信息
+func (MyHandler) CaddyModule() caddy.ModuleInfo {
+    return caddy.ModuleInfo{
+        ID:  "http.handlers.myhandler",
+        New: func() caddy.Module { return new(MyHandler) },
+    }
+}
+```
+
+### Caddyfile 解析器
+
+```go
+// UnmarshalCaddyfile 实现 Caddyfile 解析
+func (h *MyHandler) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
+    for d.Next() {
+        if !d.Args(&h.ConfigField) {
+            return d.ArgErr()
+        }
+    }
+    return nil
+}
+
+// 注册 Caddyfile 指令
+func init() {
+    caddy.RegisterModule(MyHandler{})
+    caddyfile.RegisterDirective("myhandler", parseCaddyfile)
+}
+
+// parseCaddyfile 解析 Caddyfile 指令
+func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error) {
+    var handler MyHandler
+    err := handler.UnmarshalCaddyfile(h.Dispenser)
+    return handler, err
+}
+```
+
+## HTTP 处理器示例
+
+### 基本处理器
+
+```go
+// ServeHTTP 实现 HTTP 请求处理
+func (h MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+    // 前置处理
+    log.Printf("处理请求: %s", r.URL.Path)
+    
+    // 调用下一个处理器
+    err := next.ServeHTTP(w, r)
+    
+    // 后置处理
+    log.Printf("请求完成: %s", r.URL.Path)
+    
+    return err
+}
+```
+
+### 中间件示例
+
+```go
+// 请求计数中间件
+type RequestCounter struct {
+    count int64
+}
+
+func (rc *RequestCounter) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+    atomic.AddInt64(&rc.count, 1)
+    return next.ServeHTTP(w, r)
+}
+```
+
+## 配置处理
+
+### JSON 配置
+
+```go
+// 定义配置结构
+type Config struct {
+    Enable bool   `json:"enable"`
+    Path   string `json:"path"`
+}
+
+// Provision 实现配置初始化
+func (h *MyHandler) Provision(ctx caddy.Context) error {
+    // 初始化配置
+    return nil
+}
+
+// Validate 实现配置验证
+func (h *MyHandler) Validate() error {
+    if h.Path == "" {
+        return fmt.Errorf("path cannot be empty")
+    }
+    return nil
+}
+```
+
+### 配置示例
+
+```caddyfile
+example.com {
+    myhandler {
+        enable true
+        path /custom/path
+    }
+}
+```
+
+## 测试
+
+### 单元测试
+
+```go
+func TestMyHandler(t *testing.T) {
+    handler := MyHandler{
+        ConfigField: "test",
+    }
+    
+    req := httptest.NewRequest("GET", "/", nil)
+    w := httptest.NewRecorder()
+    
+    err := handler.ServeHTTP(w, req, caddyhttp.HandlerFunc(func(w http.ResponseWriter, r *http.Request) error {
+        return nil
+    }))
+    
+    if err != nil {
+        t.Errorf("Expected no error, got %v", err)
+    }
+}
+```
+
+### 集成测试
+
+```go
+func TestIntegration(t *testing.T) {
+    // 启动测试服务器
+    caddytest.NewTester(t).
+        InitServer(`
+            example.com {
+                myhandler test
+            }
+        `, "caddyfile").
+        Get("/").
+        ExpectStatus(200)
+}
+```
+
+## 最佳实践
+
+### 性能优化
+
+```go
+// 使用对象池
+var bufferPool = sync.Pool{
+    New: func() interface{} {
+        return new(bytes.Buffer)
+    },
+}
+
+func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+    buf := bufferPool.Get().(*bytes.Buffer)
+    defer func() {
+        buf.Reset()
+        bufferPool.Put(buf)
+    }()
+    
+    // 使用缓冲区处理请求
+    return nil
+}
+```
+
+### 错误处理
+
+```go
+func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+    if err := h.validate(); err != nil {
+        return caddyhttp.Error(http.StatusInternalServerError, err)
+    }
+    
+    return next.ServeHTTP(w, r)
+}
+```
+
+### 日志处理
+
+```go
+func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+    logger := caddy.Log().Named("myhandler")
+    logger.Info("processing request",
+        zap.String("path", r.URL.Path),
+        zap.String("method", r.Method),
+    )
+    
+    return next.ServeHTTP(w, r)
+}
+``` 

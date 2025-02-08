@@ -1,0 +1,127 @@
+---
+title: Caddy 基础配置
+---
+
+本文将介绍 Caddy 的基础配置方法和常用指令。
+
+## Caddyfile 基础语法
+
+Caddyfile 是 Caddy 的主要配置文件，采用简单直观的语法。
+
+### 基本结构
+
+```caddyfile
+domain.com {
+    directive arg1 arg2
+}
+```
+
+### 全局选项
+
+```caddyfile
+{
+    email admin@example.com
+    admin off  # 关闭管理API
+    default_sni example.com
+}
+```
+
+## 常用配置示例
+
+### 1. 静态文件服务器
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server
+    encode gzip
+}
+```
+
+### 2. 反向代理
+
+```caddyfile
+api.example.com {
+    reverse_proxy localhost:8080 {
+        header_up Host {upstream_hostport}
+        health_check /health
+        lb_policy round_robin
+    }
+}
+```
+
+### 3. PHP 应用
+
+```caddyfile
+php.example.com {
+    root * /var/www/php
+    php_fastcgi localhost:9000
+    file_server
+}
+```
+
+### 4. 多站点配置
+
+```caddyfile
+site1.example.com {
+    root * /var/www/site1
+    file_server
+}
+
+site2.example.com {
+    root * /var/www/site2
+    file_server
+}
+```
+
+## 常用指令说明
+
+### root
+设置站点根目录：
+```caddyfile
+root * /path/to/site
+```
+
+### file_server
+启用静态文件服务：
+```caddyfile
+file_server [browse]  # browse 参数启用目录浏览
+```
+
+### log
+配置访问日志：
+```caddyfile
+log {
+    output file /var/log/caddy/access.log
+    format json
+}
+```
+
+### tls
+配置 TLS 选项：
+```caddyfile
+tls {
+    protocols tls1.2 tls1.3
+    ciphers TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+}
+```
+
+## 配置验证
+
+在应用配置前，可以使用以下命令验证配置文件的正确性：
+
+```bash
+caddy validate --config /path/to/Caddyfile
+```
+
+## 重载配置
+
+修改配置后，可以通过以下方式重载配置：
+
+```bash
+# 方式1：使用 caddy reload 命令
+caddy reload --config /path/to/Caddyfile
+
+# 方式2：发送 SIGUSR1 信号
+kill -USR1 $(pgrep caddy)
+``` 

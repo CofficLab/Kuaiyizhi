@@ -1,0 +1,244 @@
+---
+title: Caddy 安全配置指南
+---
+
+本文将详细介绍 Caddy 的安全配置，包括 TLS 设置、访问控制、安全头部等内容。
+
+## 基础安全配置
+
+### 安全响应头
+
+```caddyfile
+example.com {
+    header {
+        # 防止点击劫持
+        X-Frame-Options "DENY"
+        # XSS 保护
+        X-XSS-Protection "1; mode=block"
+        # 内容类型安全
+        X-Content-Type-Options "nosniff"
+        # 引用策略
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # 内容安全策略
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+        # 移除服务器标识
+        -Server
+    }
+}
+```
+
+## 访问控制
+
+### 基本认证
+
+```caddyfile
+example.com {
+    basicauth {
+        admin JDJhJDE0JDFrMnN5dGdQVUxLOHBtRzlxQS5tci5XMUVzbjlzWG9wYkV4RzBaeTZYTEhtMmJwZlBGRTZp
+    }
+}
+```
+
+### IP 访问限制
+
+```caddyfile
+example.com {
+    @blocked {
+        remote_ip 192.168.1.0/24 10.0.0.0/8
+    }
+    respond @blocked 403
+}
+```
+
+## TLS 安全配置
+
+### 强化 TLS 设置
+
+```caddyfile
+example.com {
+    tls {
+        protocols tls1.3 tls1.2
+        ciphers TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        curves x25519 secp521r1 secp384r1 secp256r1
+        must_staple
+        key_type p384
+    }
+}
+```
+
+### HSTS 配置
+
+```caddyfile
+example.com {
+    header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+}
+```
+
+## 防护配置
+
+### DDoS 防护
+
+```caddyfile
+example.com {
+    rate_limit {
+        zone dynamic 10m
+        rate 10r/s
+        key {remote_host}
+    }
+
+    # 连接限制
+    limit_conn {
+        max 100
+        key {remote_host}
+    }
+}
+```
+
+### 文件访问限制
+
+```caddyfile
+example.com {
+    @forbidden {
+        path *.sql *.conf *.config *.htaccess .git* .env*
+    }
+    respond @forbidden 403
+
+    file_server {
+        hide .git .env .*
+    }
+}
+```
+
+## Web 应用防护
+
+### SQL 注入防护
+
+```caddyfile
+example.com {
+    @sql_injection {
+        path_regexp (?i)(union|select|insert|delete|update|drop|;|--|'|")
+    }
+    respond @sql_injection 403
+}
+```
+
+### XSS 防护
+
+```caddyfile
+example.com {
+    header {
+        Content-Security-Policy "
+            default-src 'self';
+            script-src 'self' 'unsafe-inline' 'unsafe-eval';
+            style-src 'self' 'unsafe-inline';
+            img-src 'self' data: https:;
+            font-src 'self';
+            form-action 'self';
+            frame-ancestors 'none';
+        "
+    }
+}
+```
+
+## 日志安全
+
+### 安全日志配置
+
+```caddyfile
+example.com {
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+        format json
+        level INFO
+    }
+}
+```
+
+### 错误页面
+
+```caddyfile
+example.com {
+    handle_errors {
+        respond "{http.error.status_code} {http.error.status_text}" {http.error.status_code}
+    }
+}
+```
+
+## API 安全
+
+### JWT 认证
+
+```caddyfile
+example.com {
+    jwt {
+        primary {
+            issuer "example.com"
+            allow_claims sub exp
+            cookie jwt_token
+            auth_url /api/auth
+        }
+    }
+}
+```
+
+### CORS 配置
+
+```caddyfile
+example.com {
+    header {
+        Access-Control-Allow-Origin "https://trusted-site.com"
+        Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type, Authorization"
+        Access-Control-Max-Age "3600"
+        defer
+    }
+}
+```
+
+## 安全监控
+
+### 审计日志
+
+```caddyfile
+example.com {
+    log {
+        output file /var/log/caddy/audit.log {
+            roll_size 100mb
+            roll_keep 30
+        }
+        format json {
+            time_format "2006-01-02 15:04:05"
+            time_local
+        }
+        include {
+            request>headers
+            request>body
+            response>headers
+        }
+    }
+}
+```
+
+### 安全告警
+
+```caddyfile
+example.com {
+    @security_breach {
+        expression {http.request.uri.path} matches "/admin/*"
+        not remote_ip private_ranges
+    }
+    
+    handle @security_breach {
+        log {
+            output file /var/log/caddy/security.log
+            format json
+            level ERROR
+        }
+        respond 403
+    }
+}
+``` 

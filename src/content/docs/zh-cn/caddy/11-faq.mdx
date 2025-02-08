@@ -1,0 +1,282 @@
+---
+title: Caddy 常见问题解答
+---
+
+本文收集了使用 Caddy 时的常见问题和解决方案。
+
+## 基础问题
+
+### 1. Caddy 无法启动
+
+**问题**: 启动 Caddy 时报错或无法启动。
+
+**解决方案**:
+1. 检查端口占用
+```bash
+# 检查 80/443 端口
+sudo lsof -i :80
+sudo lsof -i :443
+```
+
+2. 检查配置文件
+```bash
+# 验证配置
+caddy validate --config /etc/caddy/Caddyfile
+
+# 使用调试模式启动
+caddy run --config /etc/caddy/Caddyfile --debug
+```
+
+### 2. 证书问题
+
+**问题**: 无法自动获取 HTTPS 证书。
+
+**解决方案**:
+```caddyfile
+example.com {
+    # 使用特定的 ACME 服务器
+    tls {
+        issuer acme {
+            email admin@example.com
+            preferred_chains "ISRG Root X1"
+        }
+    }
+}
+```
+
+## 配置问题
+
+### 1. 反向代理不工作
+
+**问题**: 反向代理无法正常工作。
+
+**解决方案**:
+```caddyfile
+example.com {
+    reverse_proxy localhost:8080 {
+        # 添加必要的请求头
+        header_up Host {upstream_hostport}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        
+        # 健康检查
+        health_uri /health
+        health_interval 10s
+    }
+}
+```
+
+### 2. 静态文件访问问题
+
+**问题**: 无法访问静态文件或出现 403 错误。
+
+**解决方案**:
+```caddyfile
+example.com {
+    # 检查文件权限
+    root * /var/www/html
+    file_server {
+        browse  # 开发环境可启用目录浏览
+    }
+}
+```
+
+## 性能问题
+
+### 1. 内存使用过高
+
+**问题**: Caddy 占用内存过多。
+
+**解决方案**:
+```caddyfile
+{
+    # 调整缓存设置
+    servers {
+        max_header_size 10KB
+        idle_timeout 30s
+    }
+    
+    # 限制并发连接
+    limits {
+        header_size 10KB
+        body_size 10MB
+    }
+}
+```
+
+### 2. 响应延迟高
+
+**问题**: 网站响应速度慢。
+
+**解决方案**:
+```caddyfile
+example.com {
+    # 启用压缩
+    encode gzip zstd
+    
+    # 启用缓存头
+    header {
+        Cache-Control "public, max-age=3600"
+    }
+    
+    # 优化静态文件
+    file_server {
+        precompressed gzip br
+    }
+}
+```
+
+## 日志和监控
+
+### 1. 日志太大或丢失
+
+**问题**: 日志文件占用空间过大或找不到日志。
+
+**解决方案**:
+```caddyfile
+{
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb    # 日志滚动大小
+            roll_keep 10       # 保留文件数
+            roll_keep_for 168h # 保留时间
+        }
+    }
+}
+```
+
+### 2. 监控指标不可用
+
+**问题**: 无法获取监控指标。
+
+**解决方案**:
+```caddyfile
+example.com {
+    # 配置 Prometheus 指标
+    metrics /metrics {
+        disable_openmetrics
+    }
+    
+    # 限制访问
+    @metrics_auth {
+        remote_ip private_ranges
+    }
+    handle /metrics {
+        not @metrics_auth {
+            respond 403
+        }
+    }
+}
+```
+
+## Docker 相关
+
+### 1. 容器内证书持久化
+
+**问题**: Docker 重启后证书丢失。
+
+**解决方案**:
+```yaml
+version: '3'
+services:
+  caddy:
+    image: caddy
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+volumes:
+  caddy_data:
+  caddy_config:
+```
+
+### 2. 容器网络问题
+
+**问题**: 容器间通信失败。
+
+**解决方案**:
+```yaml
+version: '3'
+services:
+  caddy:
+    networks:
+      - web
+  backend:
+    networks:
+      - web
+networks:
+  web:
+    driver: bridge
+```
+
+## 插件问题
+
+### 1. 插件安装失败
+
+**问题**: 无法安装或使用插件。
+
+**解决方案**:
+```bash
+# 使用 xcaddy 构建
+xcaddy build \
+    --with github.com/caddy-dns/cloudflare \
+    --with github.com/greenpau/caddy-security
+```
+
+### 2. 插件配置错误
+
+**问题**: 插件配置不生效。
+
+**解决方案**:
+```caddyfile
+{
+    order authenticate before respond
+    order authorize before reverse_proxy
+}
+
+example.com {
+    authenticate {
+        # 插件具体配置
+    }
+}
+```
+
+## 升级和迁移
+
+### 1. 升级注意事项
+
+**问题**: 升级后配置不兼容。
+
+**解决方案**:
+1. 备份当前配置
+```bash
+cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.bak
+```
+
+2. 使用 format 命令检查新版本兼容性
+```bash
+caddy fmt --overwrite /etc/caddy/Caddyfile
+```
+
+### 2. 配置迁移
+
+**问题**: 从其他服务器迁移配置。
+
+**解决方案**:
+1. 导出配置和证书
+```bash
+# 导出配置
+caddy adapt --config /etc/caddy/Caddyfile > caddy.json
+
+# 备份证书
+tar czf certs.tar.gz /var/lib/caddy/.local/share/caddy
+```
+
+2. 在新服务器上恢复
+```bash
+# 恢复配置
+caddy load --config caddy.json
+
+# 恢复证书
+tar xzf certs.tar.gz -C /
+``` 

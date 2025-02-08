@@ -1,0 +1,254 @@
+---
+title: Caddy 性能优化指南
+---
+
+本文将介绍如何优化 Caddy 服务器的性能，包括配置调优、缓存策略等内容。
+
+## 系统优化
+
+### 文件描述符限制
+
+在 Linux 系统中，需要适当调整文件描述符限制：
+
+```bash
+# 编辑 /etc/security/limits.conf
+caddy soft nofile 65535
+caddy hard nofile 65535
+
+# 编辑 systemd 服务文件
+[Service]
+LimitNOFILE=65535
+```
+
+### 网络调优
+
+```bash
+# 编辑 /etc/sysctl.conf
+net.core.somaxconn = 65535
+net.ipv4.tcp_max_tw_buckets = 1440000
+net.ipv4.tcp_fin_timeout = 15
+net.ipv4.tcp_max_syn_backlog = 4096
+```
+
+## Caddy 配置优化
+
+### 启用压缩
+
+```caddyfile
+example.com {
+    encode gzip zstd {
+        minimum_length 1000  # 最小压缩大小
+        match {
+            header Content-Type text/*
+            header Content-Type application/json*
+            header Content-Type application/javascript*
+        }
+    }
+}
+```
+
+### 静态文件优化
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server {
+        precompressed gzip br  # 支持预压缩文件
+        hide .git              # 隐藏敏感目录
+    }
+    header {
+        Cache-Control "public, max-age=31536000"  # 静态资源缓存
+        -Server                                   # 移除服务器标识
+    }
+}
+```
+
+### 内存缓存
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server {
+        precompressed gzip br
+    }
+    handle_path /assets/* {
+        header Cache-Control "public, max-age=31536000"
+        header Vary Accept-Encoding
+    }
+}
+```
+
+## HTTP/2 和 HTTP/3 优化
+
+### HTTP/2 设置
+
+```caddyfile
+example.com {
+    protocols h2 h2c
+    
+    # HTTP/2 推送
+    push /assets/css/main.css {
+        if {>Accept-Encoding} has gzip
+    }
+}
+```
+
+### HTTP/3 配置
+
+```caddyfile
+example.com {
+    protocols h3 h2 h1
+    
+    # QUIC 参数调整
+    transport http {
+        experimental_http3  # 启用 HTTP/3
+        quic {
+            max_streams 100
+            idle_timeout 30s
+        }
+    }
+}
+```
+
+## 负载均衡优化
+
+### 连接池设置
+
+```caddyfile
+reverse_proxy backend:8080 {
+    transport http {
+        dial_timeout 2s
+        keepalive 30s
+        keepalive_idle_conns 100
+        max_conns_per_host 100
+    }
+    lb_policy least_conn
+    lb_retries 3
+}
+```
+
+### 健康检查优化
+
+```caddyfile
+reverse_proxy backend:8080 {
+    health_uri /health
+    health_interval 5s
+    health_timeout 2s
+    health_status 2xx
+    fail_duration 30s
+    unhealthy_request_count 3
+}
+```
+
+## 缓存策略
+
+### 浏览器缓存
+
+```caddyfile
+example.com {
+    @static {
+        path *.css *.js *.jpg *.png *.gif *.ico
+    }
+    handle @static {
+        header Cache-Control "public, max-age=31536000"
+        header ETag "strong"
+    }
+}
+```
+
+### 条件请求处理
+
+```caddyfile
+example.com {
+    @assets {
+        path /assets/*
+    }
+    handle @assets {
+        header Cache-Control "public, max-age=31536000"
+        header ETag "strong"
+        try_files {path} {path}.gz {path}.br
+    }
+}
+```
+
+## 监控和性能分析
+
+### 请求日志
+
+```caddyfile
+example.com {
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 10mb
+            roll_keep 10
+        }
+        format json
+        level INFO
+    }
+}
+```
+
+### 性能指标
+
+```caddyfile
+example.com {
+    metrics /metrics  # Prometheus 指标
+    
+    handle /debug/* {
+        respond 404  # 在生产环境中禁用调试端点
+    }
+}
+```
+
+## 安全性能优化
+
+### TLS 优化
+
+```caddyfile
+example.com {
+    tls {
+        protocols tls1.3 tls1.2
+        ciphers TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        curves x25519 secp521r1 secp384r1 secp256r1
+        alpn h2 http/1.1
+    }
+}
+```
+
+### DDoS 防护
+
+```caddyfile
+example.com {
+    rate_limit {
+        zone dynamic 10m
+        rate 10r/s
+        key {remote_host}
+    }
+}
+```
+
+## 性能测试和调优
+
+### 基准测试工具
+
+```bash
+# 使用 hey 进行负载测试
+hey -n 1000 -c 100 https://example.com
+
+# 使用 wrk 进行性能测试
+wrk -t12 -c400 -d30s https://example.com
+```
+
+### 性能监控
+
+```caddyfile
+example.com {
+    debug  # 仅在调试时启用
+    
+    log {
+        output stdout
+        format console
+        level DEBUG  # 调试时使用，生产环境建议使用 INFO
+    }
+}
+``` 

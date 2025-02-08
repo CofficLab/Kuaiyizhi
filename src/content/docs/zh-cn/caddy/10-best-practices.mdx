@@ -1,0 +1,281 @@
+---
+title: Caddy 最佳实践指南
+---
+
+本文总结了使用 Caddy 的最佳实践，包括性能优化、安全配置、维护策略等方面。
+
+## 性能优化
+
+### 1. 静态文件服务
+
+```caddyfile
+example.com {
+    # 启用压缩
+    encode gzip zstd {
+        minimum_length 1000
+    }
+
+    # 静态文件缓存
+    header /static/* {
+        Cache-Control "public, max-age=31536000"
+        Vary Accept-Encoding
+    }
+
+    # 预压缩文件支持
+    file_server {
+        precompressed gzip br
+    }
+}
+```
+
+### 2. 连接优化
+
+```caddyfile
+{
+    servers {
+        protocol {
+            experimental_http3  # 启用 HTTP/3
+            strict_sni_host    # 严格的 SNI 检查
+        }
+    }
+}
+```
+
+## 安全加固
+
+### 1. 基础安全头
+
+```caddyfile
+example.com {
+    header {
+        # 安全头
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "geolocation=(), microphone=(), camera=()"
+        
+        # 移除敏感信息
+        -Server
+        -X-Powered-By
+    }
+}
+```
+
+### 2. 访问控制
+
+```caddyfile
+example.com {
+    # IP 白名单
+    @allowed_ips {
+        remote_ip 192.168.1.0/24 10.0.0.0/8
+    }
+    
+    # 管理接口访问控制
+    handle /admin/* {
+        not @allowed_ips {
+            respond 403
+        }
+    }
+}
+```
+
+## 日志管理
+
+### 1. 结构化日志
+
+```caddyfile
+{
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 10mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+        format json {
+            time_format "2006-01-02 15:04:05"
+            time_local
+        }
+        level INFO
+    }
+}
+```
+
+### 2. 错误页面
+
+```caddyfile
+example.com {
+    handle_errors {
+        root * /var/www/error_pages
+        rewrite * /{http.error.status_code}.html
+        file_server
+    }
+}
+```
+
+## 维护策略
+
+### 1. 备份策略
+
+```bash
+#!/bin/bash
+# /etc/cron.daily/backup-caddy
+
+# 备份配置
+cp /etc/caddy/Caddyfile /backup/caddy/Caddyfile.$(date +%Y%m%d)
+
+# 备份证书
+tar czf /backup/caddy/certificates.$(date +%Y%m%d).tar.gz /var/lib/caddy/.local/share/caddy
+
+# 保留最近30天的备份
+find /backup/caddy -type f -mtime +30 -delete
+```
+
+### 2. 监控配置
+
+```caddyfile
+example.com {
+    # 健康检查端点
+    handle /health {
+        respond "OK" 200
+    }
+    
+    # Prometheus 指标
+    metrics /metrics {
+        disable_openmetrics
+    }
+}
+```
+
+## 开发环境配置
+
+### 1. 本地开发设置
+
+```caddyfile
+localhost {
+    tls internal  # 使用自签名证书
+    
+    # 开发时的文件监视
+    file_server {
+        browse
+        root * /path/to/project
+    }
+    
+    # 开发服务器代理
+    reverse_proxy /api/* localhost:3000
+    
+    # 允许跨域
+    header {
+        Access-Control-Allow-Origin *
+        Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Access-Control-Allow-Headers *
+    }
+}
+```
+
+### 2. 调试配置
+
+```caddyfile
+{
+    debug  # 启用调试模式
+    
+    log {
+        level DEBUG  # 详细日志
+        output stdout  # 控制台输出
+    }
+}
+```
+
+## 高可用配置
+
+### 1. 负载均衡
+
+```caddyfile
+example.com {
+    reverse_proxy {
+        to backend-1:80 backend-2:80 backend-3:80
+        lb_policy round_robin
+        lb_retries 3
+        health_uri /health
+        health_interval 10s
+    }
+}
+```
+
+### 2. 故障转移
+
+```caddyfile
+example.com {
+    reverse_proxy {
+        to primary:80
+        to backup:80 backup
+        health_uri /health
+        health_interval 5s
+        fail_duration 10s
+    }
+}
+```
+
+## 性能测试
+
+### 1. 基准测试脚本
+
+```bash
+#!/bin/bash
+
+# 使用 hey 进行负载测试
+hey -n 10000 -c 100 https://example.com/
+
+# 使用 wrk 进行性能测试
+wrk -t12 -c400 -d30s https://example.com/
+```
+
+### 2. 监控指标
+
+```caddyfile
+example.com {
+    # Prometheus 指标收集
+    metrics {
+        disable_openmetrics
+    }
+    
+    # 详细访问日志
+    log {
+        output file /var/log/caddy/access.log
+        format json {
+            time_local
+            request>remote_ip
+            request>method
+            request>uri
+            request>proto
+            response>status
+            response>size
+            duration
+        }
+    }
+}
+```
+
+## 故障排查清单
+
+1. **检查日志**
+   ```bash
+   tail -f /var/log/caddy/access.log
+   journalctl -u caddy
+   ```
+
+2. **验证配置**
+   ```bash
+   caddy validate --config /etc/caddy/Caddyfile
+   ```
+
+3. **检查证书**
+   ```bash
+   caddy certificates
+   ```
+
+4. **测试连接**
+   ```bash
+   curl -v https://example.com
+   openssl s_client -connect example.com:443
+   ``` 

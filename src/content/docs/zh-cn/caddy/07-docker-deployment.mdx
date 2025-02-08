@@ -1,0 +1,301 @@
+---
+title: Caddy Docker 部署指南
+---
+
+本文将详细介绍如何在 Docker 环境中部署和运行 Caddy 服务器。
+
+## 基础部署
+
+### 使用官方镜像
+
+```bash
+# 拉取官方镜像
+docker pull caddy:latest
+
+# 运行基础容器
+docker run -d \
+    --name caddy \
+    -p 80:80 \
+    -p 443:443 \
+    caddy
+```
+
+### 使用自定义 Caddyfile
+
+```bash
+# 创建配置文件目录
+mkdir -p /path/to/caddy/config
+
+# 创建 Caddyfile
+cat > /path/to/caddy/config/Caddyfile <<EOF
+example.com {
+    root * /srv
+    file_server
+}
+EOF
+
+# 运行带配置的容器
+docker run -d \
+    --name caddy \
+    -p 80:80 \
+    -p 443:443 \
+    -v /path/to/caddy/config/Caddyfile:/etc/caddy/Caddyfile \
+    -v caddy_data:/data \
+    -v caddy_config:/config \
+    caddy
+```
+
+## Docker Compose 配置
+
+### 基础配置
+
+```yaml
+version: '3.7'
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
+```
+
+### 与其他服务集成
+
+```yaml
+version: '3.7'
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+  webapp:
+    image: nginx:alpine
+    container_name: webapp
+    restart: unless-stopped
+    volumes:
+      - ./webapp:/usr/share/nginx/html
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
+```
+
+对应的 Caddyfile：
+
+```caddyfile
+example.com {
+    reverse_proxy webapp:80
+}
+```
+
+## 自定义镜像
+
+### Dockerfile 示例
+
+```dockerfile
+FROM caddy:builder AS builder
+
+RUN xcaddy build \
+    --with github.com/caddy-dns/cloudflare \
+    --with github.com/greenpau/caddy-security
+
+FROM caddy:latest
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+COPY Caddyfile /etc/caddy/Caddyfile
+```
+
+### 构建和运行
+
+```bash
+# 构建镜像
+docker build -t custom-caddy .
+
+# 运行容器
+docker run -d \
+    --name custom-caddy \
+    -p 80:80 \
+    -p 443:443 \
+    custom-caddy
+```
+
+## 生产环境配置
+
+### 完整的 Docker Compose 配置
+
+```yaml
+version: '3.7'
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # For HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./logs:/var/log/caddy
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - web
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+volumes:
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
+
+networks:
+  web:
+    driver: bridge
+```
+
+### 生产环境 Caddyfile
+
+```caddyfile
+{
+    email admin@example.com
+    acme_ca https://acme-v02.api.letsencrypt.org/directory
+    
+    servers {
+        protocols h1 h2 h2c h3
+    }
+    
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 10mb
+            roll_keep 10
+        }
+    }
+}
+
+example.com {
+    root * /srv
+    encode gzip
+    
+    log {
+        output file /var/log/caddy/example.com.log {
+            roll_size 10mb
+            roll_keep 10
+        }
+    }
+    
+    handle_errors {
+        root * /srv/errors
+        rewrite * /{http.error.status_code}.html
+        file_server
+    }
+    
+    file_server
+}
+```
+
+## 常见问题处理
+
+### 权限问题
+
+```bash
+# 设置正确的文件权限
+chmod -R 755 /path/to/site
+chown -R 1000:1000 /path/to/site
+
+# 或在 docker run 时指定用户
+docker run -u $(id -u):$(id -g) ...
+```
+
+### 证书持久化
+
+```yaml
+version: '3.7'
+
+services:
+  caddy:
+    volumes:
+      - ./caddy/certificates:/data/caddy/certificates
+      - ./caddy/config:/config
+```
+
+### 日志轮转
+
+```yaml
+services:
+  caddy:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+```
+
+## 监控和维护
+
+### 健康检查
+
+```yaml
+services:
+  caddy:
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+```
+
+### 资源限制
+
+```yaml
+services:
+  caddy:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+``` 

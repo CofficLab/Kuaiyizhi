@@ -3,8 +3,6 @@ title: 技术架构的演进
 description: 从 Laravel 到 VitePress 再到 Astro 的技术选型之路
 ---
 
-# 技术架构的演进之路
-
 ## 初心：选择 Laravel 的日子
 
 在项目最初的构想阶段，我们选择了 Laravel 作为我们的第一个技术方案。这个选择源于几个考虑：
