@@ -185,7 +185,7 @@ const t = (key: keyof typeof translations) => {
 };
 
 const makeLink = (path: string) => {
-    return `/${props.lang}/${path}`;
+    return `/${lang}/${path}`;
 };
 </script>
 

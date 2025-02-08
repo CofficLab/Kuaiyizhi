@@ -1,6 +1,56 @@
 ---
 import type { Props } from '@astrojs/starlight/props';
 import DefaultSidebar from '@astrojs/starlight/components/Sidebar.astro';
+const emoji = '🚀';
+
+// 获取当前页面路径的第一部分作为分类
+const currentPath = Astro.url.pathname;
+const category = currentPath.split('/').slice(0, 3).join('/'); // 获取前3级路径 (如 'zh/astro/docs')
+
+console.log(`${emoji} Smart Sidebar: path: ${currentPath}`);
+console.log(`${emoji} Smart Sidebar: category: ${category}`);
+
+// 过滤侧边栏项目，只保留与当前分类相关的项目
+const filteredSidebar = Astro.props.sidebar
+  .filter((group) => group.type === 'group')
+  .map((group) => ({
+    ...group,
+    entries: group.entries.filter((entry) => {
+      console.log(`${emoji} Smart Sidebar: group: ${group.label}`);
+      console.log(group);
+
+      if (entry.type === 'link') {
+        return entry.href.startsWith(`${category}`);
+      }
+
+      const entries = (entry as { entries: any[] }).entries;
+
+      return {
+        ...entry,
+        entries: entries.filter((e) => e.href.startsWith(`${category}`)),
+      };
+    }),
+  }))
+  .filter((group) => group.entries.length > 0);
+
+let props = Astro.props;
+
+console.log(Astro.props);
+
+if (
+  Astro.props.entry.slug.startsWith('zh-cn/blogs') ||
+  Astro.props.entry.slug.startsWith('en/blogs') ||
+  Astro.props.entry.slug.startsWith('blogs') ||
+  Astro.props.entry.slug.startsWith('zh-cn/meta') ||
+  Astro.props.entry.slug.startsWith('en/meta')
+) {
+  props = Astro.props;
+} else {
+  props = {
+    ...Astro.props,
+    sidebar: filteredSidebar,
+  };
+}
 ---
 
-<DefaultSidebar {...Astro.props} />
+<DefaultSidebar {...props} />

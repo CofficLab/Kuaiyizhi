@@ -1,11 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import BlogList from '../components/BlogList.vue';
-import BlogLayout from '../layouts/BlogLayout.astro';
+import BlogsLayout from '../layouts/BlogsLayout.astro';
 import type { BlogPost } from '../interface/BlogPost';
 const posts: BlogPost[] = await getCollection('blogs');
 ---
 
-<BlogLayout title="所有文章" description="我的博客">
+<BlogsLayout title="所有文章" description="我的博客">
     <BlogList posts={posts} />
-</BlogLayout>
+</BlogsLayout>
