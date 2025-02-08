@@ -27,30 +27,29 @@ export default class TabsConverter {
                 let html = `<div class="tabs-container" id="${containerId}">\n`;
 
                 if (tabContainerCount === 1) {
-                    html += this.STYLE + this.SCRIPT;
+                    html += this.STYLE;
                 }
 
-                // 添加标签按钮
-                html += '<div class="tabs-header">\n';
+                // 使用 details/summary 替代按钮和 JavaScript
                 tabItems.forEach((item, index) => {
                     const labelMatch = item.match(/label="([^"]+)"/);
-                    if (labelMatch) {
-                        const label = labelMatch[1];
-                        const isActive = index === 0 ? ' active' : '';
-                        html += `<button class="tab-button${isActive}" onclick="switchTab('${containerId}', ${index})">${label}</button>\n`;
-                    }
-                });
-                html += '</div>\n';
-
-                // 添加标签内容
-                tabItems.forEach((item, index) => {
                     const contentMatch = item.match(/<TabItem[^>]*>([\s\S]*?)<\/TabItem>/);
-                    if (contentMatch) {
-                        const isActive = index === 0 ? ' active' : '';
-                        const tabContent = '\n' + contentMatch[1]
-                            .trim();
 
-                        html += `<div class="tab-content${isActive}">\n${tabContent}\n</div>\n`;
+                    if (labelMatch && contentMatch) {
+                        const label = labelMatch[1];
+                        let tabContent = contentMatch[1].trim();
+
+                        // 如果内容包含代码块，确保前后有空行
+                        if (tabContent.includes('```')) {
+                            tabContent = `\n${tabContent}\n`;
+                        }
+
+                        const isOpen = index === 0 ? ' open' : '';
+
+                        html += `<details${isOpen}>\n`;
+                        html += `<summary>${label}</summary>\n`;
+                        html += `<div class="tab-content">\n${tabContent}\n</div>\n`;
+                        html += `</details>\n`;
                     }
                 });
 
