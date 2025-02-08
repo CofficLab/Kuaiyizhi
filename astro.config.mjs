@@ -8,7 +8,6 @@ import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
-import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import smartSidebarPlugin from './plugins/smart-sidebar/index.ts';
 import smartTitlePlugin from './plugins/smart-title/index.ts';  
 
@@ -33,13 +32,8 @@ export default defineConfig({
       plugins: [
         smartSearchPlugin(),
         smartPagePlugin(),
-        // starlightUtils({
-        //   multiSidebar: {
-        //     switcherStyle: 'hidden',
-        //   },
-        // }),
         smartHeaderPlugin(),
-        // smartSidebarPlugin(),
+        smartSidebarPlugin(),
         smartStylePlugin(),
         smartTitlePlugin(),
       ],

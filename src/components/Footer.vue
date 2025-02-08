@@ -178,9 +178,10 @@ const translations = {
     }
 };
 
+const lang = props.lang.toLowerCase();
+
 const t = (key: keyof typeof translations) => {
-    const language = props.lang.toLowerCase();
-    return translations[key][language.startsWith('zh') ? 'zh' : 'en'];
+    return translations[key][lang.startsWith('zh') ? 'zh' : 'en'];
 };
 
 const makeLink = (path: string) => {

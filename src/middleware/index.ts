@@ -14,6 +14,8 @@ export const onRequest: MiddlewareHandler = (context, next) => {
         { path: '/terms', rewrite: '/meta/terms' },
         { path: '/partners', rewrite: '/meta/partners' },
         { path: '/tech-stack', rewrite: '/meta/tech-stack' },
+        { path: '/our-story', rewrite: '/meta/our-story' },
+        { path: '/tech-evolution', rewrite: '/meta/tech-evolution' },
     ];
 
     for (const { path, rewrite } of pathsToRewrite) {
