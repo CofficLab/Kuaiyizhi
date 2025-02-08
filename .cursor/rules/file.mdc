@@ -1,0 +1,8 @@
+---
+description: file
+globs: 
+---
+
+# 创建文件的规则
+
+- 如果需要创建新的 md/mdx 文件，要以合适的编号开头，如：01.hello.md
