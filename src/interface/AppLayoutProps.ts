@@ -12,4 +12,5 @@ export interface AppLayoutProps {
     hasSidebar: boolean;
     headings: Array<{ depth: number; slug: string; text: string }>;
     sidebar: SidebarItem[];
+    hidePageTitle: boolean;
 }

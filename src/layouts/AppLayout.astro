@@ -10,6 +10,7 @@ const {
     hasSidebar,
     headings,
     sidebar,
+    hidePageTitle,
 } = Astro.props as AppLayoutProps;
 ---
 
@@ -22,5 +23,15 @@ const {
     sidebar={sidebar}
     hasSidebar={hasSidebar ?? false}
     headings={headings}>
+    {hidePageTitle && (
+        <style is:global>
+            .content-panel {
+                border-top: 0 !important;
+            }
+            main .content-panel:first-child {
+                display: none;
+            }
+        </style>
+    )}
     <slot />
 </StarlightPage>
