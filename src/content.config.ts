@@ -7,11 +7,13 @@ export const collections = {
 	docs: defineCollection({
 		loader: docsLoader(),
 		schema: docsSchema(),
-
 	}),
 	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
 	blogs: defineCollection({
-		type: 'content',
+		loader: glob({
+			pattern: "**/*.{md,mdx}",
+			base: "./src/content/blogs"
+		}),
 		schema: z.object({
 			title: z.string(),
 			tags: z.array(z.string()),

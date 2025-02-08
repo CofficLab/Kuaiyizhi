@@ -25,9 +25,5 @@ const sidebarItems: SidebarItem[] = tags.map((tag) => ({
     hasSidebar={true}
     sidebar={sidebarItems}
     headings={headings}>
-    <div class="flex flex-row gap-4">
-        <div class="flex-1 ml-0">
-            <slot />
-        </div>
-    </div>
+    <slot />
 </AppLayout>

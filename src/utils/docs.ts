@@ -1,4 +1,6 @@
 import { getCollection } from 'astro:content';
+import type { BlogPost } from '../interface/BlogPost';
+import type { CollectionEntry } from 'astro:content';
 
 async function getTopLevelPosts() {
     // 获取所有文章
@@ -13,8 +15,13 @@ async function getTopLevelPosts() {
     return topLevelPosts;
 }
 
-const getBlogs = async () => {
+const getBlogs = async (): Promise<CollectionEntry<'blogs'>[]> => {
     return await getCollection('blogs');
+}
+
+// 获取带有特定标签的文章
+const getBlogsWithTags = async (tag: string): Promise<CollectionEntry<'blogs'>[]> => {
+    return await getCollection('blogs', (post) => post.data.tags?.includes(tag));
 }
 
 const getBlogTags = async (): Promise<string[]> => {
@@ -26,4 +33,4 @@ const getBlogTags = async (): Promise<string[]> => {
     return Array.from(tags);
 }
 
-export { getTopLevelPosts, getBlogTags as getTags, getBlogs };
+export { getTopLevelPosts, getBlogTags as getTags, getBlogs, getBlogsWithTags };

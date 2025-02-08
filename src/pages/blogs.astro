@@ -2,7 +2,8 @@
 import { getCollection } from 'astro:content';
 import BlogList from '../components/BlogList.vue';
 import BlogLayout from '../layouts/BlogLayout.astro';
-const posts = await getCollection('blogs');
+import type { BlogPost } from '../interface/BlogPost';
+const posts: BlogPost[] = await getCollection('blogs');
 ---
 
 <BlogLayout title="所有文章" description="我的博客">
