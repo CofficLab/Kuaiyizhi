@@ -1,7 +1,7 @@
 /**
- * Markdown 转换器类
+ * 代码转换器类
  */
-export default class MarkdownConverter {
+export default class CodeConverter {
     /**
      * 转换 Markdown 代码块的语言标识
      * @param content Markdown 内容
