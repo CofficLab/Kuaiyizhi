@@ -13,12 +13,12 @@
                 <div class="flex flex-col md:flex-row justify-center w-full gap-8 md:gap-16 p-4 md:p-8">
                     <ul class="flex flex-col gap-4 md:gap-8 items-center md:items-start">
                         <li>
-                            <a :href="makeLink('privacy')" class="smart-link" target="_blank">
+                            <a :href="makeLink('privacy')" class="smart-link">
                                 {{ t('privacy') }}
                             </a>
                         </li>
                         <li>
-                            <a :href="makeLink('terms')" class="smart-link" target="_blank">
+                            <a :href="makeLink('terms')" class="smart-link">
                                 {{ t('terms') }}
                             </a>
                         </li>

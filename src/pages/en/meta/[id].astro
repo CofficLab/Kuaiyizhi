@@ -3,6 +3,8 @@ import MetaLayout from '../../../layouts/MetaLayout.astro';
 import { getMetas } from '../../../utils/docs';
 import { render } from 'astro:content';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
     const metas = await getMetas();
     return metas
