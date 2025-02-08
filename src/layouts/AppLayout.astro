@@ -1,13 +1,16 @@
 ---
-interface Props {
-    title: string;
-    description: string;
-    template: string;
-    hasSidebar: boolean;
-}
-
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-const { title, description, frontmatter, template, hasSidebar } = Astro.props;
+import type { AppLayoutProps } from '../interface/AppLayoutProps';
+
+const {
+    title,
+    description,
+    frontmatter,
+    template,
+    hasSidebar,
+    headings,
+    sidebar,
+} = Astro.props as AppLayoutProps;
 ---
 
 <StarlightPage
@@ -16,7 +19,8 @@ const { title, description, frontmatter, template, hasSidebar } = Astro.props;
         description: description ?? frontmatter.description,
         template: template ?? 'splash',
     }}
+    sidebar={sidebar}
     hasSidebar={hasSidebar ?? false}
-    headings={[]}>
+    headings={headings}>
     <slot />
 </StarlightPage>

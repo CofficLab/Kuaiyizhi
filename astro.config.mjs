@@ -33,13 +33,13 @@ export default defineConfig({
       plugins: [
         smartSearchPlugin(),
         smartPagePlugin(),
-        starlightUtils({
-          multiSidebar: {
-            switcherStyle: 'hidden',
-          },
-        }),
+        // starlightUtils({
+        //   multiSidebar: {
+        //     switcherStyle: 'hidden',
+        //   },
+        // }),
         smartHeaderPlugin(),
-        smartSidebarPlugin(),
+        // smartSidebarPlugin(),
         smartStylePlugin(),
         smartTitlePlugin(),
       ],

@@ -11,13 +11,11 @@ export const collections = {
 	}),
 	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
 	blogs: defineCollection({
-		loader: glob({
-			pattern: "**/*.{md,mdx}",
-			base: "./src/content/blogs"
-		}),
+		type: 'content',
 		schema: z.object({
 			title: z.string(),
 			tags: z.array(z.string()),
+			description: z.string().optional(),
 		}),
 	}),
 };
