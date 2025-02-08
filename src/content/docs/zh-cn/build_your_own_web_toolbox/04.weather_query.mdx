@@ -16,6 +16,10 @@ import { Tabs, TabItem } from '@astrojs/starlight/components'
 
 ## 准备工作
 
+其中的数据来自于：[聚合数据](https://www.juhe.cn/)，这是国内一个非常不错的数据供应商，提供了很多免费的数据接口。
+
+![juhe](./images/4.png)
+
 1. 注册聚合数据账号并获取 API Key：
    - 访问 [聚合数据官网](https://www.juhe.cn/)
    - 注册账号并实名认证
@@ -31,6 +35,21 @@ JUHE_WEATHER_KEY=your_api_key_here
 
 ## 组件实现
 
+接下来的代码可以由 AI 生成，你可以这样对 AI 说：
+
+```bash
+生成一个天气卡片组件，要求：
+- 使用 TailwindCSS 和 DaisyUI 实现天气卡片组件
+- 使用 Astro 实现天气卡片组件，并添加天气数据
+- 代码写入 src/components/WeatherCard.astro 文件中
+
+生成一个天气查询页面，要求：
+- 使用 Vue 实现天气查询页面
+- 使用 Astro 实现天气查询页面，并添加天气数据
+- 代码写入 src/components/WeatherPage.astro 文件中
+```
+
+以下是我得到的代码，供你参考：
 <Tabs>
 <TabItem label="天气卡片组件">
 
@@ -88,6 +107,7 @@ const weatherIcon = computed(() => {
 <TabItem label="天气查询页面">
 
 ```vue 
+<!-- components/WeatherPage.vue -->
 <script setup lang="ts">
 import { ref } from 'vue'
 import WeatherCard from './WeatherCard.vue'
@@ -220,7 +240,16 @@ async function getWeather(city: string) {
 
 ## Astro 页面集成
 
-创建 Astro 页面来使用 WeatherCard 组件：
+创建 Astro 页面来使用 WeatherCard 组件，你可以这样对 AI 说：
+
+```bash
+生成一个 Astro 页面，要求：
+- 使用 Astro 实现天气查询页面，并添加天气数据
+- 要使用 WeatherCard 和 WeatherPage 组件
+- 代码写入 src/pages/weather/index.astro 文件中
+```
+
+以下是我得到的代码，供你参考：
 
 ```astro
 <!-- pages/weather/index.astro -->
@@ -264,7 +293,20 @@ const exampleWeather = {
 
 ## API 路由实现
 
-在 `src/pages/api` 目录下创建天气相关的 API 路由：
+在 `src/pages/api` 目录下创建天气相关的 API 路由，你可以这样对 AI 说：
+
+```bash
+生成一个天气查询接口，要求：
+- 使用 Astro 实现天气查询接口，并添加天气数据
+- 使用聚合数据天气 API 获取天气数据
+- 代码写入 src/pages/api/weather/index.ts 文件中
+
+生成一个城市搜索接口，要求：
+- 使用 Astro 实现城市搜索接口，并添加城市数据
+- 代码写入 src/pages/api/weather/cities.ts 文件中
+```
+
+以下是我得到的代码，供你参考：
 
 <Tabs>
 <TabItem label="天气查询接口">
