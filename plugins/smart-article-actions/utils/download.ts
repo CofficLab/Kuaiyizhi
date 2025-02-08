@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { convertImage, extractFileInfo } from './imageConverter';
+import { convertToBaseMarkdown } from '../converter';
 
 interface DownloadOptions {
     content: string;
@@ -8,29 +9,16 @@ interface DownloadOptions {
         original: string;
         src: string;
     }>;
-}
-
-/**
- * 获取 MIME 类型对应的文件扩展名
- */
-function getExtensionFromMimeType(mimeType: string): string {
-    const mimeToExt: Record<string, string> = {
-        'image/jpeg': 'jpg',
-        'image/png': 'png',
-        'image/gif': 'gif',
-        'image/webp': 'webp',
-        'image/svg+xml': 'svg'
-    };
-    return mimeToExt[mimeType] || 'png';
+    convertContent?: boolean;
 }
 
 /**
  * 下载 Markdown 文件和相关图片
  */
 export const downloadMarkdownWithImages = async (options: DownloadOptions): Promise<string> => {
-    const { content, title, images } = options;
+    const { content, title, images, convertContent = true } = options;
     const zip = new JSZip();
-    let markdown = content;
+    let markdown = convertContent ? convertToBaseMarkdown(content) : content;
     const imgPromises = [];
 
     for (const image of images) {
