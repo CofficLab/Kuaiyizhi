@@ -6,7 +6,7 @@ const emoji = '🚩';
  * @type {import("astro").MiddlewareHandler}
  */
 export const onRequest: MiddlewareHandler = (context, next) => {
-    console.log(`${emoji} middleware: current path`, context.url.pathname);
+    console.log(`${emoji} Middleware: current path`, context.url.pathname);
 
     const pathsToRewrite = [
         { path: '/about', rewrite: '/meta/about' },
@@ -21,7 +21,7 @@ export const onRequest: MiddlewareHandler = (context, next) => {
     for (const { path, rewrite } of pathsToRewrite) {
         if (context.url.pathname === `/zh-cn${path}` || context.url.pathname === `/en${path}`) {
             const lang = context.url.pathname.startsWith('/zh-cn') ? 'zh-cn' : 'en';
-            console.log(`${emoji} middleware: rewrite to /${lang}${rewrite}`);
+            console.log(`${emoji} Middleware: rewrite to /${lang}${rewrite}`);
             return context.rewrite(`/${lang}${rewrite}`);
         }
     }

@@ -20,7 +20,7 @@ const props = Astro.props as Props;
             hover:scale-105
             hover:bg-cyan-500/20
             transition-all duration-300"
-            href="/">首页</a
+            href={`/${props.locale}`}>首页</a
         >
         <a
             class="nav-link text-sm no-underline
@@ -29,7 +29,7 @@ const props = Astro.props as Props;
             hover:scale-105
             hover:bg-cyan-500/20
             transition-all duration-300"
-            href="/courses">课程</a
+            href={`/${props.locale}/courses`}>课程</a
         >
         <a
             class="nav-link text-sm no-underline
@@ -38,7 +38,7 @@ const props = Astro.props as Props;
             hover:scale-105
             hover:bg-cyan-500/20
             transition-all duration-300"
-            href="/blogs">博客</a
+            href={`/${props.locale}/blogs`}>博客</a
         >
     </div>
 </div>

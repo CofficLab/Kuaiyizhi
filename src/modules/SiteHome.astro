@@ -1,0 +1,14 @@
+---
+import HomePage from '../components/HomePage.vue';
+import AppLayout from '../layouts/AppLayout.astro';
+const { lang } = Astro.props;
+const title = lang === 'zh-cn' ? '快易知' : 'Quick Knowledge';
+const description =
+    lang === 'zh-cn'
+        ? '追寻知识的纯粹之光'
+        : 'Pursuing the Pure Light of Knowledge';
+---
+
+<AppLayout title={title} description={description} hidePageTitle={true}>
+    <HomePage lang={lang} />
+</AppLayout>

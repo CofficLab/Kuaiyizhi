@@ -28,7 +28,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="https://github.com/CofficLab" class="smart-link">
+                            <a href="https://github.com/CofficLab/FeedbackHub" class="smart-link">
                                 {{ t('githubComments') }}
                             </a>
                         </li>

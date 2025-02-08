@@ -34,6 +34,9 @@ const { id } = Astro.params;
 const posts = await getBlogsWithTags(id);
 ---
 
-<BlogLayout title={`标签: ${id}`} description={`所有关于 ${id} 的文章`}>
-    <BlogList posts={posts} />
+<BlogLayout
+    title={`标签: ${id}`}
+    description={`所有关于 ${id} 的文章`}
+    lang="zh-cn">
+    <BlogList posts={posts} lang="zh-cn" />
 </BlogLayout>

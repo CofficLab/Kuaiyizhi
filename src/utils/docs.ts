@@ -27,8 +27,13 @@ const getMetaIds = async (lang: string): Promise<string[]> => {
     return metas.filter((meta) => meta.id.startsWith(lang)).map((meta) => meta.id);
 }
 
-const getBlogs = async (): Promise<CollectionEntry<'blogs'>[]> => {
-    return await getCollection('blogs');
+const getBlogs = async (lang: string): Promise<CollectionEntry<'blogs'>[]> => {
+    const posts = await getCollection('blogs', (post) => post.id.startsWith(lang));
+    return posts.sort((a, b) => {
+        const dateA = new Date(a.data.date).getTime();
+        const dateB = new Date(b.data.date).getTime();
+        return dateB - dateA; // 降序排序，最新的文章在前
+    });
 }
 
 // 获取带有特定标签的文章
@@ -36,9 +41,10 @@ const getBlogsWithTags = async (tag: string): Promise<CollectionEntry<'blogs'>[]
     return await getCollection('blogs', (post) => post.data.tags?.includes(tag));
 }
 
-const getBlogTags = async (): Promise<string[]> => {
+const getBlogTags = async (lang: string): Promise<string[]> => {
     const tags = new Set<string>();
-    const posts = await getBlogs();
+    const posts = await getBlogs(lang);
+
     posts.forEach(post => {
         post.data.tags?.forEach(tag => tags.add(tag));
     });

@@ -1,0 +1,19 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { getTopLevelPosts } from '../utils/docs';
+import CoursesPage from '../components/CoursesPage.vue';
+
+const { lang } = Astro.props;
+const posts = await getTopLevelPosts();
+const topLevelPosts = posts.map((post) => ({
+    link: post.id,
+    title: post.data.title,
+}));
+
+const title = lang === 'zh-cn' ? '课程列表' : 'Courses List';
+const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
+---
+
+<AppLayout title={title} description={description}>
+    <CoursesPage client:load books={topLevelPosts}/>
+</AppLayout>

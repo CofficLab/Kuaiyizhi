@@ -1,15 +1,25 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { getTopLevelPosts } from '../utils/docs';
-import CoursesPage from '../components/CoursesPage.vue';
+import SiteCourses from '../modules/SiteCourses.astro';
+export const prerender = false;
 
-const posts = await getTopLevelPosts();
-const topLevelPosts = posts.map((post) => ({
-    link: post.id,
-    title: post.data.title,
-}));
+// 获取浏览器首选语言
+const preferredLocale = Astro.preferredLocale;
+const currentLocale = Astro.currentLocale;
+
+// 使用 preferredLocale 如果存在，否则使用 currentLocale
+const locale = preferredLocale || currentLocale || 'zh-cn';
+const redirectPath = `/${locale}/courses`;
+
+console.log('📑 CoursesPage: Start processing');
+console.log('📑 CoursesPage: locale', locale);
+console.log('📑 CoursesPage: redirect to', redirectPath);
+
+// return Astro.redirect(redirectPath);
 ---
 
-<AppLayout title="课程列表" description="课程列表">
-    <CoursesPage client:load books={topLevelPosts} />
-</AppLayout>
+<AppLayout lang={locale} title="课程列表" description="课程列表" />
+
+<script define:vars={{ redirectPath }}>
+    window.location.href = redirectPath;
+</script>

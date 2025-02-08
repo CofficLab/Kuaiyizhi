@@ -1,6 +1,6 @@
 ---
 title: 全部开除之我为什么开除前端工程师
-date: 2024-03-20
+date: 2025-02-08
 excerpt: 一个CEO的"暴躁"决定，其实是AI编辑器Cursor带来的技术革新故事。从IP归属地查询需求说起，聊聊AI如何改变开发流程。
 authors:
   - name: Nookery

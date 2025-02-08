@@ -4,8 +4,13 @@ import { getTags } from '../utils/docs';
 import type SidebarItem from '../interface/SidebarItem';
 import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
 
-const { title, description, headings = [] } = Astro.props as BlogLayoutProps;
-const tags = await getTags();
+const {
+    title,
+    description,
+    headings = [],
+    lang,
+} = Astro.props as BlogLayoutProps;
+const tags = await getTags(lang);
 const sidebarItems: SidebarItem[] = tags.map((tag) => ({
     label: tag,
     link: `/blogs/tags/${tag}`,

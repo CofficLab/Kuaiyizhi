@@ -1,11 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
-import BlogList from '../components/BlogList.vue';
-import BlogsLayout from '../layouts/BlogsLayout.astro';
-import type { BlogPost } from '../interface/BlogPost';
-const posts: BlogPost[] = await getCollection('blogs');
+import AppLayout from '../layouts/AppLayout.astro';
+export const prerender = false;
+
+// 获取浏览器首选语言
+const preferredLocale = Astro.preferredLocale;
+const currentLocale = Astro.currentLocale;
+
+// 使用 preferredLocale 如果存在，否则使用 currentLocale
+const locale = preferredLocale || currentLocale;
+
+console.log('🖥️  IndexPage: locale', locale);
+console.log('🖥️  IndexPage: redirect to', `/${locale}/blogs`);
+
+// return Astro.redirect(`/${locale}/blogs`);
 ---
 
-<BlogsLayout title="所有文章" description="我的博客">
-    <BlogList posts={posts} />
-</BlogsLayout>
+<AppLayout lang={locale} title="博客" description="博客" />
+
+<script define:vars={{ locale }}>
+    window.location.href = `/${locale}/blogs`;
+</script>

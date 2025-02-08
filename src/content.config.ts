@@ -17,6 +17,7 @@ export const collections = {
 		schema: z.object({
 			title: z.string(),
 			tags: z.array(z.string()),
+			date: z.date().optional(),
 			description: z.string().optional(),
 		}),
 	}),
