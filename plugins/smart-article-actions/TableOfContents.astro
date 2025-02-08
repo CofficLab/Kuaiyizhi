@@ -2,13 +2,35 @@
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/TableOfContents.astro';
 import ArticleActions from './ArticleActions.vue';
+
 const props = Astro.props as Props;
+
+// 处理 Markdown 中的图片
+const imgRegex = /!\[.*?\]\((.*?)\)/g;
+const content = props.entry?.body ?? '';
+const images = [];
+const matches = content ? [...content.matchAll(imgRegex)] : [];
+
+for (const match of matches) {
+    const originalPath = match[1];
+    try {
+        // 使用 import.meta.env.SITE 获取站点基础URL
+        const imgSrc = new URL(originalPath, import.meta.env.SITE).pathname;
+        images.push({
+            original: originalPath,
+            // 确保路径以 / 开头
+            src: imgSrc.startsWith('/') ? imgSrc : `/${imgSrc}`,
+        });
+    } catch (e) {
+        console.error(`Failed to process image path: ${originalPath}`, e);
+    }
+}
 ---
 
-<div class="flex flex-col h-full">
-    <div class="bg-blue-50 w-full rounded-lg">
+<div class="flex flex-col h-full gap-4">
+    <div class="bg-blue-50/60 w-full rounded-lg px-2 py-1">
         <ArticleActions
-            content={props.entry.body ?? ''}
+            content={content}
             title={props.entry.data.title ?? ''}
             client:load
         />

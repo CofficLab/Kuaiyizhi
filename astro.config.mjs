@@ -12,12 +12,16 @@ import smartSidebarPlugin from './plugins/smart-sidebar/index.ts';
 import smartTitlePlugin from './plugins/smart-title/index.ts';
 import smartArticleActionsPlugin from './plugins/smart-article-actions/index.ts';
 
+import node from '@astrojs/node';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.kuaiyizhi.cn',
+
   prefetch: {
     prefetchAll: true,
   },
+
   vite: {
     server: {
       hmr: {
@@ -25,17 +29,18 @@ export default defineConfig({
       },
     },
   },
+
   integrations: [
     starlight({
       title: '快易知',
       defaultLocale: 'zh-cn',
       sidebar: sidebar,
       plugins: [
+        smartStylePlugin(),
         smartSearchPlugin(),
         smartPagePlugin(),
         smartHeaderPlugin(),
         smartSidebarPlugin(),
-        smartStylePlugin(),
         smartTitlePlugin(),
         smartArticleActionsPlugin(),
       ],
@@ -64,4 +69,8 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
   ],
+
+  adapter: node({
+    mode: 'standalone',
+  }),
 });

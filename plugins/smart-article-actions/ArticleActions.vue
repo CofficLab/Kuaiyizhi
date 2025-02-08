@@ -1,13 +1,17 @@
 <template>
-    <div class="z-10 flex flex-col gap-2 md:static md:flex-row md:justify-end md:py-4">
-        <button class="btn btn-ghost btn-sm" @click="downloadMarkdown" title="下载 Markdown">
-            <RiDownloadLine class="w-5 h-5" />
+    <div class="z-10 flex flex-col gap-2">
+        <button class="
+        w-8 h-8 bg-blue-300 rounded-lg hover:bg-blue-400 
+        flex justify-center items-center
+        duration-200 transition-all" @click="downloadMarkdown" title="下载 Markdown">
+            <RiDownloadLine />
         </button>
     </div>
 </template>
 
 <script setup>
 import { RiDownloadLine } from '@remixicon/vue';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
     content: {
@@ -20,50 +24,61 @@ const props = defineProps({
     }
 });
 
-const downloadMarkdown = () => {
-    const blob = new Blob([props.content], { type: 'text/markdown' });
+// 从优化后的 URL 中提取原始文件名
+function extractOriginalFileName(url) {
+    const match = url.match(/images%2F([^%]+\.png)/);
+    return match ? match[1] : 'image.png';
+}
+
+const images = ref([]);
+
+onMounted(() => {
+    const articleImages = document.querySelectorAll('main img');
+    console.log('Found images:', articleImages);
+    images.value = Array.from(articleImages).map(img => {
+        console.log('Image element:', {
+            src: img.src,
+            dataset: img.dataset,
+            attributes: Array.from(img.attributes).map(attr => `${attr.name}=${attr.value}`)
+        });
+        return {
+            original: img.getAttribute('data-original') || img.src,
+            src: img.src
+        };
+    });
+});
+
+const downloadMarkdown = async () => {
+    const JSZip = (await import('jszip')).default;
+    const zip = new JSZip();
+
+    let markdown = props.content;
+    const imgPromises = [];
+
+    for (const image of images.value) {
+        console.log('Processing image:', image);
+        // 使用新的函数提取文件名
+        const imgName = extractOriginalFileName(image.src);
+        const imgPromise = fetch(image.src)
+            .then(res => res.blob())
+            .then(blob => {
+                zip.file(`images/${imgName}`, blob);
+                markdown = markdown.replace(image.original, `./images/${imgName}`);
+            });
+        imgPromises.push(imgPromise);
+    }
+
+    await Promise.all(imgPromises);
+    zip.file(`${props.title}.md`, markdown);
+
+    const blob = await zip.generateAsync({ type: 'blob' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${props.title}.md`;
+    a.download = `${props.title}.zip`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
 };
 </script>
-
-<style>
-.article-actions {
-    position: fixed;
-    right: 2rem;
-    top: 6rem;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.action-button {
-    background-color: var(--sl-color-bg-inline);
-    border: 1px solid var(--sl-color-border);
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--sl-color-text);
-}
-
-.action-button:hover {
-    background-color: var(--sl-color-bg-hover);
-}
-
-@media (max-width: 72rem) {
-    .article-actions {
-        position: static;
-        flex-direction: row;
-        justify-content: flex-end;
-        padding: 1rem 0;
-    }
-}
-</style>
