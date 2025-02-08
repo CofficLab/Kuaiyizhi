@@ -13,5 +13,11 @@ const props = Astro.props as Props;
         <slot />
     </Default>
 
-    {props.hasSidebar === false && <FooterVue lang={props.locale || 'en'} />}
+    {
+        (props.hasSidebar === false ||
+            props.id.includes('meta') ||
+            props.id.includes('blogs')) && (
+            <FooterVue lang={Astro.currentLocale || 'en'} />
+        )
+    }
 </div>

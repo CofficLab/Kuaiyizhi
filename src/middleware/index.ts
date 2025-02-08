@@ -8,25 +8,20 @@ const emoji = '🚩';
 export const onRequest: MiddlewareHandler = (context, next) => {
     console.log(`${emoji} middleware: current path`, context.url.pathname);
 
-    // 检查并重写 /{lang}/about 路径
-    if (context.url.pathname === '/zh-cn/about' || context.url.pathname === '/en/about') {
-        const lang = context.url.pathname.startsWith('/zh-cn') ? 'zh-cn' : 'en';
-        console.log(`${emoji} middleware: rewrite to /${lang}/meta/about`);
-        return context.rewrite(`/${lang}/meta/about`);
-    }
+    const pathsToRewrite = [
+        { path: '/about', rewrite: '/meta/about' },
+        { path: '/privacy', rewrite: '/meta/privacy' },
+        { path: '/terms', rewrite: '/meta/terms' },
+        { path: '/partners', rewrite: '/meta/partners' },
+        { path: '/tech-stack', rewrite: '/meta/tech-stack' },
+    ];
 
-    // 检查并重写 /{lang}/privacy 路径
-    if (context.url.pathname === '/zh-cn/privacy' || context.url.pathname === '/en/privacy') {
-        const lang = context.url.pathname.startsWith('/zh-cn') ? 'zh-cn' : 'en';
-        console.log(`${emoji} middleware: rewrite to /${lang}/meta/privacy`);
-        return context.rewrite(`/${lang}/meta/privacy`);
-    }
-
-    // 检查并重写 /{lang}/terms 路径
-    if (context.url.pathname === '/zh-cn/terms' || context.url.pathname === '/en/terms') {
-        const lang = context.url.pathname.startsWith('/zh-cn') ? 'zh-cn' : 'en';
-        console.log(`${emoji} middleware: rewrite to /${lang}/meta/terms`);
-        return context.rewrite(`/${lang}/meta/terms`);
+    for (const { path, rewrite } of pathsToRewrite) {
+        if (context.url.pathname === `/zh-cn${path}` || context.url.pathname === `/en${path}`) {
+            const lang = context.url.pathname.startsWith('/zh-cn') ? 'zh-cn' : 'en';
+            console.log(`${emoji} middleware: rewrite to /${lang}${rewrite}`);
+            return context.rewrite(`/${lang}${rewrite}`);
+        }
     }
 
     return next();
