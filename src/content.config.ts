@@ -20,4 +20,14 @@ export const collections = {
 			description: z.string().optional(),
 		}),
 	}),
+	metas: defineCollection({
+		loader: glob({
+			pattern: "**/*.{md,mdx}",
+			base: "./src/content/meta"
+		}),
+		schema: z.object({
+			title: z.string().optional(),
+			description: z.string().optional(),
+		}),
+	}),
 };

@@ -1,3 +1,7 @@
+---
+title: About
+---
+
 Provide a rich software engineering tutorial.
 
 Here, we share knowledge, respect knowledge, and create knowledge. We pursue speed, professionalism, and rigor.

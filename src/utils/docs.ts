@@ -15,6 +15,18 @@ async function getTopLevelPosts() {
     return topLevelPosts;
 }
 
+// 获取所有元数据
+const getMetas = async (): Promise<CollectionEntry<'metas'>[]> => {
+    return await getCollection('metas');
+}
+
+const getMetaIds = async (lang: string): Promise<string[]> => {
+    // 如果lang=zh-CN，lang=zh-cn，都转换成lang=zh-cn
+    lang = lang.replace('zh-CN', 'zh-cn');
+    const metas = await getMetas();
+    return metas.filter((meta) => meta.id.startsWith(lang)).map((meta) => meta.id);
+}
+
 const getBlogs = async (): Promise<CollectionEntry<'blogs'>[]> => {
     return await getCollection('blogs');
 }
@@ -33,4 +45,11 @@ const getBlogTags = async (): Promise<string[]> => {
     return Array.from(tags);
 }
 
-export { getTopLevelPosts, getBlogTags as getTags, getBlogs, getBlogsWithTags };
+export {
+    getTopLevelPosts,
+    getBlogTags as getTags,
+    getBlogs,
+    getBlogsWithTags,
+    getMetas,
+    getMetaIds
+};
