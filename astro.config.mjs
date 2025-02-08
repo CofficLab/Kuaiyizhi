@@ -9,7 +9,8 @@ import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
 import smartStylePlugin from './plugins/smart-style/index.ts';
 import smartSidebarPlugin from './plugins/smart-sidebar/index.ts';
-import smartTitlePlugin from './plugins/smart-title/index.ts';  
+import smartTitlePlugin from './plugins/smart-title/index.ts';
+import smartArticleActionsPlugin from './plugins/smart-article-actions/index.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -36,6 +37,7 @@ export default defineConfig({
         smartSidebarPlugin(),
         smartStylePlugin(),
         smartTitlePlugin(),
+        smartArticleActionsPlugin(),
       ],
       locales: {
         en: {

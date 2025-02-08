@@ -1,0 +1,17 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/TableOfContents.astro';
+import ArticleActions from './ArticleActions.vue';
+const props = Astro.props as Props;
+---
+
+<div class="flex flex-col h-full">
+    <div class="bg-blue-50 w-full rounded-lg">
+        <ArticleActions
+            content={props.entry.body ?? ''}
+            title={props.entry.data.title ?? ''}
+            client:load
+        />
+    </div>
+    <Default {...props} />
+</div>
