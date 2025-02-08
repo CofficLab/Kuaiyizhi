@@ -78,7 +78,7 @@
             </div>
 
 
-            <div class="w-full z-50 mx-auto">
+            <div class="w-full px-8 z-50 mx-auto">
                 <div class="mt-0 hero smart-card">
                     <div class="text-center hero-content">
                         <div class="max-w-md flex flex-row justify-center items-center mx-auto">
