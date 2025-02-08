@@ -1,0 +1,311 @@
+---
+title: 使用 Vue 和 DaisyUI 构建图片尺寸转换组件
+date: 2025-02-08
+excerpt: 本文将介绍如何使用 Vue 3 和 DaisyUI 创建一个图片尺寸转换组件，支持将用户上传的图片转换为多种常用尺寸。
+authors:
+  - name: Nookery
+    picture: https://avatars.githubusercontent.com/u/5194193?s=200
+    url: https://github.com/nookery
+tags:
+  - Vue
+  - DaisyUI
+  - 图片处理
+  - 组件开发
+---
+
+在本教程中，我们将使用 Vue 3 和 DaisyUI 创建一个实用的图片尺寸转换组件。这个组件可以让用户上传图片，并自动转换成多种常用尺寸，非常适合需要准备不同尺寸图片的场景。
+
+## 在线演示
+
+import ImageResizer from './components/ImageResizer.vue'
+
+<div class="my-8 border rounded-lg p-4 bg-base-200">
+  <ImageResizer client:load presetSizes={[
+    { name: '社交媒体封面', width: 1200, height: 630 },
+    { name: '微信头像', width: 132, height: 132 },
+    { name: 'Instagram方形', width: 1080, height: 1080 },
+    { name: '手机壁纸', width: 1080, height: 1920 },
+    { name: '6寸照片', width: 1800, height: 1200 },
+  ]} />
+</div>
+
+## 功能特点
+
+- 支持拖拽上传图片
+- 预览原始图片
+- 转换为多种预设尺寸
+- 支持下载转换后的图片
+- 优雅的用户界面
+
+## 前置准备
+
+首先确保你的项目已经安装了必要的依赖：
+
+```bash
+npm install vue@3
+npm install daisyui
+npm install tailwindcss
+```
+
+## 组件代码
+
+创建一个新的组件文件 `ImageResizer.vue`：
+
+```vue
+<template>
+  <div class="container mx-auto p-4">
+    <!-- 上传区域 -->
+    <div
+      class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
+      @drop.prevent="handleDrop"
+      @dragover.prevent
+      @click="triggerFileInput"
+    >
+      <input
+        type="file"
+        ref="fileInput"
+        class="hidden"
+        accept="image/*"
+        @change="handleFileSelect"
+      />
+      <div v-if="!selectedImage" class="text-gray-500">
+        <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
+        <p>拖拽图片到这里或点击上传</p>
+      </div>
+      <img
+        v-else
+        :src="selectedImage"
+        class="max-w-md mx-auto rounded-lg shadow"
+      />
+    </div>
+
+    <!-- 预设尺寸选项 -->
+    <div v-if="selectedImage" class="mt-8">
+      <h3 class="text-lg font-semibold mb-4">选择目标尺寸：</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <button
+          v-for="size in presetSizes"
+          :key="size.name"
+          class="btn btn-primary"
+          @click="resizeImage(size.width, size.height)"
+        >
+          {{ size.name }} ({{ size.width }}x{{ size.height }})
+        </button>
+      </div>
+    </div>
+
+    <!-- 转换后的图片展示 -->
+    <div v-if="resizedImages.length" class="mt-8">
+      <h3 class="text-lg font-semibold mb-4">转换结果：</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          v-for="(image, index) in resizedImages"
+          :key="index"
+          class="card bg-base-100 shadow-xl"
+        >
+          <figure class="px-4 pt-4">
+            <img :src="image.url" class="rounded-xl" />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title">
+              {{ image.width }}x{{ image.height }}
+            </h2>
+            <div class="card-actions justify-end">
+              <button
+                class="btn btn-primary"
+                @click="downloadImage(image.url, image.width, image.height)"
+              >
+                下载
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const fileInput = ref(null)
+const selectedImage = ref(null)
+const resizedImages = ref([])
+
+// 预设尺寸
+const presetSizes = [
+  { name: '社交媒体封面', width: 1200, height: 630 },
+  { name: '微信头像', width: 132, height: 132 },
+  { name: 'Instagram方形', width: 1080, height: 1080 },
+  { name: '手机壁纸', width: 1080, height: 1920 },
+]
+
+// 触发文件选择
+const triggerFileInput = () => {
+  fileInput.value.click()
+}
+
+// 处理文件选择
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    loadImage(file)
+  }
+}
+
+// 处理拖拽上传
+const handleDrop = (event) => {
+  const file = event.dataTransfer.files[0]
+  if (file && file.type.startsWith('image/')) {
+    loadImage(file)
+  }
+}
+
+// 加载图片
+const loadImage = (file) => {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    selectedImage.value = e.target.result
+    resizedImages.value = [] // 清空之前的结果
+  }
+  reader.readAsDataURL(file)
+}
+
+// 调整图片尺寸
+const resizeImage = (targetWidth, targetHeight) => {
+  const img = new Image()
+  img.src = selectedImage.value
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = targetWidth
+    canvas.height = targetHeight
+    const ctx = canvas.getContext('2d')
+    
+    // 使用白色背景
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    
+    // 计算缩放和位置以保持宽高比
+    const scale = Math.min(
+      targetWidth / img.width,
+      targetHeight / img.height
+    )
+    const x = (targetWidth - img.width * scale) / 2
+    const y = (targetHeight - img.height * scale) / 2
+    
+    ctx.drawImage(
+      img,
+      x,
+      y,
+      img.width * scale,
+      img.height * scale
+    )
+    
+    const resizedUrl = canvas.toDataURL('image/jpeg', 0.9)
+    resizedImages.value.push({
+      url: resizedUrl,
+      width: targetWidth,
+      height: targetHeight
+    })
+  }
+}
+
+// 下载图片
+const downloadImage = (dataUrl, width, height) => {
+  const link = document.createElement('a')
+  link.download = `resized-${width}x${height}.jpg`
+  link.href = dataUrl
+  link.click()
+}
+</script>
+```
+
+## 使用说明
+
+1. **上传图片**：
+   - 点击上传区域选择图片文件
+   - 或直接将图片拖拽到上传区域
+
+2. **选择目标尺寸**：
+   - 上传图片后，可以看到预设的尺寸选项
+   - 点击需要的尺寸按钮进行转换
+
+3. **查看和下载**：
+   - 转换后的图片会显示在下方
+   - 每个转换结果都有预览和下载按钮
+
+## 关键实现细节
+
+### 1. 图片上传处理
+
+组件支持两种上传方式：点击选择和拖拽上传。使用 FileReader API 读取图片文件：
+
+```javascript
+const loadImage = (file) => {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    selectedImage.value = e.target.result
+    resizedImages.value = []
+  }
+  reader.readAsDataURL(file)
+}
+```
+
+### 2. 图片尺寸转换
+
+使用 Canvas API 进行图片缩放，保持原始图片的宽高比：
+
+```javascript
+const resizeImage = (targetWidth, targetHeight) => {
+  const img = new Image()
+  img.src = selectedImage.value
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    // ... 缩放逻辑 ...
+  }
+}
+```
+
+### 3. 保持宽高比
+
+为了在调整尺寸时保持图片的宽高比，我们计算适当的缩放比例：
+
+```javascript
+const scale = Math.min(
+  targetWidth / img.width,
+  targetHeight / img.height
+)
+```
+
+## 样式优化
+
+组件使用 DaisyUI 和 Tailwind CSS 实现了美观的界面：
+
+- 使用 `card` 组件展示转换结果
+- 响应式布局适应不同屏幕尺寸
+- 优雅的拖拽上传区域
+- 清晰的按钮和交互效果
+
+## 进阶优化建议
+
+1. **添加加载状态**：
+   - 在处理大图片时显示加载提示
+   - 使用进度条显示转换进度
+
+2. **自定义尺寸**：
+   - 添加输入框允许用户指定自定义尺寸
+   - 保存常用尺寸配置
+
+3. **图片优化**：
+   - 添加图片质量控制选项
+   - 支持多种输出格式（PNG、WebP等）
+
+4. **批量处理**：
+   - 支持多图片同时上传和处理
+   - 提供批量下载功能
+
+## 结论
+
+这个图片尺寸转换组件展示了如何使用 Vue 3 和 DaisyUI 创建实用的工具组件。通过组合现代的 Web API 和优雅的 UI 框架，我们可以构建出既实用又美观的功能组件。
+
+你可以根据实际需求进一步扩展这个组件，添加更多功能或优化用户体验。希望这个教程对你有所帮助！ 

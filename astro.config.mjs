@@ -66,7 +66,7 @@ export default defineConfig({
       include: ['**/*.vue'], // 明确包含Vue组件
     }),
     tailwind({
-      applyBaseStyles: false,
+      applyBaseStyles: true,
     }),
   ],
 
