@@ -4,7 +4,7 @@
             <li v-for="post in posts" :key="post.slug" class="mb-2">
                 <a :href="getBlogLink(post)" class="text-blue-500 hover:underline no-underline hover:no-underline">{{
                     post.data.title
-                    }}</a>
+                }}</a>
             </li>
         </ul>
     </div>
@@ -17,7 +17,7 @@ defineProps<{
 
 function getBlogLink(post: CollectionEntry<'blogs'>) {
     let filePath = post.filePath;
-    let slug = filePath.split('/').slice(3).join('/').replace('.md', '');
+    let slug = filePath.split('/').slice(3).join('/').replace(/\.[^/.]+$/, '');
     return `/blogs/${slug}`;
 }
 </script>
