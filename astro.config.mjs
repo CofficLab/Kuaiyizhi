@@ -36,13 +36,13 @@ export default defineConfig({
       defaultLocale: 'zh-cn',
       sidebar: sidebar,
       plugins: [
-        smartStylePlugin(),
         smartSearchPlugin(),
         smartPagePlugin(),
         smartHeaderPlugin(),
         smartSidebarPlugin(),
         smartTitlePlugin(),
         smartArticleActionsPlugin(),
+        smartStylePlugin(),
       ],
       locales: {
         en: {

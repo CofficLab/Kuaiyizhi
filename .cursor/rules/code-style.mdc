@@ -1,0 +1,9 @@
+---
+description: code style
+globs: 
+---
+# Code Style
+
+- 遵循关注点分离原则
+- 每个文件指处理单一的一件事
+- 单个文件不要过大，适当拆分代码到多个文件中

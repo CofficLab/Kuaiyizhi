@@ -1,6 +1,5 @@
 import tabStyles from './tabs.css?raw';
 import tabScript from './tabs.js?raw';
-import CodeConverter from '../code/CodeConverter';
 
 /**
  * Tabs 转换器类
@@ -14,9 +13,6 @@ export default class TabsConverter {
      */
     public static convert(content: string): string {
         let tabContainerCount = 0;
-
-        // 首先处理 Markdown 代码块
-        content = CodeConverter.convert(content);
 
         return content.replace(
             /<Tabs>([\s\S]*?)<\/Tabs>/g,
