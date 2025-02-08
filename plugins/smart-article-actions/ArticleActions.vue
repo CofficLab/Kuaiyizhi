@@ -9,9 +9,15 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { RiDownloadLine } from '@remixicon/vue';
 import { onMounted, ref } from 'vue';
+import { convertTabsToHTML } from './markdownConverter';
+
+interface ImageInfo {
+    original: string;
+    src: string;
+}
 
 const props = defineProps({
     content: {
@@ -25,25 +31,25 @@ const props = defineProps({
 });
 
 // 从优化后的 URL 中提取原始文件名
-function extractOriginalFileName(url) {
+function extractOriginalFileName(url: string): string {
     const match = url.match(/images%2F([^%]+\.png)/);
     return match ? match[1] : 'image.png';
 }
 
-const images = ref([]);
+const images = ref<ImageInfo[]>([]);
 
 onMounted(() => {
     const articleImages = document.querySelectorAll('main img');
     console.log('Found images:', articleImages);
     images.value = Array.from(articleImages).map(img => {
         console.log('Image element:', {
-            src: img.src,
-            dataset: img.dataset,
+            src: (img as HTMLImageElement).src,
+            dataset: (img as HTMLImageElement).dataset,
             attributes: Array.from(img.attributes).map(attr => `${attr.name}=${attr.value}`)
         });
         return {
-            original: img.getAttribute('data-original') || img.src,
-            src: img.src
+            original: img.getAttribute('data-original') || (img as HTMLImageElement).src,
+            src: (img as HTMLImageElement).src
         };
     });
 });
@@ -53,6 +59,7 @@ const downloadMarkdown = async () => {
     const zip = new JSZip();
 
     let markdown = props.content;
+    markdown = convertTabsToHTML(markdown);
     const imgPromises = [];
 
     for (const image of images.value) {
