@@ -9,6 +9,24 @@ export default class TabsConverter {
     private static readonly SCRIPT = `<script>${tabScript}</script>`;
 
     /**
+     * 生成单个 tab 的 detail HTML
+     */
+    private static generateTabDetail(label: string, content: string, isOpen: boolean): string {
+        let tabContent = content.trim();
+
+        // 如果内容包含代码块，确保前后有空行
+        if (tabContent.includes('```')) {
+            tabContent = `\n${tabContent}\n`;
+        }
+
+        const openAttr = isOpen ? ' open' : '';
+        return `<details${openAttr}>\n` +
+            `<summary>${label}</summary>\n` +
+            `<div class="tab-content">\n${tabContent}\n</div>\n` +
+            `</details>\n`;
+    }
+
+    /**
      * 将 Starlight Tabs 组件转换为交互式 HTML
      */
     public static convert(content: string): string {
@@ -23,7 +41,7 @@ export default class TabsConverter {
                 let html = `<div class="tabs-container" id="${containerId}">\n`;
 
                 if (tabContainerCount === 1) {
-                    html += this.STYLE;
+                    html += this.STYLE + '\n';
                 }
 
                 // 使用 details/summary 替代按钮和 JavaScript
@@ -33,19 +51,8 @@ export default class TabsConverter {
 
                     if (labelMatch && contentMatch) {
                         const label = labelMatch[1];
-                        let tabContent = contentMatch[1].trim();
-
-                        // 如果内容包含代码块，确保前后有空行
-                        if (tabContent.includes('```')) {
-                            tabContent = `\n${tabContent}\n`;
-                        }
-
-                        const isOpen = index === 0 ? ' open' : '';
-
-                        html += `<details${isOpen}>\n`;
-                        html += `<summary>${label}</summary>\n`;
-                        html += `<div class="tab-content">\n${tabContent}\n</div>\n`;
-                        html += `</details>\n`;
+                        const tabContent = contentMatch[1];
+                        html += this.generateTabDetail(label, tabContent, index === 0);
                     }
                 });
 
