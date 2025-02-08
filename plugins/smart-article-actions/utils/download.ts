@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { convertImage, extractFileInfo } from './imageConverter';
 
 interface DownloadOptions {
     content: string;
@@ -10,11 +11,17 @@ interface DownloadOptions {
 }
 
 /**
- * 从优化后的 URL 中提取原始文件名
+ * 获取 MIME 类型对应的文件扩展名
  */
-function extractOriginalFileName(url: string): string {
-    const match = url.match(/images%2F([^%]+\.png)/);
-    return match ? match[1] : 'image.png';
+function getExtensionFromMimeType(mimeType: string): string {
+    const mimeToExt: Record<string, string> = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+        'image/svg+xml': 'svg'
+    };
+    return mimeToExt[mimeType] || 'png';
 }
 
 /**
@@ -27,12 +34,27 @@ export const downloadMarkdownWithImages = async (options: DownloadOptions): Prom
     const imgPromises = [];
 
     for (const image of images) {
-        const imgName = extractOriginalFileName(image.src);
+        const { baseName, targetFormat } = extractFileInfo(image.src);
         const imgPromise = fetch(image.src)
-            .then(res => res.blob())
-            .then(blob => {
-                zip.file(`images/${imgName}`, blob);
-                markdown = markdown.replace(image.original, `./images/${imgName}`);
+            .then(async res => {
+                const contentType = res.headers.get('content-type') || 'image/png';
+                const blob = await res.blob();
+
+                // 如果当前格式是 webp 或与目标格式不匹配，则进行转换
+                const currentFormat = contentType.split('/')[1];
+                const needsConversion = currentFormat === 'webp' ||
+                    (currentFormat !== targetFormat && currentFormat !== 'jpeg');
+
+                const finalBlob = needsConversion
+                    ? await convertImage(blob, targetFormat)
+                    : blob;
+
+                const fileName = `${baseName}.${targetFormat}`;
+                zip.file(`images/${fileName}`, finalBlob);
+                markdown = markdown.replace(image.original, `./images/${fileName}`);
+            })
+            .catch(error => {
+                console.error('Error processing image:', error);
             });
         imgPromises.push(imgPromise);
     }
@@ -50,5 +72,5 @@ export const downloadMarkdownWithImages = async (options: DownloadOptions): Prom
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
 
-    return markdown; // 返回处理后的 markdown 内容
+    return markdown;
 }; 
