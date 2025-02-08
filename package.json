@@ -6,7 +6,7 @@
     "dev": "astro dev --host 0.0.0.0 --port 3008",
     "start": "astro dev --host 0.0.0.0 --port 3008",
     "build": "astro build",
-    "preview": "astro preview --port 8080",
+    "preview": "astro preview --port 8080 --host 0.0.0.0",
     "astro": "astro"
   },
   "dependencies": {
