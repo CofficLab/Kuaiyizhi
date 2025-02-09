@@ -5,7 +5,7 @@
                 <span class="badge badge-ghost font-mono text-sm">{{ formatDate(post.data.date) }}</span>
                 <a :href="getBlogLink(post)" class="text-blue-500 no-underline hover:no-underline">{{
                     post.data.title
-                }}</a>
+                    }}</a>
             </li>
         </ul>
     </div>
@@ -24,7 +24,8 @@ function getBlogLink(post: CollectionEntry<'blogs'>) {
     return `/${props.lang}/blogs/${slug}`;
 }
 
-function formatDate(date: Date) {
+function formatDate(date: Date | undefined) {
+    if (!date) return '';
     const d = new Date(date);
     const pad = (n: number) => n.toString().padStart(2, '0');
 

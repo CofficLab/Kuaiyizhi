@@ -4,7 +4,6 @@ import BlogList from '../../components/BlogList.vue';
 import BlogsLayout from '../../layouts/BlogsLayout.astro';
 const posts = await getBlogs('zh-cn');
 const zhPosts = posts.filter((post) => post.id.startsWith('zh-cn'));
-console.log(zhPosts.map((post) => post.data));
 ---
 
 <BlogsLayout title="所有文章" description="我的博客" lang="zh-cn">
