@@ -15,5 +15,5 @@ const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 ---
 
 <AppLayout title={title} description={description}>
-    <CoursesPage client:load books={topLevelPosts} />
+    <CoursesPage books={topLevelPosts} />
 </AppLayout>

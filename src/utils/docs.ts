@@ -30,9 +30,9 @@ const getMetaIds = async (lang: string): Promise<string[]> => {
 const getBlogs = async (lang: string): Promise<CollectionEntry<'blogs'>[]> => {
     const posts = await getCollection('blogs', (post) => post.id.startsWith(lang));
     return posts.sort((a, b) => {
-        const dateA = new Date(a.data.date).getTime();
-        const dateB = new Date(b.data.date).getTime();
-        return dateB - dateA; // 降序排序，最新的文章在前
+        const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;
+        const dateB = b.data.date ? new Date(b.data.date).getTime() : 0;
+        return dateB - dateA;
     });
 }
 

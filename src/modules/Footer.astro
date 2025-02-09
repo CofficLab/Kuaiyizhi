@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
+import { makeMetaLink } from '../utils/links';
 
 const { lang = 'en' } = Astro.props;
 
@@ -72,7 +73,7 @@ const t = (key: keyof typeof translations) => {
 };
 
 const makeLink = (path: string) => {
-    return `/${lang}/${path}`;
+    return makeMetaLink(lang, path);
 };
 ---
 
