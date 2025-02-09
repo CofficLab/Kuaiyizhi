@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "daisyui": "^4.12.23"
-  }
+  },
+  "trustedDependencies": [
+    "sharp"
+  ]
 }
