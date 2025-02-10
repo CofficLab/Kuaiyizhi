@@ -1,5 +1,5 @@
 ---
-title: 全部开除之我为什么开除前端工程师
+title: Cursor + 聚合数据开发一个IP归属地组件
 date: 2025-02-08
 excerpt: 一个CEO的"暴躁"决定，其实是AI编辑器Cursor带来的技术革新故事。从IP归属地查询需求说起，聊聊AI如何改变开发流程。
 authors:
@@ -12,83 +12,59 @@ tags:
   - 前端开发
 ---
 
-"要不要开除前端团队？"
+![cursor-5](./images/cursor-5.png)
 
-这个想法在我脑海中盘旋了整整一周。
+最近产品经理提出了一个需求：给系统添加IP归属地显示功能。
 
-事情是这样的：  
-
-作为一个创业公司的CEO，我最近一直在研究AI编程工具。当我看到Cursor编辑器的演示视频时，我的第一反应是："又能省点钱了！"   
-
-那我自己试试，让它教我开发一个网页。
-
-![cursor](./images/cursor.png)
-
-## 一个小小的需求
-
-事情的起因是这样的。
-
-产品经理小王提了个需求："老板，我们需要给系统加个IP归属地显示功能，就像微博那样。"
-
-按照以往的经验，这个需求至少需要一周时间：
-1. 前端团队评估（1天）
+这个需求通常需要经过以下步骤：
+1. 技术评估（1天）
 2. UI设计（1天）
 3. 接口对接（2天）
 4. 测试调优（1天）
 5. 上线部署（1天）
 
-我看了看工时评估表，又看了看我们每月高达30万的前端团队工资支出，陷入了沉思。
+正好我最近在研究AI编程工具，尤其是Cursor编辑器。  
 
-"不如...我自己试试？"
+让我们看看使用 Cursor 调用聚合数据的 API 如何快速实现这个需求。
 
-## 走进AI编程的新世界
+## 初始化项目
 
-我偷偷打开了Cursor编辑器。
+依然是使用 Vite 初始化项目：
 
-我在Cursor中输入：
+```bash
+pnpm create vite
+```
+
+以及按照 Tailwind CSS 的文档配置 Tailwind CSS：
+
+```bash
+pnpm install tailwindcss @tailwindcss/vite
+```
+
+
+## 前端组件
+
+首先，我们需要明确技术栈和API要求：
 
 ```bash
 我要开发一个显示用户归属地的组件，要求：
 
 - 使用Vue和TailwindCSS
-- 帮我找一个靠谱的IP归属地API供应商，要求
+- 需要一个可靠的IP归属地API供应商
   - 在苏州本地
   - 是上市公司，专业提供API服务
-  - 还要能提供以下API
-    - 天气预报
-    - 快递查询
-    - 身份证归属地查询
-    - 银行卡归属地查询
-    - 手机号码归属地查询
+  - 提供相关API服务（天气、快递、身份证等查询）
 ```
 
 Cursor立刻给出了详细步骤：
 
 ![cursor-1](./images/cursor-1.png)
 
-然后，我需要配置Tailwind CSS。Cursor给出了配置文件：
+看看效果：
 
-```javascript
-// tailwind.config.js
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
+![cursor-5](./images/cursor-5.png)
 
-```css
-/* src/style.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+## 后端 API
 
 接下来，我需要了解聚合数据的API。打开聚合数据的官网，找到了IP地址查询接口的文档。
 
@@ -107,51 +83,59 @@ export default {
 }
 ```
 
-现在，我可以开始写组件了。我对Cursor说：
+让 Cursor 帮我生成一个 后端 API 的代码：
 
 ```bash
-我需要一个Vue3组件，用于显示IP归属地，使用聚合数据的API，使用Tailwind CSS样式。
+使用 Golang，实现一个简单的 API 服务。
+
+- 使用聚合数据的 API 查询 IP 归属地
+- 适配 @IpLocation 组件的请求格式
+- 返回 JSON 格式数据
+
 ```
 
-Cursor立刻给出了API调用代码：
+![cursor-6](./images/cursor-6.png)
 
-![cursor-3](./images/cursor-3.png)
+点击代码块的 `Apply` 按钮，Cursor 会自动生成代码文件：
 
-我目瞪口呆。这不仅仅是一个简单的组件，它还：
-- 使用了Tailwind CSS的响应式设计
-- 包含了完整的错误处理
-- 添加了优雅的tooltip效果
-- 使用了TypeScript
-- 实现了平滑的过渡动画
-- 使用了SVG图标
+![cursor-7](./images/cursor-7.png)
 
-最后，我需要在页面中使用这个组件：
+甚至非常贴心的告诉我如何运行 Golang 以及设置代理：
 
-![cursor-4](./images/cursor-4.png)
+![cursor-8](./images/cursor-8.png)
 
-## 内心的震撼
+以及在最后，还会告诉我下一步该怎么做：
 
-看着这些代码，我的大脑一片混乱。
+![cursor-9](./images/cursor-9.png)
 
-这不就是我们前端团队平时在做的事情吗？而且Cursor完成得如此完美，甚至比某些工程师写得还要好。
+## 测试
 
-- 代码规范？完美遵循
-- 组件封装？干净利落
-- 错误处理？面面俱到
-- UI交互？细节满分
-- TypeScript？类型完整
-- 项目结构？清晰合理
+现在使用后端的API：
 
-我打开了工资表，看着那一串串数字，不禁陷入了沉思。
+```bash
+取消注释前端代码中的 API 调用部分，删除模拟数据，使用真实的API
+```
 
-"也许...是时候和团队谈谈了。"
+即使出错也没关系，Cursor 已经贴心的指出了错误的原因：
 
-## 结语
+![cursor-10](./images/cursor-10.png)
 
-这不是一个关于裁员的故事，而是关于技术革新的故事。
+## 配置聚合数据API
 
-AI不是来抢饭碗的，而是来帮我们把饭碗端得更稳的。就像当年的Git改变了代码版本控制，Node.js改变了前端开发生态一样，AI编辑器正在开创开发效率的新纪元。
+申请聚合数据的 API 接口，并获取 API Key 后，成功：
 
-毕竟，能被AI取代的工作，本来就不是人该做的。
+![cursor-11](./images/cursor-11.png)
 
-不是吗？
+## 总结
+
+使用 Cursor 开发，我只需要专注于业务逻辑，其他的事情交给 AI 来完成。  
+
+最深刻的体会是，Cursor 生成代码的速度非常快，对于 Vue 和 Golang 的代码，几乎是马上就可以用。
+
+对于一些常见的需求，Cursor 会给出非常详细的提示和建议，甚至会给出代码的优化建议。
+
+对于我这种初学者来说，Cursor 的智能提示和自动补全功能非常友好，可以大大提高开发效率。
+
+
+
+

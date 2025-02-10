@@ -2,12 +2,17 @@
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/TableOfContents.astro';
 import ArticleActions from './ArticleActions.vue';
-
+import { getBlogContent } from '../../src/utils/docs';
 const props = Astro.props as Props;
+
+console.log(props.id);
 
 // 处理 Markdown 中的图片
 const imgRegex = /!\[.*?\]\((.*?)\)/g;
-const content = props.entry?.body ?? '';
+let content = props.entry?.body ?? '';
+if (content.length === 0) {
+    content = await getBlogContent(props.lang, props.id);
+}
 const images = [];
 const matches = content ? [...content.matchAll(imgRegex)] : [];
 

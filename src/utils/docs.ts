@@ -2,6 +2,8 @@ import { getCollection } from 'astro:content';
 import type { BlogPost } from '../interface/BlogPost';
 import type { CollectionEntry } from 'astro:content';
 
+const emoji = "🚀";
+
 async function getTopLevelPosts() {
     // 获取所有文章
     const allPosts = await getCollection('docs');
@@ -28,7 +30,8 @@ const getMetaIds = async (lang: string): Promise<string[]> => {
 }
 
 const getBlogs = async (lang: string): Promise<CollectionEntry<'blogs'>[]> => {
-    const posts = await getCollection('blogs', (post) => post.id.startsWith(lang));
+    let langFormatted = lang.replace('zh-CN', 'zh-cn');
+    const posts = await getCollection('blogs', (post) => post.id.startsWith(langFormatted));
     return posts.sort((a, b) => {
         const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;
         const dateB = b.data.date ? new Date(b.data.date).getTime() : 0;
@@ -51,11 +54,20 @@ const getBlogTags = async (lang: string): Promise<string[]> => {
     return Array.from(tags);
 }
 
+const getBlogContent = async (lang: string, id: string): Promise<string> => {
+    console.log(`${emoji} Docs: getBlogContent with \n lang: ${lang} \n id: ${id}`);
+    const posts = await getBlogs(lang);
+    console.log(`${emoji} Docs: posts: ${posts.map(post => post.id)}`);
+    const post = posts.find(post => post.id === id.replace('blogs/', ''));
+    return post?.body ?? '';
+}
+
 export {
     getTopLevelPosts,
     getBlogTags as getTags,
     getBlogs,
     getBlogsWithTags,
     getMetas,
-    getMetaIds
+    getMetaIds,
+    getBlogContent
 };
