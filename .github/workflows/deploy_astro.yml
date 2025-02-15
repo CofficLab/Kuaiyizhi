@@ -17,11 +17,13 @@ permissions:
 
 jobs:
   npm:
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - servon
     steps:
-      - name: 当前用户
+      - name: Current User
         run: whoami
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Current Host
+        run: hostname
       - name: Servon Deploy
         run: servon deploy astro --repo https://github.com/CofficLab/Kuaiyizhi --branch astro
