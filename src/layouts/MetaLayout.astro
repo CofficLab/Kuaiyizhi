@@ -1,15 +1,18 @@
 ---
 import AppLayout from './AppLayout.astro';
-import { getMetaIds } from '../utils/docs';
+import { getMetaIdsAndTitles } from '../database/meta';
 import type SidebarItem from '../interface/SidebarItem';
 import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
+import { logger } from '../utils/logger';
 
 const { title, description, headings = [] } = Astro.props as BlogLayoutProps;
-const metaIds = await getMetaIds(Astro.currentLocale ?? 'en');
-const sidebarItems: SidebarItem[] = metaIds.map((metaId) => ({
-    label: metaId,
-    link: `/${metaId.replace('zh-cn/', '').replace('en/', '')}`,
+const metaIdsAndTitles = await getMetaIdsAndTitles(Astro.currentLocale ?? 'en');
+const sidebarItems: SidebarItem[] = metaIdsAndTitles.map((metaIdAndTitle) => ({
+    label: metaIdAndTitle.title,
+    link: `/${metaIdAndTitle.id.replace('zh-cn/', '').replace('en/', '')}`,
 }));
+
+logger.array(`sidebarItems`, sidebarItems);
 ---
 
 <AppLayout

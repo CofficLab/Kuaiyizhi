@@ -6,13 +6,17 @@
     @apply bg-transparent;
   }
   
-  .sidebar-content ul {
+  .sidebar-content ul.top-level {
     @apply 
-    shadow-inner shadow
+    shadow-inner
     border-0 border-red-200
     bg-gradient-to-bl
     from-emerald-800/10 to-indigo-900/10
     dark:from-emerald-900/95 dark:to-indigo-900/95
     rounded-lg 
     px-2 py-2;
+  }
+
+  .sidebar-content ul li a:not(:has(> details)) {
+    @apply rounded-lg hover:bg-primary hover:text-white;
   }

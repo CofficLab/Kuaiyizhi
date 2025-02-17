@@ -1,15 +1,10 @@
 ---
 import AppLayout from './AppLayout.astro';
-import { getTags } from '../utils/docs';
+import { getTags } from '../database/docs';
 import type SidebarItem from '../interface/SidebarItem';
 import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
 
-const {
-    title,
-    description,
-    headings = [],
-    lang,
-} = Astro.props as BlogLayoutProps;
+const { title, description, lang } = Astro.props as BlogLayoutProps;
 const tags = await getTags(lang);
 const sidebarItems: SidebarItem[] = tags.map((tag) => ({
     label: tag,

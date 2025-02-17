@@ -2,14 +2,11 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import { makeMetaLink } from '../utils/links';
+import Slogan from './Slogan.astro';
 
 const { lang = 'en' } = Astro.props;
 
 const translations = {
-    slogan: {
-        zh: '也许，这是一番成就的开始',
-        en: 'Perhaps, this is the beginning of achievement',
-    },
     github: {
         zh: 'GitHub',
         en: 'GitHub',
@@ -77,9 +74,9 @@ const makeLink = (path: string) => {
 };
 ---
 
-<div>
+<div class="bg-white dark:bg-gray-900 z-50">
     <div
-        class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner mt-12 bg-gray-900/10 backdrop-blur-3xl">
+        class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner bg-gray-900/10 backdrop-blur-3xl">
         <a
             href={`/${lang}/`}
             class="flex items-center self-center w-auto text-lg font-bold smart-link">
@@ -198,18 +195,7 @@ const makeLink = (path: string) => {
             </div>
         </div>
 
-        <div class="w-full px-8 z-50 mx-auto">
-            <div class="mt-0 hero smart-card">
-                <div class="text-center hero-content">
-                    <div
-                        class="max-w-md flex flex-row justify-center items-center mx-auto">
-                        <h1 class="text-2xl md:text-3xl font-bold">
-                            {t('slogan')}
-                        </h1>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Slogan lang={lang} />
 
         <div class="self-center my-4 text-sm sm:text-base">
             <a

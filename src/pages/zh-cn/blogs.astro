@@ -1,5 +1,5 @@
 ---
-import { getBlogs } from '../../utils/docs';
+import { getBlogs } from '../../database/docs';
 import BlogList from '../../components/BlogList.vue';
 import BlogsLayout from '../../layouts/BlogsLayout.astro';
 const posts = await getBlogs('zh-cn');

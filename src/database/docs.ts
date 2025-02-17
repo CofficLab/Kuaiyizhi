@@ -1,8 +1,6 @@
 import { getCollection } from 'astro:content';
-import type { BlogPost } from '../interface/BlogPost';
 import type { CollectionEntry } from 'astro:content';
-
-const emoji = "🚀";
+import { logger } from '../utils/logger';
 
 async function getTopLevelPosts() {
     // 获取所有文章
@@ -15,18 +13,6 @@ async function getTopLevelPosts() {
     });
 
     return topLevelPosts;
-}
-
-// 获取所有元数据
-const getMetas = async (): Promise<CollectionEntry<'metas'>[]> => {
-    return await getCollection('metas');
-}
-
-const getMetaIds = async (lang: string): Promise<string[]> => {
-    // 如果lang=zh-CN，lang=zh-cn，都转换成lang=zh-cn
-    lang = lang.replace('zh-CN', 'zh-cn');
-    const metas = await getMetas();
-    return metas.filter((meta) => meta.id.startsWith(lang)).map((meta) => meta.id);
 }
 
 const getBlogs = async (lang: string): Promise<CollectionEntry<'blogs'>[]> => {
@@ -55,9 +41,8 @@ const getBlogTags = async (lang: string): Promise<string[]> => {
 }
 
 const getBlogContent = async (lang: string, id: string): Promise<string> => {
-    console.log(`${emoji} Docs: getBlogContent with \n lang: ${lang} \n id: ${id}`);
     const posts = await getBlogs(lang);
-    console.log(`${emoji} Docs: posts: ${posts.map(post => post.id)}`);
+    logger.array(`posts`, posts.map(post => post.id));
     const post = posts.find(post => post.id === id.replace('blogs/', ''));
     return post?.body ?? '';
 }
@@ -67,7 +52,5 @@ export {
     getBlogTags as getTags,
     getBlogs,
     getBlogsWithTags,
-    getMetas,
-    getMetaIds,
     getBlogContent
 };

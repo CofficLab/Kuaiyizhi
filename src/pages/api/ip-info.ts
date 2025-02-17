@@ -10,13 +10,7 @@ interface IpInfo {
 
 export const GET: APIRoute = async () => {
     try {
-        console.log('开始请求 IP 信息...');
-        const startTime = Date.now();
         const response = await fetch('http://ip-api.com/json/');
-        const endTime = Date.now();
-
-        console.log(`API 响应状态: ${response.status} ${response.statusText}`);
-        console.log(`请求耗时: ${endTime - startTime}ms`);
 
         if (!response.ok) {
             return new Response(

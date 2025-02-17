@@ -6,15 +6,6 @@ title: 合作伙伴
 
 我们与行业领先的企业建立了长期稳定的合作关系，共同为用户提供优质的技术服务与解决方案。
 
-### 技术合作伙伴
-
-<div class="partner-grid">
-    <!-- 这里可以添加合作伙伴的 logo 和链接 -->
-    - ![Google Cloud](path/to/google-cloud-logo.png) [Google Cloud](https://cloud.google.com)
-    - ![AWS](path/to/aws-logo.png) [Amazon Web Services](https://aws.amazon.com)
-    - ![Microsoft Azure](path/to/azure-logo.png) [Microsoft Azure](https://azure.microsoft.com)
-</div>
-
 ### 教育机构合作伙伴
 
 我们与多家知名教育机构展开深度合作，致力于培养高素质的技术人才：

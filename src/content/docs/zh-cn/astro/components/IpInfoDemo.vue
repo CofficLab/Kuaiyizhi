@@ -18,13 +18,9 @@ const fetchIpInfo = async () => {
     error.value = null;
 
     try {
-        console.log('开始请求 IP 信息...');
         const startTime = Date.now();
         const response = await fetch('/api/ip-info');
         const endTime = Date.now();
-
-        console.log(`API 响应状态: ${response.status} ${response.statusText}`);
-        console.log(`请求耗时: ${endTime - startTime}ms`);
 
         if (!response.ok) {
             const errorData = await response.json();
