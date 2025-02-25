@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import vue from '@astrojs/vue';
 import tailwind from '@astrojs/tailwind';
-import { sidebar } from './astro.sidebar.ts';
 import smartSearchPlugin from './plugins/smart-search/index.ts';
 import smartHeaderPlugin from './plugins/smart-header/index.ts';
 import smartPagePlugin from './plugins/smart-page/index.ts';
@@ -35,7 +34,6 @@ export default defineConfig({
     starlight({
       title: '快易知',
       defaultLocale: 'zh-cn',
-      sidebar: sidebar,
       plugins: [
         smartSearchPlugin(),
         smartPagePlugin(),
