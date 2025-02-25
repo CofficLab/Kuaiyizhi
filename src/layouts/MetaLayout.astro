@@ -8,25 +8,25 @@ import { logger } from '../utils/logger';
 const { title, description, headings = [] } = Astro.props as BlogLayoutProps;
 const metaIdsAndTitles = await getMetaIdsAndTitles(Astro.currentLocale ?? 'en');
 const sidebarItems: SidebarItem[] = metaIdsAndTitles.map((metaIdAndTitle) => ({
-    label: metaIdAndTitle.title,
-    link: `/${metaIdAndTitle.id.replace('zh-cn/', '').replace('en/', '')}`,
+  label: metaIdAndTitle.title,
+  link: `/${metaIdAndTitle.id.replace('zh-cn/', '').replace('en/', '')}`,
 }));
 
-//logger.array(`sidebarItems`, sidebarItems);
+// logger.array(`meta sidebarItems`, sidebarItems);
 ---
 
 <AppLayout
-    title={title}
-    description={description}
-    template="doc"
-    frontmatter={{
-        title: title,
-        description: description,
-        template: 'doc',
-        draft: true,
-    }}
-    hasSidebar={true}
-    sidebar={sidebarItems}
-    headings={headings}>
-    <slot />
+  title={title}
+  description={description}
+  template="doc"
+  frontmatter={{
+    title: title,
+    description: description,
+    template: 'doc',
+    draft: true,
+  }}
+  hasSidebar={true}
+  sidebar={sidebarItems}
+  headings={headings}>
+  <slot />
 </AppLayout>

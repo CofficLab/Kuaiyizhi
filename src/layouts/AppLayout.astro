@@ -1,7 +1,7 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import type { AppLayoutProps } from '../interface/AppLayoutProps';
-
+import { logger } from '../utils/logger';
 const {
     title,
     description,
@@ -12,6 +12,10 @@ const {
     sidebar,
     hidePageTitle,
 } = Astro.props as AppLayoutProps;
+
+logger.info(`AppLayout props sidebar` + sidebar);
+console.log(`AppLayout props hasSidebar` + hasSidebar);
+console.log(sidebar);
 ---
 
 <StarlightPage

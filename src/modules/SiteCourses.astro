@@ -1,13 +1,13 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { getTopLevelPosts } from '../database/blogs';
+import { getCourses } from '../database/courses';
 import CoursesPage from './CoursesPage.astro';
 
 const { lang } = Astro.props;
-const posts = await getTopLevelPosts();
-const topLevelPosts = posts.map((post) => ({
-    link: `/${lang}/${post.id.replace('zh-cn/', '').replace('en/', '')}`,
-    title: post.data.title,
+const courses = await getCourses();
+const books = courses.map((course) => ({
+  link: `/${lang}/courses/${course.id.replace('zh-cn/', '').replace('en/', '')}`,
+  title: course.data.title ?? '',
 }));
 
 const title = lang === 'zh-cn' ? '课程列表' : 'Courses List';
@@ -15,5 +15,5 @@ const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 ---
 
 <AppLayout title={title} description={description}>
-    <CoursesPage books={topLevelPosts} />
+  <CoursesPage books={books} />
 </AppLayout>

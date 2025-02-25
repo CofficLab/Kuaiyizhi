@@ -10,14 +10,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/node": "^9.0.2",
+    "@astrojs/node": "^9.1.1",
     "@astrojs/starlight": "^0.31.1",
     "@astrojs/starlight-tailwind": "^3.0.0",
     "@astrojs/tailwind": "^6.0.0",
-    "@astrojs/vue": "^5.0.6",
+    "@astrojs/vue": "^5.0.7",
     "@remixicon/vue": "^4.6.0",
-    "astro": "^5.2.5",
-    "html-to-image": "^1.11.11",
+    "astro": "^5.3.1",
+    "html-to-image": "^1.11.13",
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
     "sharp": "^0.32.6",

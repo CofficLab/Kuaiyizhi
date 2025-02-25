@@ -1,22 +1,35 @@
 ---
 import AppLayout from './AppLayout.astro';
 import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
-
+import { getChapterIdsAndTitles } from '../database/courses';
+import type SidebarItem from '../interface/SidebarItem';
+import { logger } from '../utils/logger';
 const { title, description, headings = [] } = Astro.props as BlogLayoutProps;
+const chapterIdsAndTitles = await getChapterIdsAndTitles(
+  Astro.currentLocale ?? 'en'
+);
+const sidebarItems: SidebarItem[] = chapterIdsAndTitles.map(
+  (chapterIdAndTitle) => ({
+    label: chapterIdAndTitle.title,
+    link: `/${chapterIdAndTitle.id}`,
+  })
+);
+
+logger.array(`course sidebarItems`, sidebarItems);
 ---
 
 <AppLayout
-    title={title}
-    description={description}
-    template="doc"
-    frontmatter={{
-        title: title,
-        description: description,
-        template: 'doc',
-        draft: true,
-    }}
-    hasSidebar={true}
-    sidebar={[]}
-    headings={headings}>
-    <slot />
+  title={title}
+  description={description}
+  template="doc"
+  frontmatter={{
+    title: title,
+    description: description,
+    template: 'doc',
+    draft: true,
+  }}
+  hasSidebar={true}
+  sidebar={sidebarItems}
+  headings={headings}>
+  <slot />
 </AppLayout>

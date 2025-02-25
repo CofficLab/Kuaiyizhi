@@ -8,7 +8,10 @@ export const collections = {
 		loader: docsLoader(),
 		schema: docsSchema(),
 	}),
-	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
+	i18n: defineCollection({
+		loader: i18nLoader(),
+		schema: i18nSchema()
+	}),
 	blogs: defineCollection({
 		loader: glob({
 			pattern: "**/*.{md,mdx}",
@@ -18,6 +21,16 @@ export const collections = {
 			title: z.string(),
 			tags: z.array(z.string()),
 			date: z.date().optional(),
+			description: z.string().optional(),
+		}),
+	}),
+	courses: defineCollection({
+		loader: glob({
+			pattern: "**/*.{md,mdx}",
+			base: "./src/content/courses"
+		}),
+		schema: z.object({
+			title: z.string().optional(),
 			description: z.string().optional(),
 		}),
 	}),
