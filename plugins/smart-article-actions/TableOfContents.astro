@@ -2,7 +2,7 @@
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/TableOfContents.astro';
 import ArticleActions from './ArticleActions.vue';
-import { getBlogContent } from '../../src/database/docs';
+import { getBlogContent } from '../../src/database/blogs';
 const props = Astro.props as Props;
 
 // 处理 Markdown 中的图片

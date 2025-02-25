@@ -42,7 +42,7 @@ export default defineConfig({
         smartHeaderPlugin(),
         smartSidebarPlugin(),
         smartTitlePlugin(),
-        smartArticleActionsPlugin(),
+        // smartArticleActionsPlugin(),
         smartStylePlugin(),
       ],
       locales: {

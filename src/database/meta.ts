@@ -47,7 +47,7 @@ export const getMetaIdsAndTitles = async (lang: string): Promise<{ id: string, t
     // 如果lang=zh-CN，lang=zh-cn，都转换成lang=zh-cn
     lang = lang.replace('zh-CN', 'zh-cn');
 
-    logger.info(`getMetaIdsAndTitles for lang: ${lang}`);
+    //logger.info(`getMetaIdsAndTitles for lang: ${lang}`);
 
     const metas = await getMetas();
     const items = metas.filter((meta) => meta.id.startsWith(lang)).map((meta) => ({
@@ -55,8 +55,8 @@ export const getMetaIdsAndTitles = async (lang: string): Promise<{ id: string, t
         title: meta.data.title || '',
     }));
 
-    logger.info(`getIdsAndTitles, total: ${metas.length}`);
-    logger.array(`getIdsAndTitles, subset`, items.slice(0, 2));
+    //logger.info(`getIdsAndTitles, total: ${metas.length}`);
+    //logger.array(`getIdsAndTitles, subset`, items.slice(0, 2));
 
     return items;
 }

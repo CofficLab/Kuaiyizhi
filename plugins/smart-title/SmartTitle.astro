@@ -3,6 +3,7 @@ import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/SiteTitle.astro';
 
 const props = Astro.props as Props;
+const currentPath = Astro.url.pathname;
 ---
 
 <div
@@ -14,30 +15,30 @@ const props = Astro.props as Props;
     <Default {...props} />
     <div class="flex flex-row gap-4 items-center">
         <a
-            class="nav-link text-sm no-underline
-            px-2 py-1 rounded-md
-            hover:text-primary
-            hover:scale-105
-            hover:bg-cyan-500/20
-            transition-all duration-300"
+            class:list={[
+                "nav-link text-sm no-underline px-2 py-1 rounded-md",
+                "hover:text-primary hover:scale-105 hover:bg-cyan-500/20",
+                "transition-all duration-300",
+                { "text-primary bg-cyan-500/20": currentPath === `/${props.locale}` || currentPath === `/${props.locale}/` }
+            ]}
             href={`/${props.locale}`}>首页</a
         >
         <a
-            class="nav-link text-sm no-underline
-            px-2 py-1 rounded-md
-            hover:text-primary
-            hover:scale-105
-            hover:bg-cyan-500/20
-            transition-all duration-300"
+            class:list={[
+                "nav-link text-sm no-underline px-2 py-1 rounded-md",
+                "hover:text-primary hover:scale-105 hover:bg-cyan-500/20",
+                "transition-all duration-300",
+                { "text-primary bg-cyan-500/20": currentPath.startsWith(`/${props.locale}/courses`) }
+            ]}
             href={`/${props.locale}/courses`}>课程</a
         >
         <a
-            class="nav-link text-sm no-underline
-            px-2 py-1 rounded-md
-            hover:text-primary
-            hover:scale-105
-            hover:bg-cyan-500/20
-            transition-all duration-300"
+            class:list={[
+                "nav-link text-sm no-underline px-2 py-1 rounded-md",
+                "hover:text-primary hover:scale-105 hover:bg-cyan-500/20",
+                "transition-all duration-300",
+                { "text-primary bg-cyan-500/20": currentPath.startsWith(`/${props.locale}/blogs`) }
+            ]}
             href={`/${props.locale}/blogs`}>博客</a
         >
     </div>
