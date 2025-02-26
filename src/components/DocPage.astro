@@ -1,0 +1,46 @@
+---
+import DocLayout from '@layouts/DocLayout.astro';
+import { getDocBySlug } from '@database/content_db';
+import { render } from 'astro:content';
+import {
+  getSidebarItemByDocId,
+  getSidebarItemBySlug,
+  getSidebarItemsByDocId,
+} from '@/database/sidebar_db';
+
+export interface Props {
+  slug: string;
+  redirectPath: string;
+}
+
+const { slug, redirectPath } = Astro.props;
+
+const debug = true;
+
+if (debug) {
+  console.log('📑 DocPage: slug', slug);
+}
+
+const doc = await getDocBySlug(slug);
+
+// 如果课程不存在，显示友好提示
+if (!doc) {
+  return Astro.redirect(redirectPath, 307);
+}
+
+const { Content, headings } = await render(doc);
+
+const sidebarItem = await getSidebarItemBySlug(slug, 1);
+
+if (debug) {
+  console.log('📑 DocPage: sidebarItem', sidebarItem);
+}
+---
+
+<DocLayout
+  title={doc.data.title as string}
+  description={doc.data.description as string}
+  sidebarItem={sidebarItem}
+  headings={headings}>
+  <Content />
+</DocLayout>

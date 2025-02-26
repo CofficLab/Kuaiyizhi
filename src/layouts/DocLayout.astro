@@ -1,0 +1,29 @@
+---
+import type { SidebarItem } from '@/models/Sidebar';
+import AppLayout from './AppLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  sidebarItem: SidebarItem;
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+}
+
+const { title, description, sidebarItem, headings = [] } = Astro.props;
+---
+
+<AppLayout
+  title={title}
+  description={description}
+  template="doc"
+  frontmatter={{
+    title: title,
+    description: description,
+    template: 'doc',
+  }}
+  hasSidebar={true}
+  sidebar={sidebarItem}
+  headings={headings}
+  hidePageTitle={false}>
+  <slot />
+</AppLayout>

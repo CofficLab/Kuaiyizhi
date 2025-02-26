@@ -44,4 +44,14 @@ export const collections = {
 			description: z.string().optional(),
 		}),
 	}),
+	content: defineCollection({
+		loader: glob({
+			pattern: "**/*.{md,mdx}",
+			base: "./src/content"
+		}),
+		schema: z.object({
+			title: z.string().optional(),
+			description: z.string().optional(),
+		}),
+	}),
 };
