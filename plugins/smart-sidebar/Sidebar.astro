@@ -3,14 +3,17 @@ import type { Props } from '@astrojs/starlight/props';
 import DefaultSidebar from '@astrojs/starlight/components/Sidebar.astro';
 import { logger } from '../../src/utils/logger';
 const emoji = '🚀';
+const debug = false;
 
 // 获取当前页面路径的第一部分作为分类
 const currentPath = Astro.url.pathname;
 const category = currentPath.split('/').slice(0, 3).join('/'); // 获取前3级路径 (如 'zh/astro/docs')
 
-console.log(`${emoji} Smart Sidebar: path: ${currentPath}`);
-console.log(`${emoji} Smart Sidebar: category: ${category}`);
-logger.array(`Smart Sidebar: sidebar`, Astro.props.sidebar);
+if (debug) {
+  console.log(`${emoji} Smart Sidebar: path: ${currentPath}`);
+  console.log(`${emoji} Smart Sidebar: category: ${category}`);
+  logger.array(`Smart Sidebar: sidebar`, Astro.props.sidebar);
+}
 
 // 过滤侧边栏项目，只保留与当前分类相关的项目
 const filteredSidebar = Astro.props.sidebar

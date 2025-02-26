@@ -1,0 +1,78 @@
+---
+/**
+ * 导航组件
+ *
+ * 用法:
+ * <Navigation locale="zh" currentPath={Astro.url.pathname} variant="dark" />
+ *
+ * @prop {string} locale - 语言代码，例如 "zh", "en"，默认为 "zh"
+ * @prop {string} currentPath - 当前页面路径，用于高亮当前导航项
+ * @prop {string} variant - 颜色变体，可选 "light" 或 "dark"，默认为 "light"
+ */
+
+interface Props {
+  locale?: string;
+  currentPath: string;
+  variant?: 'light' | 'dark';
+}
+
+const { locale = 'zh', currentPath, variant = 'light' } = Astro.props;
+
+// 根据variant定义不同的样式配置
+const styles = {
+  light: {
+    link: 'text-base-content hover:text-primary hover:bg-base-200',
+    active: 'text-primary',
+  },
+  dark: {
+    link: 'text-base-200 hover:text-primary-content hover:bg-primary/20',
+    active: 'text-primary-content',
+  },
+};
+
+// 选择当前使用的样式
+const currentStyle = styles[variant];
+
+const navItems = [
+  {
+    href: `/${locale}`,
+    label: '首页',
+    match: (path: string) => path === `/${locale}` || path === `/${locale}/`,
+  },
+  {
+    href: `/${locale}/courses`,
+    label: '课程',
+    match: (path: string) => path.startsWith(`/${locale}/courses`),
+  },
+  {
+    href: `/${locale}/blogs`,
+    label: '博客',
+    match: (path: string) => path.startsWith(`/${locale}/blogs`),
+  },
+  {
+    href: `/${locale}/about`,
+    label: '关于',
+    match: (path: string) => path.startsWith(`/${locale}/about`),
+  },
+];
+---
+
+<div class="flex flex-row gap-4 items-center">
+  {
+    navItems.map((item) => (
+      <a
+        class:list={[
+          'btn btn-sm btn-ghost no-underline',
+          currentStyle.link,
+          'transition-all duration-300',
+          {
+            'btn-active': item.match(currentPath),
+            [currentStyle.active]: item.match(currentPath),
+          },
+        ]}
+        href={item.href}>
+        {item.label}
+      </a>
+    ))
+  }
+</div>

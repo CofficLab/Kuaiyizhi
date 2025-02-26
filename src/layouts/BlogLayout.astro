@@ -2,38 +2,41 @@
 import AppLayout from './AppLayout.astro';
 import { getTags } from '../database/blogs';
 import type SidebarItem from '../interface/SidebarItem';
-import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
 import { logger } from '../utils/logger';
 
-const debugTitle = '🐒 BlogLayout';
-const {
-    title,
-    description,
-    headings = [],
-    lang,
-} = Astro.props as BlogLayoutProps;
+interface Props {
+  title: string;
+  description: string;
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+  lang: string;
+}
+
+const debug = false;
+const { title, description, headings = [], lang } = Astro.props;
 const tags = await getTags(lang);
 
-// logger.array('tags', tags);
+if (debug) {
+  logger.array('tags', tags);
+}
 
 const sidebarItems: SidebarItem[] = tags.map((tag) => ({
-    label: tag,
-    link: `/blogs/tags/${tag}`,
+  label: tag,
+  link: `/blogs/tags/${tag}`,
 }));
 ---
 
 <AppLayout
-    title={title}
-    description={description}
-    template="doc"
-    frontmatter={{
-        title: title,
-        description: description,
-        template: 'doc',
-        draft: true,
-    }}
-    hasSidebar={true}
-    sidebar={sidebarItems}
-    headings={headings}>
-    <slot />
+  title={title}
+  description={description}
+  template="doc"
+  frontmatter={{
+    title: title,
+    description: description,
+    template: 'doc',
+  }}
+  hasSidebar={true}
+  sidebar={sidebarItems}
+  headings={headings}
+  hidePageTitle={true}>
+  <slot />
 </AppLayout>

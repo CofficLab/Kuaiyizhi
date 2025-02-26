@@ -7,20 +7,16 @@ import type { CollectionEntry } from 'astro:content';
 export const prerender = true;
 
 export async function getStaticPaths() {
-    const posts = await getBlogs('zh-cn');
+  const posts = await getBlogs('zh-cn');
 
-    console.log(
-        '🖥️  BlogPage: posts',
-        posts.map((post) => post.id),
-    );
-    return posts
-        .filter((post: CollectionEntry<'blogs'>) => post.id.startsWith('zh-cn'))
-        .map((post: CollectionEntry<'blogs'>) => ({
-            params: {
-                id: post.id.replace('zh-cn/', ''),
-            },
-            props: { post },
-        }));
+  return posts
+    .filter((post: CollectionEntry<'blogs'>) => post.id.startsWith('zh-cn'))
+    .map((post: CollectionEntry<'blogs'>) => ({
+      params: {
+        id: post.id.replace('zh-cn/', ''),
+      },
+      props: { post },
+    }));
 }
 
 const { post } = Astro.props;
@@ -28,9 +24,9 @@ const { Content, headings } = await render(post);
 ---
 
 <BlogLayout
-    lang="zh-cn"
-    title={post.data.title}
-    description={post.data.description ?? ''}
-    headings={headings}>
-    <Content />
+  lang="zh-cn"
+  title={post.data.title}
+  description={post.data.description ?? ''}
+  headings={headings}>
+  <Content />
 </BlogLayout>

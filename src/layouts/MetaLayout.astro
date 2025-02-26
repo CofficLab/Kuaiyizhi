@@ -2,17 +2,26 @@
 import AppLayout from './AppLayout.astro';
 import { getMetaIdsAndTitles } from '../database/meta';
 import type SidebarItem from '../interface/SidebarItem';
-import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
 import { logger } from '../utils/logger';
 
-const { title, description, headings = [] } = Astro.props as BlogLayoutProps;
+interface Props {
+  title: string;
+  description: string;
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+  lang: string;
+}
+
+const debug = false;
+const { title, description, headings = [] } = Astro.props;
 const metaIdsAndTitles = await getMetaIdsAndTitles(Astro.currentLocale ?? 'en');
 const sidebarItems: SidebarItem[] = metaIdsAndTitles.map((metaIdAndTitle) => ({
   label: metaIdAndTitle.title,
   link: `/${metaIdAndTitle.id.replace('zh-cn/', '').replace('en/', '')}`,
 }));
 
-// logger.array(`meta sidebarItems`, sidebarItems);
+if (debug) {
+  logger.array(`meta sidebarItems`, sidebarItems);
+}
 ---
 
 <AppLayout
@@ -23,10 +32,10 @@ const sidebarItems: SidebarItem[] = metaIdsAndTitles.map((metaIdAndTitle) => ({
     title: title,
     description: description,
     template: 'doc',
-    draft: true,
   }}
   hasSidebar={true}
   sidebar={sidebarItems}
-  headings={headings}>
+  headings={headings}
+  hidePageTitle={true}>
   <slot />
 </AppLayout>

@@ -93,7 +93,7 @@ jobs:
             --exclude 'phpunit.xml' \
             --exclude 'postcss.config.js' \
             --exclude 'tailwind.config.js' \
-            --exclude 'node_modules/' \
+            --exclude 'node_components/' \
             --exclude 'pnpm-lock.yaml' \
             --exclude 'tests/' \
             --exclude 'storage/' \

@@ -1,7 +1,24 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import type { AppLayoutProps } from '../interface/AppLayoutProps';
-import { logger } from '../utils/logger';
+import SidebarItem from '../types/SidebarItem';
+
+interface Props {
+    title: string;
+    description: string;
+    template: "splash" | "doc";
+    frontmatter: {
+        title: string;
+        description: string;
+        template: "splash" | "doc";
+    };
+    hasSidebar: boolean;
+    headings: Array<{ depth: number; slug: string; text: string }>;
+    sidebar: SidebarItem[];
+    hidePageTitle: boolean;
+}
+
+const props = Astro.props as Props;
+
 const {
     title,
     description,
@@ -11,11 +28,7 @@ const {
     headings,
     sidebar,
     hidePageTitle,
-} = Astro.props as AppLayoutProps;
-
-logger.info(`AppLayout props sidebar` + sidebar);
-console.log(`AppLayout props hasSidebar` + hasSidebar);
-console.log(sidebar);
+} = props;
 ---
 
 <StarlightPage

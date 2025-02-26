@@ -2,27 +2,35 @@
 import AppLayout from './AppLayout.astro';
 import { getTags } from '../database/blogs';
 import type SidebarItem from '../interface/SidebarItem';
-import type { BlogLayoutProps } from '../interface/BlogLayoutProps';
 
-const { title, description, lang } = Astro.props as BlogLayoutProps;
+interface Props {
+  title: string;
+  description: string;
+  headings?: Array<{ depth: number; slug: string; text: string }>;
+  lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+
 const tags = await getTags(lang);
 const sidebarItems: SidebarItem[] = tags.map((tag) => ({
-    label: tag,
-    link: `/blogs/tags/${tag}`,
+  label: tag,
+  link: `/blogs/tags/${tag}`,
 }));
 ---
 
 <AppLayout
-    title={title}
-    description={description}
-    template="splash"
-    frontmatter={{
-        title: title,
-        description: description,
-        draft: true,
-    }}
-    hasSidebar={true}
-    sidebar={sidebarItems}
-    headings={[]}>
-    <slot />
+  title={title}
+  description={description}
+  template="splash"
+  frontmatter={{
+    title: title,
+    description: description,
+    template: 'splash',
+  }}
+  hasSidebar={true}
+  sidebar={sidebarItems}
+  headings={[]}
+  hidePageTitle={true}>
+  <slot />
 </AppLayout>

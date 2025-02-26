@@ -12,6 +12,7 @@ import smartTitlePlugin from './plugins/smart-title/index.ts';
 import smartArticleActionsPlugin from './plugins/smart-article-actions/index.ts';
 
 import node from '@astrojs/node';
+import path from 'path';
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,6 +27,15 @@ export default defineConfig({
     server: {
       hmr: {
         overlay: false,
+      },
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve('./src'),
+        '@components': path.resolve('./src/components'),
+        '@utils': path.resolve('./src/utils'),
+        '@interface': path.resolve('./src/interface'),
+        '@assets': path.resolve('./src/assets'),
       },
     },
   },

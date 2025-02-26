@@ -1,23 +1,23 @@
 ---
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/PageFrame.astro';
-import Footer from '../../src/modules/Footer.astro';
+import Footer from '@components/footer/Footer.astro';
 
 const props = Astro.props as Props;
 ---
 
 <div class="flex flex-col h-full">
-    <Default {...props}>
-        <slot name="sidebar" slot="sidebar" />
-        <slot name="header" slot="header" />
-        <slot />
-    </Default>
+  <Default {...props}>
+    <slot name="sidebar" slot="sidebar" />
+    <slot name="header" slot="header" />
+    <slot />
+  </Default>
 
-    {
-        (props.hasSidebar === false ||
-            props.id.includes('meta') ||
-            props.id.includes('blogs')) && (
-            <Footer lang={Astro.currentLocale || 'en'} />
-        )
-    }
+  {
+    (props.hasSidebar === false ||
+      props.id.includes('meta') ||
+      props.id.includes('blogs')) && (
+      <Footer lang={Astro.currentLocale || 'en'} />
+    )
+  }
 </div>

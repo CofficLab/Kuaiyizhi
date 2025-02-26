@@ -56,7 +56,7 @@ graph LR
 
 ### 2. 资源消耗对比
 
-```vega-lite
+```json
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "data": {

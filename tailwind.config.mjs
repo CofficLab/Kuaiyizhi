@@ -3,15 +3,15 @@
 import starlightPlugin from '@astrojs/starlight-tailwind';
 
 export default {
-	content: [
-		'./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
-		'./plugins/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'
-	],
-	theme: {
-		extend: {},
-	},
-	plugins: [
-		starlightPlugin(),
-		require('daisyui'),
-	],
-}
+  content: [
+    './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+    './plugins/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [starlightPlugin(), require('daisyui')],
+  daisyui: {
+    logs: false,
+  },
+};
