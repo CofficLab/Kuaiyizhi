@@ -18,6 +18,24 @@
       ],
       "@utils/*": [
         "src/utils/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@interface/*": [
+        "src/interface/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@database/*": [
+        "src/database/*"
+      ],
+      "@paths/*": [
+        "src/paths/*"
       ]
     }
   }

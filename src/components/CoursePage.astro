@@ -1,0 +1,38 @@
+---
+import CourseLayout from '@layouts/CourseLayout.astro';
+import { getCourseBySlug } from '@database/courses';
+import { render } from 'astro:content';
+
+export interface Props {
+  slug: string;
+  locale: 'zh-cn' | 'en';
+  redirectPath: string;
+}
+
+const { slug, locale, redirectPath } = Astro.props;
+
+const debug = true;
+
+if (debug) {
+  console.log(`📑 CoursePage: Start processing for ${locale}`);
+  console.log('📑 CoursePage: slug', slug);
+}
+
+const course = await getCourseBySlug(slug, locale);
+
+// 如果课程不存在，显示友好提示
+if (!course) {
+  return Astro.redirect(redirectPath, 307);
+}
+
+const { Content, headings } = await render(course);
+---
+
+<CourseLayout
+  courseId={slug}
+  title={course.data.title ?? ''}
+  description={course.data.description ?? ''}
+  headings={headings}>
+  <Content />
+</CourseLayout>
+

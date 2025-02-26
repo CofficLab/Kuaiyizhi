@@ -40,7 +40,7 @@ class Logger {
 
     private formatArray(arr: any[]): string {
         const MAX_LINES = 3;
-        const MAX_LENGTH = 30;
+        const MAX_LENGTH = 100;
 
         const truncateString = (str: string): string => {
             return str.length > MAX_LENGTH ? str.slice(0, MAX_LENGTH) + '...' : str;

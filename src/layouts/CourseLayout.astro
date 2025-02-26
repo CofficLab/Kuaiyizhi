@@ -1,21 +1,28 @@
 ---
 import AppLayout from './AppLayout.astro';
-import { getCourseSidebarItems } from '../database/courses';
-import SidebarItem from '../types/SidebarItem';
+import { getChapters } from '../database/courses';
+import SidebarItem from '../models/SidebarItem';
 import { logger } from '../utils/logger';
 
 interface Props {
   title: string;
+  courseId: string;
   description: string;
   headings: Array<{ depth: number; slug: string; text: string }>;
 }
 
-const { title, description, headings = [] } = Astro.props;
-const sidebarItems: SidebarItem[] = await getCourseSidebarItems(
-  Astro.currentLocale ?? 'en'
+const debug = true;
+const { title, courseId, description, headings = [] } = Astro.props;
+const sidebarItems: SidebarItem[] = await getChapters(
+  Astro.currentLocale ?? 'en',
+  courseId
 );
 
-logger.array(`course sidebarItems`, sidebarItems);
+if (debug) {
+  logger.info(`courseId: ${courseId}`);
+  logger.info(`Astro.currentLocale: ${Astro.currentLocale}`);
+  logger.array(`course sidebarItems`, sidebarItems);
+}
 ---
 
 <AppLayout

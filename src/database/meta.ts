@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { logger } from '../utils/logger';
-import SidebarItem from '@/types/SidebarItem';
+import SidebarItem from '@/models/SidebarItem';
 
 // 获取所有元数据，返回的格式是：
 // [
