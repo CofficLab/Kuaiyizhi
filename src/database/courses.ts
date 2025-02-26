@@ -49,7 +49,7 @@ async function getAllCourseItemsEn() {
 }
 
 async function getCourseBySlug(slug: string, lang: string) {
-    const debug = true;
+    const debug = false;
     const id = `${lang}/${slug}`;
     const allPosts = await getCollection('courses');
     const course = allPosts.find(post => post.id === id);
@@ -120,10 +120,13 @@ async function getDescendants(courseId: string) {
  * const chapters = await getChapterIdsAndTitles('zh-cn');
  */
 const getChapterIdsAndTitles = async (lang: string): Promise<{ id: string, title: string }[]> => {
+    const debug = false;
     // 如果lang=zh-CN，lang=zh-cn，都转换成lang=zh-cn
     lang = lang.replace('zh-CN', 'zh-cn');
 
-    logger.info(`getChapterIdsAndTitles for lang: ${lang}`);
+    if (debug) {
+        logger.info(`getChapterIdsAndTitles for lang: ${lang}`);
+    }
 
     const courses = await getCourses();
     const items = courses.filter((course) => course.id.startsWith(lang)).map((course) => ({
@@ -131,8 +134,10 @@ const getChapterIdsAndTitles = async (lang: string): Promise<{ id: string, title
         title: course.data.title || '',
     }));
 
-    logger.info(`getChapterIdsAndTitles, total: ${courses.length}`);
-    logger.array(`getChapterIdsAndTitles, subset`, items.slice(0, 2));
+    if (debug) {
+        logger.info(`getChapterIdsAndTitles, total: ${courses.length}`);
+        logger.array(`getChapterIdsAndTitles, subset`, items.slice(0, 2));
+    }
 
     return items;
 }
@@ -161,15 +166,16 @@ const getCourseSidebarItems = async (lang: string): Promise<SidebarItem[]> => {
  * 该函数根据指定语言和课程ID获取特定课程的章节侧边栏项目。
  * 
  * @param {string} lang - 语言代码，例如 'zh-cn', 'en'
- * @param {string} courseId - 课程ID
+ * @param {string} courseId - 课程ID 或 课程的子内容的ID
  * @returns {Promise<Array<SidebarItem>>} 返回侧边栏项目数组
  * @example
  * const chapters = await getChapters('zh-cn', 'astro');
  */
 const getChapters = async (lang: string, courseId: string): Promise<SidebarItem[]> => {
-    const debug = true;
+    const debug = false;
     const parsedLang = lang.replace('zh-CN', 'zh-cn');
-    const realCourseId = `${parsedLang}/${courseId}`;
+    const topLevelCourseId = courseId.split('/')[0];
+    const realCourseId = `${parsedLang}/${topLevelCourseId}`;
 
     if (debug) {
         logger.info(`getChapters for lang: ${parsedLang}, courseId: ${courseId}`);

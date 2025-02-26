@@ -1,7 +1,7 @@
 ---
 import AppLayout from './AppLayout.astro';
 import { getTags } from '../database/blogs';
-import type SidebarItem from '../interface/SidebarItem';
+import SidebarItem from '../models/SidebarItem';
 
 interface Props {
   title: string;
@@ -13,10 +13,9 @@ interface Props {
 const { title, description, lang } = Astro.props;
 
 const tags = await getTags(lang);
-const sidebarItems: SidebarItem[] = tags.map((tag) => ({
-  label: tag,
-  link: `/blogs/tags/${tag}`,
-}));
+const sidebarItems: SidebarItem[] = tags.map((tag) => {
+  return SidebarItem.withLabel(tag).setLink(`/blogs/tags/${tag}`);
+});
 ---
 
 <AppLayout

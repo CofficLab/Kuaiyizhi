@@ -11,7 +11,7 @@ export interface Props {
 
 const { slug, locale, redirectPath } = Astro.props;
 
-const debug = true;
+const debug = false;
 
 if (debug) {
   console.log(`📑 CoursePage: Start processing for ${locale}`);
@@ -35,4 +35,3 @@ const { Content, headings } = await render(course);
   headings={headings}>
   <Content />
 </CourseLayout>
-

@@ -11,7 +11,7 @@ interface Props {
   headings: Array<{ depth: number; slug: string; text: string }>;
 }
 
-const debug = true;
+const debug = false;
 const { title, courseId, description, headings = [] } = Astro.props;
 const sidebarItems: SidebarItem[] = await getChapters(
   Astro.currentLocale ?? 'en',
@@ -37,6 +37,6 @@ if (debug) {
   hasSidebar={true}
   sidebar={sidebarItems}
   headings={headings}
-  hidePageTitle={true}>
+  hidePageTitle={false}>
   <slot />
 </AppLayout>
