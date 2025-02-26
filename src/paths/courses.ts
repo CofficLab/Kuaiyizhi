@@ -8,7 +8,7 @@ import { logger } from '../utils/logger';
  * @returns {Promise<Array>} 返回所有中文课程的路径数组
  */
 export async function getPathsZhCn() {
-    const debug = true;
+    const debug = false;
     const courses = await getAllCourseItemsZhCn();
     const paths = courses.map((course) => ({
         params: {

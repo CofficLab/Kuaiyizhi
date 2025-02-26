@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { logger } from '../utils/logger';
-import SidebarItem from '@/models/SidebarItem';
+import { SidebarItem } from '@/models/Sidebar';
 
 // 获取所有元数据，返回的格式是：
 // [
@@ -62,11 +62,16 @@ export const getMetaIdsAndTitles = async (lang: string): Promise<{ id: string, t
     return items;
 }
 
-export const getMetaSidebarItems = async (lang: string): Promise<SidebarItem[]> => {
+export const getMetaSidebarItem = async (lang: string): Promise<SidebarItem> => {
     const metas = await getMetaIdsAndTitles(lang);
-    return metas.map((meta) => {
-        return SidebarItem.withLabel(meta.title)
-            .setLink(makeLinkWithoutLang(meta.id));
+    return new SidebarItem({
+        type: 'group',
+        label: 'Meta',
+        items: metas.map((meta) => new SidebarItem({
+            type: 'link',
+            label: meta.title,
+            link: makeLinkWithoutLang(meta.id),
+        })),
     });
 }
 

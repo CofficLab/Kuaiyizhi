@@ -1,7 +1,7 @@
 ---
 import AppLayout from './AppLayout.astro';
 import { getChapters } from '../database/courses';
-import SidebarItem from '../models/SidebarItem';
+import { SidebarItem } from '../models/Sidebar';
 import { logger } from '../utils/logger';
 
 interface Props {
@@ -13,15 +13,11 @@ interface Props {
 
 const debug = false;
 const { title, courseId, description, headings = [] } = Astro.props;
-const sidebarItems: SidebarItem[] = await getChapters(
-  Astro.currentLocale ?? 'en',
-  courseId
-);
+const sidebarItem = await getChapters(Astro.currentLocale ?? 'en', courseId);
 
 if (debug) {
   logger.info(`courseId: ${courseId}`);
   logger.info(`Astro.currentLocale: ${Astro.currentLocale}`);
-  logger.array(`course sidebarItems`, sidebarItems);
 }
 ---
 
@@ -35,7 +31,7 @@ if (debug) {
     template: 'doc',
   }}
   hasSidebar={true}
-  sidebar={sidebarItems}
+  sidebar={sidebarItem}
   headings={headings}
   hidePageTitle={false}>
   <slot />

@@ -3,5 +3,3 @@ declare module '*.vue' {
     const component: DefineComponent
     export default component
 }
-
-/// <reference types="astro/client" /> 

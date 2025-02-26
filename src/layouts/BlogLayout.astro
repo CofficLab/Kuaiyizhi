@@ -1,7 +1,7 @@
 ---
 import AppLayout from './AppLayout.astro';
 import { getTags } from '../database/blogs';
-import type SidebarItem from '../interface/SidebarItem';
+import { SidebarItem } from '@/models/Sidebar';
 import { logger } from '../utils/logger';
 
 interface Props {
@@ -19,10 +19,18 @@ if (debug) {
   logger.array('tags', tags);
 }
 
-const sidebarItems: SidebarItem[] = tags.map((tag) => ({
-  label: tag,
-  link: `/blogs/tags/${tag}`,
-}));
+const sidebarItems = new SidebarItem({
+  type: 'group',
+  label: 'Tags',
+  items: tags.map(
+    (tag) =>
+      new SidebarItem({
+        type: 'link',
+        label: tag,
+        link: `/blogs/tags/${tag}`,
+      })
+  ),
+});
 ---
 
 <AppLayout

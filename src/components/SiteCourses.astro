@@ -2,7 +2,6 @@
 import AppLayout from '../layouts/AppLayout.astro';
 import { getCourses } from '../database/courses';
 import CoursesPage from './CoursesPage.astro';
-import SidebarItem from '../models/SidebarItem';
 interface Props {
   lang?: string;
 }
@@ -13,11 +12,6 @@ const books: Book[] = courses.map((course) => ({
   label: course.data.title ?? '',
   title: course.data.title ?? '',
   link: `/${lang}/courses/${course.id.replace('zh-cn/', '').replace('en/', '')}`,
-}));
-
-const sidebarItems: SidebarItem[] = books.map((book) => ({
-  label: book.title,
-  link: book.link,
 }));
 
 const title = lang === 'zh-cn' ? '课程列表' : 'Courses List';
@@ -34,7 +28,7 @@ const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
     template: 'splash',
   }}
   hasSidebar={false}
-  sidebar={sidebarItems}
+  sidebar={null}
   headings={[]}
   hidePageTitle={true}>
   <CoursesPage books={books} />

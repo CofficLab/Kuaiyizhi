@@ -17,7 +17,20 @@ console.log('📑 CoursesPage: redirect to', redirectPath);
 // return Astro.redirect(redirectPath);
 ---
 
-<AppLayout lang={locale} title="课程列表" description="课程列表" />
+<AppLayout
+  title="课程列表"
+  description="课程列表"
+  template="splash"
+  frontmatter={{
+    title: '课程列表',
+    description: '课程列表',
+    template: 'splash',
+  }}
+  hasSidebar={false}
+  headings={[]}
+  sidebar={null}
+  hidePageTitle={true}
+/>
 
 <script define:vars={{ redirectPath }}>
   window.location.href = redirectPath;

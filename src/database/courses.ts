@@ -9,7 +9,7 @@
 
 import { getCollection, type DataEntry } from 'astro:content';
 import { logger } from '../utils/logger';
-import SidebarItem from '@/models/SidebarItem';
+import { SidebarItem } from '@/models/Sidebar';
 
 /**
  * 获取指定语言的所有课程项目
@@ -152,11 +152,18 @@ const getChapterIdsAndTitles = async (lang: string): Promise<{ id: string, title
  * @example
  * const sidebarItems = await getCourseSidebarItems('zh-cn');
  */
-const getCourseSidebarItems = async (lang: string): Promise<SidebarItem[]> => {
+const getCourseSidebarItems = async (lang: string): Promise<SidebarItem> => {
     const chapterIdsAndTitles = await getChapterIdsAndTitles(lang);
-    return chapterIdsAndTitles.map((chapterIdAndTitle) => {
-        return SidebarItem.withLabel(chapterIdAndTitle.title)
-            .setLink(makeLinkWithoutLang(chapterIdAndTitle.id));
+    return new SidebarItem({
+        type: 'group',
+        label: 'Courses',
+        items: chapterIdsAndTitles.map((chapterIdAndTitle) => {
+            return new SidebarItem({
+                type: 'link',
+                link: makeLinkWithoutLang(chapterIdAndTitle.id),
+                label: chapterIdAndTitle.title,
+            });
+        }),
     });
 }
 
@@ -171,7 +178,7 @@ const getCourseSidebarItems = async (lang: string): Promise<SidebarItem[]> => {
  * @example
  * const chapters = await getChapters('zh-cn', 'astro');
  */
-const getChapters = async (lang: string, courseId: string): Promise<SidebarItem[]> => {
+const getChapters = async (lang: string, courseId: string): Promise<SidebarItem> => {
     const debug = false;
     const parsedLang = lang.replace('zh-CN', 'zh-cn');
     const topLevelCourseId = courseId.split('/')[0];
@@ -183,21 +190,32 @@ const getChapters = async (lang: string, courseId: string): Promise<SidebarItem[
     }
 
     const descendants = await getDescendants(realCourseId);
-    const chapters = descendants.map((descendant) => {
+    const chapterItems = descendants.map((descendant) => {
         return {
             id: descendant.id,
             title: descendant.data.title || '',
         };
+    }).map((chapter) => {
+        return new SidebarItem({
+            type: 'link',
+            link: makeLinkWithoutLang(chapter.id),
+            label: chapter.title,
+        });
     });
 
-    if (!chapters) {
-        return [];
+    if (chapterItems.length === 0) {
+        return new SidebarItem({
+            type: 'group',
+            label: topLevelCourseId,
+            items: [],
+        });
+    } else {
+        return new SidebarItem({
+            type: 'group',
+            label: topLevelCourseId,
+            items: chapterItems,
+        });
     }
-
-    return chapters.map((chapter) => {
-        return SidebarItem.withLabel(chapter.title)
-            .setLink(makeLinkWithoutLang(chapter.id));
-    });
 }
 
 /**
@@ -208,7 +226,7 @@ const getChapters = async (lang: string, courseId: string): Promise<SidebarItem[
  * @param {string} courseId - 课程ID
  * @returns {Promise<Array<SidebarItem>>} 返回侧边栏项目数组
  */
-const getChaptersZhCn = async (courseId: string): Promise<SidebarItem[]> => {
+const getChaptersZhCn = async (courseId: string): Promise<SidebarItem> => {
     return getChapters('zh-cn', courseId);
 }
 
@@ -219,7 +237,7 @@ const getChaptersZhCn = async (courseId: string): Promise<SidebarItem[]> => {
  * 
  * @param {string} courseId - 课程ID
  */
-const getChaptersEn = async (courseId: string): Promise<SidebarItem[]> => {
+const getChaptersEn = async (courseId: string): Promise<SidebarItem> => {
     return getChapters('en', courseId);
 }
 
