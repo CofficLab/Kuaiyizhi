@@ -10,6 +10,8 @@
  * @prop {string} variant - 颜色变体，可选 "light" 或 "dark"，默认为 "light"
  */
 
+import { makeMetaLink } from '@/utils/links';
+
 interface Props {
   locale?: string;
   currentPath: string;
@@ -26,7 +28,7 @@ const styles = {
   },
   dark: {
     link: 'text-base-200 hover:text-primary-content hover:bg-primary/20',
-    active: 'text-primary-content',
+    active: 'text-primary-content btn-accent',
   },
 };
 
@@ -49,11 +51,6 @@ const navItems = [
     label: '博客',
     match: (path: string) => path.startsWith(`/${locale}/blogs`),
   },
-  {
-    href: `/${locale}/about`,
-    label: '关于',
-    match: (path: string) => path.startsWith(`/${locale}/about`),
-  },
 ];
 ---
 
@@ -62,10 +59,11 @@ const navItems = [
     navItems.map((item) => (
       <a
         class:list={[
-          'btn btn-sm btn-ghost no-underline',
+          'btn btn-sm no-underline',
           currentStyle.link,
           'transition-all duration-300',
           {
+            'btn-ghost': !item.match(currentPath),
             'btn-active': item.match(currentPath),
             [currentStyle.active]: item.match(currentPath),
           },

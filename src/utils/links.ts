@@ -1,5 +1,5 @@
 export function makeMetaLink(lang: string, id: string): string {
-    return `/${normalizeLanguage(lang)}/${id}`;
+    return `/${normalizeLanguage(lang)}/meta/${id}`;
 }
 
 /**

@@ -1,6 +1,6 @@
 ---
 import AppLayout from './AppLayout.astro';
-import { getChapterIdsAndTitles } from '../database/courses';
+import { getCourseSidebarItems } from '../database/courses';
 import SidebarItem from '../types/SidebarItem';
 import { logger } from '../utils/logger';
 
@@ -11,12 +11,8 @@ interface Props {
 }
 
 const { title, description, headings = [] } = Astro.props;
-const chapterIdsAndTitles = await getChapterIdsAndTitles(
+const sidebarItems: SidebarItem[] = await getCourseSidebarItems(
   Astro.currentLocale ?? 'en'
-);
-const sidebarItems: SidebarItem[] = chapterIdsAndTitles.map(
-  (chapterIdAndTitle) =>
-    new SidebarItem(chapterIdAndTitle.title, `/${chapterIdAndTitle.id}`)
 );
 
 logger.array(`course sidebarItems`, sidebarItems);

@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { logger } from '../utils/logger';
+import SidebarItem from '@/types/SidebarItem';
 
 // 获取所有元数据，返回的格式是：
 // [
@@ -59,4 +60,36 @@ export const getMetaIdsAndTitles = async (lang: string): Promise<{ id: string, t
     //logger.array(`getIdsAndTitles, subset`, items.slice(0, 2));
 
     return items;
+}
+
+export const getMetaSidebarItems = async (lang: string): Promise<SidebarItem[]> => {
+    const metas = await getMetaIdsAndTitles(lang);
+    return metas.map((meta) => {
+        return SidebarItem.withLabel(meta.title)
+            .setLink(makeLinkWithoutLang(meta.id));
+    });
+}
+
+// 根据id生成链接
+// 例如：
+// id=zh-cn/supervisor，则返回/zh-cn/meta/supervisor
+// id=en/supervisor，则返回/en/meta/supervisor
+function makeLink(id: string, withLang: boolean = true): string {
+    let lang = id.split('/')[0];
+    let path = id.split('/').slice(1).join('/');
+
+    let link = `/${withLang ? lang : ''}/meta/${path}`;
+
+    // 如果开头有多个 /，则去掉
+    link = link.replace(/\/+/g, '/');
+
+    return link;
+}
+
+// 根据id生成不带语言的链接
+// 例如：
+// id=zh-cn/supervisor，则返回/meta/supervisor
+// id=en/supervisor，则返回/meta/supervisor
+function makeLinkWithoutLang(id: string): string {
+    return makeLink(id, false);
 }
