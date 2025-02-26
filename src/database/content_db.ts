@@ -59,7 +59,7 @@ export async function getTopCategories(): Promise<string[]> {
     let categories: string[] = [];
     const allPosts = await getDocsCollection();
     allPosts.forEach((post) => {
-        const category = getTopCategory(post.id);
+        const category = getTopCategoryFromDocId(post.id);
         if (!categories.includes(category)) {
             categories.push(category);
         }
@@ -137,12 +137,11 @@ export const getParentDocId = (id: string): string => {
  * 
  * 该函数获取指定文档的父文档slug。
  * 
- * @param {string} id - 文档ID, 例如 'courses/zh-cn/supervisor/index.md'
+ * @param {string} id - 文档ID, 例如 'zh-cn/courses/supervisor/index.md'
  * @returns {string} 返回父文档slug, 例如 'zh-cn/courses/supervisor'
  */
 export const getParentDocSlug = (slug: string): string => {
-    const parentId = getParentDocId(slug);
-    return slugToId(parentId);
+    return slug.split('/').slice(0, -1).join('/');
 }
 
 /**
@@ -189,11 +188,16 @@ export async function getDescendants(docId: string): Promise<DataEntry[]> {
  * const descendants = await getDescendantsByLevel('courses/zh-cn/supervisor', 2);
  */
 export async function getDescendantsByLevel(docId: string, level: number): Promise<DataEntry[]> {
+    const debug = true;
+    if (debug) {
+        logger.info(`getDescendantsByLevel, docId: ${docId}, level: ${level}`);
+    }
+
     const currentLevel = docId.split('/').length;
     const allPosts = await getDocsCollection();
     const descendantPosts = allPosts.filter(post => {
         let postLevel = post.id.split('/').length;
-        return post.id.startsWith(docId) && postLevel === currentLevel + level;
+        return (post.id.startsWith(docId) || post.id.startsWith('/' + docId)) && postLevel === currentLevel + level;
     });
 
     return descendantPosts;
@@ -221,8 +225,20 @@ export async function getChildren(docId: string): Promise<DataEntry[]> {
  * @param {string} id - 文档ID, 例如 'courses/zh-cn/supervisor/index.md'
  * @returns {string} 返回文档的顶级分类，例如 'courses'
  */
-export function getTopCategory(id: string): string {
+export function getTopCategoryFromDocId(id: string): string {
     return id.split('/')[0];
+}
+
+/**
+ * 获取文档的顶级分类
+ * 
+ * 该函数获取文档的顶级分类。
+ * 
+ * @param {string} slug - slug, 例如 'zh-cn/courses/supervisor/index.md'
+ * @returns {string} 返回文档的顶级分类，例如 'courses'
+ */
+export function getTopCategoryFromSlug(slug: string): string {
+    return slug.split('/')[1];
 }
 
 /**

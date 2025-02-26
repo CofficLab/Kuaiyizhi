@@ -56,6 +56,11 @@ export const getTopLevelSidebarItems = async (lang: string): Promise<SidebarItem
  * @returns {Promise<SidebarItem[]>} 返回侧边栏项目数组
  */
 export const getSidebarItemsByDocId = async (docId: string, level: number): Promise<SidebarItem[]> => {
+    const debug = true;
+    if (debug) {
+        logger.info(`getSidebarItemsByDocId, docId: ${docId}, level: ${level}`);
+    }
+
     const items: SidebarItem[] = [];
     const children = await getChildren(docId);
     for (const child of children) {
@@ -91,25 +96,27 @@ export const getSidebarItemsByDocId = async (docId: string, level: number): Prom
  * @returns {Promise<SidebarItem>} 返回侧边栏项目
  */
 export const getSidebarItemByDocId = async (docId: string, level: number): Promise<SidebarItem> => {
+    // 去除docId两侧的斜杠
+    const parsedDocId = docId.replace(/^\/|\/$/g, '');
     const debug = true;
     if (debug) {
-        logger.info(`getSidebarItemByDocId, docId: ${docId}, level: ${level}`);
+        logger.info(`getSidebarItemByDocId, docId: ${docId}, parsedDocId: ${parsedDocId}, level: ${level}`);
     }
 
     // 如果是顶级文档，即：courses、blogs、docs，则直接返回
-    if (docId.split('/').length === 2) {
-        const lang = docId.split('/')[0];
+    if (parsedDocId.split('/').length === 2) {
+        const sidebarItems = await getSidebarItemsByDocId(parsedDocId, level + 2);
         return new SidebarItem({
-            type: 'link',
-            link: makeTopLevelLink(docId, lang),
-            label: docId,
+            type: 'group',
+            label: parsedDocId,
+            items: sidebarItems,
         });
     }
 
     // 如果比顶级文档低一级，返回其子文档转换成的侧边栏
-    if (docId.split('/').length === 3) {
-        const doc = await getDocById(docId);
-        const sidebarItems = await getSidebarItemsByDocId(docId, level);
+    if (parsedDocId.split('/').length === 3) {
+        const doc = await getDocById(parsedDocId);
+        const sidebarItems = await getSidebarItemsByDocId(parsedDocId, level);
         return new SidebarItem({
             type: 'group',
             label: doc.data.title as string,
@@ -118,7 +125,7 @@ export const getSidebarItemByDocId = async (docId: string, level: number): Promi
     }
 
     // 其他情况，返回getSidebarItemsByDocId(其父文档, level - 1)
-    const parentDocId = getParentDocId(docId);
+    const parentDocId = getParentDocId(parsedDocId);
     return getSidebarItemByDocId(parentDocId, level - 1);
 }
 

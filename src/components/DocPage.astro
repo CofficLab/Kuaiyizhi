@@ -3,7 +3,8 @@ import DocLayout from '@layouts/DocLayout.astro';
 import {
   getDocBySlug,
   getParentDocSlug,
-  getTopCategory,
+  getTopCategoryFromDocId,
+  getTopCategoryFromSlug,
 } from '@database/content_db';
 import { render } from 'astro:content';
 import {
@@ -12,6 +13,9 @@ import {
   getSidebarItemsByDocId,
 } from '@/database/sidebar_db';
 import { slugToId } from '@database/content_db';
+import { getTagSidebarItem } from '@/database/blog_db';
+import { getLangFromSlug } from '@/utils/lang';
+import { logger } from '@/utils/logger';
 
 export interface Props {
   slug: string;
@@ -34,11 +38,19 @@ if (!doc) {
 
 const { Content, headings } = await render(doc);
 
-const topCategory = getTopCategory(slug);
+const topCategory = getTopCategoryFromSlug(slug);
+const lang = getLangFromSlug(slug);
+
+if (debug) {
+  logger.info(`📑 DocPage: topCategory: ${topCategory}`);
+  logger.info(`📑 DocPage: lang: ${lang}`);
+}
 
 let sidebarItem;
 if (topCategory === 'meta') {
-  sidebarItem = await getSidebarItemBySlug(getParentDocSlug(slug), 1);
+  sidebarItem = await getSidebarItemBySlug(getParentDocSlug(slug), 2);
+} else if (topCategory === 'blogs') {
+  sidebarItem = await getTagSidebarItem(lang);
 } else {
   sidebarItem = await getSidebarItemByDocId(slugToId(slug), 1);
 }
@@ -52,6 +64,7 @@ if (debug) {
   title={doc.data.title as string}
   description={doc.data.description as string}
   sidebarItem={sidebarItem}
-  headings={headings}>
+  headings={headings}
+  hasSidebar={true}>
   <Content />
 </DocLayout>

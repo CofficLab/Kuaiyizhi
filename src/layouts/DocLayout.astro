@@ -6,10 +6,17 @@ interface Props {
   title: string;
   description: string;
   sidebarItem: SidebarItem;
+  hasSidebar: boolean;
   headings?: Array<{ depth: number; slug: string; text: string }>;
 }
 
-const { title, description, sidebarItem, headings = [] } = Astro.props;
+const {
+  title,
+  description,
+  sidebarItem,
+  headings = [],
+  hasSidebar,
+} = Astro.props;
 ---
 
 <AppLayout
@@ -21,7 +28,7 @@ const { title, description, sidebarItem, headings = [] } = Astro.props;
     description: description,
     template: 'doc',
   }}
-  hasSidebar={true}
+  hasSidebar={hasSidebar}
   sidebar={sidebarItem}
   headings={headings}
   hidePageTitle={false}>

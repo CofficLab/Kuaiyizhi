@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import BlogList from '@/components/BlogList.vue';
+import BlogLayout from '@/layouts/BlogLayout.astro';
+import { getBlogsWithTags } from '@/database/blogs';
+
+// 定义所有可能的路由
+export async function getStaticPaths() {
+  const posts = await getCollection('blogs');
+  console.log('Found posts:', posts.length); // 调试日志
+
+  // 获取所有唯一的标签，确保至少有一个默认标签
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))];
+  console.log('Found tags:', tags); // 调试日志
+
+  // 如果没有标签，至少返回一个默认路由
+  if (tags.length === 0) {
+    return [
+      {
+        params: { id: 'default' },
+        props: { tag: 'default' },
+      },
+    ];
+  }
+
+  // 为每个标签创建一个路由
+  return tags.map((tag) => ({
+    params: { id: tag },
+    props: { tag },
+  }));
+}
+
+const { id } = Astro.params;
+const posts = await getBlogsWithTags(id);
+---
+
+<BlogLayout
+  title={`标签: ${id}`}
+  description={`所有关于 ${id} 的文章`}
+  lang="zh-cn">
+  <BlogList posts={posts} lang="zh-cn" />
+</BlogLayout>
