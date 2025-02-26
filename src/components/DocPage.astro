@@ -1,12 +1,17 @@
 ---
 import DocLayout from '@layouts/DocLayout.astro';
-import { getDocBySlug } from '@database/content_db';
+import {
+  getDocBySlug,
+  getParentDocSlug,
+  getTopCategory,
+} from '@database/content_db';
 import { render } from 'astro:content';
 import {
   getSidebarItemByDocId,
   getSidebarItemBySlug,
   getSidebarItemsByDocId,
 } from '@/database/sidebar_db';
+import { slugToId } from '@database/content_db';
 
 export interface Props {
   slug: string;
@@ -23,14 +28,20 @@ if (debug) {
 
 const doc = await getDocBySlug(slug);
 
-// 如果课程不存在，显示友好提示
 if (!doc) {
   return Astro.redirect(redirectPath, 307);
 }
 
 const { Content, headings } = await render(doc);
 
-const sidebarItem = await getSidebarItemBySlug(slug, 1);
+const topCategory = getTopCategory(slug);
+
+let sidebarItem;
+if (topCategory === 'meta') {
+  sidebarItem = await getSidebarItemBySlug(getParentDocSlug(slug), 1);
+} else {
+  sidebarItem = await getSidebarItemByDocId(slugToId(slug), 1);
+}
 
 if (debug) {
   console.log('📑 DocPage: sidebarItem', sidebarItem);

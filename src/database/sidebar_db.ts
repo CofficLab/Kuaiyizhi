@@ -10,7 +10,7 @@
 import { getCollection, type DataEntry } from 'astro:content';
 import { logger } from '@/utils/logger';
 import { SidebarItem } from '@/models/Sidebar';
-import { getChildren, getDescendants, getDocById, getTopCategories, slugToId } from '@/database/content_db';
+import { getChildren, getDescendants, getDocById, getParentDocId, getTopCategories, slugToId } from '@/database/content_db';
 import { makeLink, makeLinkWithoutLang, makeTopLevelLink } from '@/database/link_db';
 
 
@@ -91,13 +91,35 @@ export const getSidebarItemsByDocId = async (docId: string, level: number): Prom
  * @returns {Promise<SidebarItem>} 返回侧边栏项目
  */
 export const getSidebarItemByDocId = async (docId: string, level: number): Promise<SidebarItem> => {
-    const doc = await getDocById(docId);
-    const sidebarItems = await getSidebarItemsByDocId(docId, level);
-    return new SidebarItem({
-        type: 'group',
-        label: doc.data.title as string,
-        items: sidebarItems,
-    });
+    const debug = true;
+    if (debug) {
+        logger.info(`getSidebarItemByDocId, docId: ${docId}, level: ${level}`);
+    }
+
+    // 如果是顶级文档，即：courses、blogs、docs，则直接返回
+    if (docId.split('/').length === 2) {
+        const lang = docId.split('/')[0];
+        return new SidebarItem({
+            type: 'link',
+            link: makeTopLevelLink(docId, lang),
+            label: docId,
+        });
+    }
+
+    // 如果比顶级文档低一级，返回其子文档转换成的侧边栏
+    if (docId.split('/').length === 3) {
+        const doc = await getDocById(docId);
+        const sidebarItems = await getSidebarItemsByDocId(docId, level);
+        return new SidebarItem({
+            type: 'group',
+            label: doc.data.title as string,
+            items: sidebarItems,
+        });
+    }
+
+    // 其他情况，返回getSidebarItemsByDocId(其父文档, level - 1)
+    const parentDocId = getParentDocId(docId);
+    return getSidebarItemByDocId(parentDocId, level - 1);
 }
 
 /**

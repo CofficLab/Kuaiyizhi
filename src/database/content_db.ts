@@ -108,10 +108,41 @@ export async function getDocById(id: string): Promise<CollectionEntry<'content'>
     }
 
     if (!content) {
+        // 输出以id开头的所有文档
+        const matchingPosts = allPosts.filter(post => post.id.startsWith(id));
+        logger.info(`getDocById, matchingPosts: ${matchingPosts}`);
+
         throw new Error(`Document with ID ${id} not found`);
     }
 
     return content;
+}
+
+/**
+ * 获取指定文档的父文档ID
+ * 
+ * 该函数获取指定文档的父文档ID。
+ * 
+ * @param {string} id - 文档ID, 例如 'courses/zh-cn/supervisor/index.md'
+ * @returns {string} 返回父文档ID, 例如 'courses/zh-cn/supervisor'
+ */
+export const getParentDocId = (id: string): string => {
+    const parts = id.split('/');
+    parts.pop();
+    return parts.join('/');
+}
+
+/**
+ * 获取指定文档的父文档slug
+ * 
+ * 该函数获取指定文档的父文档slug。
+ * 
+ * @param {string} id - 文档ID, 例如 'courses/zh-cn/supervisor/index.md'
+ * @returns {string} 返回父文档slug, 例如 'zh-cn/courses/supervisor'
+ */
+export const getParentDocSlug = (slug: string): string => {
+    const parentId = getParentDocId(slug);
+    return slugToId(parentId);
 }
 
 /**
