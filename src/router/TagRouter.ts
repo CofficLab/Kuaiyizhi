@@ -1,5 +1,3 @@
-import { logger } from '@/utils/logger';
-import ContentDB from '@/database/ContentDB';
 import TagDB from '@/database/TagDB';
 
 export default class TagRouter {

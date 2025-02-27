@@ -10,8 +10,8 @@ import HomePage from '@/components/HomePage.astro';
 import Lang from '@/models/Lang';
 import TagRouter from '@/router/TagRouter';
 import TagPage from '@/components/TagsPage.astro';
-export const prerender = true;
 
+export const prerender = true;
 export async function getStaticPaths() {
   return [
     ...(await TagRouter.getPaths()),
