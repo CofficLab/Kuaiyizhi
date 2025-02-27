@@ -24,7 +24,7 @@ export default class HomeRouter {
         ];
     }
 
-    static isMatch(slug: string) {
-        return ['/', 'zh-cn', 'en'].includes(slug);
+    static isMatch(slug: string | undefined) {
+        return !slug || ['/', 'zh-cn', 'en'].includes(slug);
     }
 }

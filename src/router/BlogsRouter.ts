@@ -19,7 +19,7 @@ export default class BlogsRouter {
         ];
     }
 
-    static isMatch(slug: string) {
-        return slug.includes('/blogs') && slug.endsWith('/blogs');
+    static isMatch(slug: string | undefined) {
+        return slug && slug.includes('/blogs') && slug.endsWith('/blogs');
     }
 }

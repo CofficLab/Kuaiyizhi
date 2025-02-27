@@ -28,7 +28,7 @@ export default class TagRouter {
         return tags.map((tag) => tag.toTagPath());
     }
 
-    static isMatch(slug: string) {
-        return slug.includes('blogs/tags');
+    static isMatch(slug: string | undefined) {
+        return slug && slug.includes('blogs/tags');
     }
 }

@@ -1,0 +1,17 @@
+---
+import { logger } from '@utils/logger';
+
+export const prerender = false;
+
+// 获取浏览器首选语言
+const preferredLocale = Astro.preferredLocale;
+const currentLocale = Astro.currentLocale;
+
+// 使用 preferredLocale 如果存在，否则使用 currentLocale
+const locale = preferredLocale || currentLocale;
+
+logger.info(`locale: ${locale}`);
+logger.info(`redirect to: /${locale}`);
+
+return Astro.redirect(`/${locale}`);
+---

@@ -8,7 +8,7 @@ name: Deploy Astro
 
 on:
   push:
-    branches: [astro]
+    branches: [astro1]
     tags:
       - '*'
 
