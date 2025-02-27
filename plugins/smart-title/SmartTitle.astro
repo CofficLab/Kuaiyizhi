@@ -13,6 +13,12 @@ const currentPath = Astro.url.pathname;
     dark:from-emerald-900/95 dark:to-indigo-900/95
     flex flex-row justify-between
     rounded-lg px-2 gap-8">
-  <Default {...props} />
-  <Navigation locale={props.locale} currentPath={currentPath} variant="dark" />
+  <div transition:persist><Default {...props} /></div>
+
+  <Navigation
+    locale={props.locale}
+    currentPath={currentPath}
+    variant="dark"
+    transition:animate="slide"
+  />
 </div>

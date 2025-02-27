@@ -1,6 +1,7 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { SidebarItem } from '@/models/Sidebar';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
     title: string;
@@ -50,5 +51,8 @@ const {
             }
         </style>
     )}
-    <slot />
+    <div 
+    transition:animate="fade"><slot /></div>
+    
+    <ClientRouter/>
 </StarlightPage>
