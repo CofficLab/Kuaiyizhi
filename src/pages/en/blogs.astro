@@ -1,5 +1,5 @@
 ---
-import { getBlogs } from '../../database/blogs';
+import { getBlogs } from '../../database/blog_db';
 import BlogList from '../../components/BlogList.vue';
 import BlogsLayout from '../../layouts/BlogsLayout.astro';
 const posts = await getBlogs('en');
@@ -7,5 +7,5 @@ const enPosts = posts.filter((post) => post.id.startsWith('en'));
 ---
 
 <BlogsLayout title="所有文章" description="我的博客" lang="en">
-    <BlogList posts={enPosts} lang="en" />
+  <BlogList posts={enPosts} lang="en" />
 </BlogsLayout>

@@ -78,7 +78,7 @@ export async function getTopCategories(): Promise<string[]> {
  * @returns {Promise<DataEntry[]>} 返回文档集合
  */
 export async function getDocsByTopCategory(category: string, lang: string, depth: number): Promise<DataEntry[]> {
-    const debug = true
+    const debug = false
 
     if (debug) {
         logger.info(`getDocsByTopCategory, category: ${category}, lang: ${lang}`);

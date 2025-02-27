@@ -7,11 +7,10 @@
  * @module database/courses
  */
 
-import { getCollection, type DataEntry } from 'astro:content';
 import { logger } from '@/utils/logger';
 import { SidebarItem } from '@/models/Sidebar';
-import { getChildren, getDescendants, getDocById, getParentDocId, getTopCategories, slugToId } from '@/database/content_db';
-import { makeLink, makeLinkWithoutLang, makeTopLevelLink } from '@/database/link_db';
+import { getChildren, getDocById, getParentDocId, getTopCategories, slugToId } from '@/database/content_db';
+import { makeLink, makeTopLevelLink } from '@/utils/links';
 
 
 /**

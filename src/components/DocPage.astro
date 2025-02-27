@@ -24,10 +24,10 @@ export interface Props {
 
 const { slug, redirectPath } = Astro.props;
 
-const debug = true;
+const debug = false;
 
 if (debug) {
-  console.log('📑 DocPage: slug', slug);
+  logger.info(`📑 DocPage: slug: ${slug}`);
 }
 
 const doc = await getDocBySlug(slug);

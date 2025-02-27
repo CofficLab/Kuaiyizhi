@@ -1,0 +1,14 @@
+---
+import { getPaths } from '@/database/path_db';
+import DocPage from '@/components/DocPage.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return getPaths();
+}
+
+const { slug } = Astro.params;
+---
+
+<DocPage slug={slug} redirectPath="/404" />

@@ -1,4 +1,4 @@
-import { makeLink } from "@/database/link_db";
+import { makeLink } from "@/utils/links";
 import type { DataEntry } from "astro:content";
 
 export class Book {

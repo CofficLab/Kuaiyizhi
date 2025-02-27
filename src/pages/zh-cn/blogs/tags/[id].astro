@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BlogList from '@/components/BlogList.vue';
-import BlogLayout from '@/layouts/BlogLayout.astro';
-import { getBlogsWithTags } from '@/database/blogs';
+import { getBlogsWithTags } from '@/database/blog_db';
+import BlogsLayout from '@/layouts/BlogsLayout.astro';
 
 // 定义所有可能的路由
 export async function getStaticPaths() {
@@ -34,9 +34,9 @@ const { id } = Astro.params;
 const posts = await getBlogsWithTags(id);
 ---
 
-<BlogLayout
+<BlogsLayout
   title={`标签: ${id}`}
   description={`所有关于 ${id} 的文章`}
   lang="zh-cn">
   <BlogList posts={posts} lang="zh-cn" />
-</BlogLayout>
+</BlogsLayout>
