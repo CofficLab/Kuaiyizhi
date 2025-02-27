@@ -1,21 +1,12 @@
 ---
 import DocLayout from '@layouts/DocLayout.astro';
-import {
-  getDocBySlug,
-  getParentDocSlug,
-  getTopCategoryFromDocId,
-  getTopCategoryFromSlug,
-} from '@database/content_db';
+import ContentDB from '@/database/ContentDB';
 import { render } from 'astro:content';
-import {
-  getSidebarItemByDocId,
-  getSidebarItemBySlug,
-  getSidebarItemsByDocId,
-} from '@/database/sidebar_db';
-import { slugToId } from '@database/content_db';
-import { getTagSidebarItem } from '@/database/blog_db';
+import SidebarDB from '@/database/SidebarDB';
 import { getLangFromSlug } from '@/utils/lang';
 import { logger } from '@/utils/logger';
+import { SidebarItem } from '@/models/Sidebar';
+import Tag from '@/models/Tag';
 
 export interface Props {
   slug: string;
@@ -30,7 +21,7 @@ if (debug) {
   logger.info(`📑 DocPage: slug: ${slug}`);
 }
 
-const doc = await getDocBySlug(slug);
+const doc = await ContentDB.getDocBySlug(slug);
 
 if (!doc) {
   return Astro.redirect(redirectPath, 307);
@@ -38,7 +29,7 @@ if (!doc) {
 
 const { Content, headings } = await render(doc);
 
-const topCategory = getTopCategoryFromSlug(slug);
+const topCategory = ContentDB.getTopCategoryFromSlug(slug);
 const lang = getLangFromSlug(slug);
 
 if (debug) {
@@ -48,11 +39,17 @@ if (debug) {
 
 let sidebarItem;
 if (topCategory === 'meta') {
-  sidebarItem = await getSidebarItemBySlug(getParentDocSlug(slug), 2);
+  sidebarItem = await SidebarDB.getSidebarItemBySlug(
+    ContentDB.getParentDocSlug(slug),
+    2
+  );
 } else if (topCategory === 'blogs') {
-  sidebarItem = await getTagSidebarItem(lang);
+  sidebarItem = await Tag.makeRootSidebarItem();
 } else {
-  sidebarItem = await getSidebarItemByDocId(slugToId(slug), 1);
+  sidebarItem = await SidebarDB.getSidebarItemByDocId(
+    ContentDB.slugToId(slug),
+    1
+  );
 }
 
 if (debug) {

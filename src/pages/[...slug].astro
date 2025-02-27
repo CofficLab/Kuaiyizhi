@@ -1,11 +1,11 @@
 ---
-import { getPaths } from '@/database/path_db';
+import PathDB from '@/database/PathDB';
 import DocPage from '@/components/DocPage.astro';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-  return getPaths();
+  return PathDB.getPaths();
 }
 
 const { slug } = Astro.params;

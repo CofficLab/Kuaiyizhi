@@ -1,5 +1,3 @@
-import { logger } from "./logger";
-
 export const normalizeLang = (lang: string) => {
     if (lang === 'zh-CN') {
         return 'zh-cn';
@@ -8,11 +6,6 @@ export const normalizeLang = (lang: string) => {
 }
 
 export const getLangFromSlug = (slug: string) => {
-    const debug = true;
-    if (debug) {
-        logger.info(`📑 getLangFromSlug: slug: ${slug}`);
-    }
-
     let lang = slug.split('/')[0];
 
     return normalizeLang(lang);

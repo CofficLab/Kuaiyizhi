@@ -8,15 +8,23 @@ const currentLocale = Astro.currentLocale;
 
 // 使用 preferredLocale 如果存在，否则使用 currentLocale
 const locale = preferredLocale || currentLocale;
-
-console.log('🖥️  IndexPage: locale', locale);
-console.log('🖥️  IndexPage: redirect to', `/${locale}/blogs`);
-
-// return Astro.redirect(`/${locale}/blogs`);
 ---
 
-<AppLayout lang={locale} title="博客" description="博客" />
+<AppLayout
+  title="博客"
+  description="博客"
+  hasSidebar={false}
+  hidePageTitle={true}
+  template="splash"
+  headings={[]}
+  frontmatter={{
+    title: '博客',
+    description: '博客',
+    template: 'splash',
+  }}
+  sidebar={null}
+/>
 
 <script define:vars={{ locale }}>
-    window.location.href = `/${locale}/blogs`;
+  window.location.href = `/${locale}/blogs`;
 </script>

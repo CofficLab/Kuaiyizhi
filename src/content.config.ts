@@ -12,46 +12,16 @@ export const collections = {
 		loader: i18nLoader(),
 		schema: i18nSchema()
 	}),
-	blogs: defineCollection({
-		loader: glob({
-			pattern: "**/*.{md,mdx}",
-			base: "./src/content/blogs"
-		}),
-		schema: z.object({
-			title: z.string(),
-			tags: z.array(z.string()),
-			date: z.date().optional(),
-			description: z.string().optional(),
-		}),
-	}),
-	courses: defineCollection({
-		loader: glob({
-			pattern: "**/*.{md,mdx}",
-			base: "./src/content/courses"
-		}),
-		schema: z.object({
-			title: z.string().optional(),
-			description: z.string().optional(),
-		}),
-	}),
-	metas: defineCollection({
-		loader: glob({
-			pattern: "**/*.{md,mdx}",
-			base: "./src/content/meta"
-		}),
-		schema: z.object({
-			title: z.string().optional(),
-			description: z.string().optional(),
-		}),
-	}),
 	content: defineCollection({
 		loader: glob({
 			pattern: "**/*.{md,mdx}",
-			base: "./src/content"
+			base: "./content"
 		}),
 		schema: z.object({
 			title: z.string().optional(),
 			description: z.string().optional(),
+			tags: z.array(z.string()).optional(),
+			date: z.date().optional(),
 		}),
 	}),
 };

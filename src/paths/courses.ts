@@ -1,4 +1,4 @@
-import { getAllCourseItemsZhCn, getAllCourseItemsEn } from '../database/course_db';
+import { getAllCourseItemsZhCn, getAllCourseItemsEn } from '../database/CourseDB';
 import { logger } from '../utils/logger';
 /**
  * 获取中文课程的路径

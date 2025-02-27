@@ -1,7 +1,7 @@
 import { makeLink } from "@/utils/links";
 import type { DataEntry } from "astro:content";
 
-export class Book {
+export class Course {
     link: string;
     title: string;
 
@@ -12,6 +12,6 @@ export class Book {
 
     static fromDataEntry(dataEntry: DataEntry) {
         let link = makeLink(dataEntry.id);
-        return new Book(link, dataEntry.data.title as string);
+        return new Course(link, dataEntry.data.title as string);
     }
 }

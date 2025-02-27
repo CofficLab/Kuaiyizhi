@@ -1,11 +1,17 @@
 ---
-import { getBlogs } from '../../database/blog_db';
-import BlogList from '../../components/BlogList.vue';
-import BlogsLayout from '../../layouts/BlogsLayout.astro';
-const posts = await getBlogs('zh-cn');
-const zhPosts = posts.filter((post) => post.id.startsWith('zh-cn'));
+import BlogDB from '@/database/BlogDB';
+import BlogList from '@/components/BlogList.vue';
+import DocLayout from '@/layouts/DocLayout.astro';
+import { Tag } from '@/models/Tag';
+
+const blogs = await BlogDB.getAllBlogs('zh-cn');
+const sidebarItem = await Tag.makeRootSidebarItem();
 ---
 
-<BlogsLayout title="所有文章" description="我的博客" lang="zh-cn">
-  <BlogList posts={zhPosts} lang="zh-cn" />
-</BlogsLayout>
+<DocLayout
+  title="所有文章"
+  description="我的博客"
+  sidebarItem={sidebarItem}
+  hasSidebar={true}>
+  <BlogList blogs={blogs} lang="zh-cn" />
+</DocLayout>
