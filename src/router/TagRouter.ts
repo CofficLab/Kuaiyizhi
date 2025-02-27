@@ -27,4 +27,8 @@ export default class TagRouter {
         // 为每个标签创建一个路由
         return tags.map((tag) => tag.toTagPath());
     }
+
+    static isMatch(slug: string) {
+        return slug.includes('blogs/tags');
+    }
 }

@@ -25,16 +25,17 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 ---
 
+{HomeRouter.isMatch(slug) && <HomePage lang={Lang.fromString(slug)} />}
+
+{CourseRouter.isMatch(slug) && <CoursesPage />}
+
+{BlogsRouter.isMatch(slug) && <BlogsPage />}
+
+{TagRouter.isMatch(slug) && <TagPage />}
+
 {
-  ['/', 'zh-cn', 'en'].includes(slug) ? (
-    <HomePage lang={Lang.fromString(slug)} />
-  ) : slug.includes('/courses') && slug.endsWith('/courses') ? (
-    <CoursesPage />
-  ) : slug.includes('/blogs') && slug.endsWith('/blogs') ? (
-    <BlogsPage />
-  ) : slug.includes('blogs/tags') ? (
-    <TagPage />
-  ) : (
-    <DocPage slug={slug} redirectPath="/404" />
-  )
+  !HomeRouter.isMatch(slug) &&
+    !CourseRouter.isMatch(slug) &&
+    !BlogsRouter.isMatch(slug) &&
+    !TagRouter.isMatch(slug) && <DocPage slug={slug} redirectPath="/404" />
 }

@@ -18,4 +18,8 @@ export default class CourseRouter {
             },
         ];
     }
+
+    static isMatch(slug: string) {
+        return slug.includes('/courses') && slug.endsWith('/courses');
+    }
 }
