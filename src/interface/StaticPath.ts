@@ -1,6 +1,6 @@
 export interface TagStaticPath {
     params: {
-        id: string;
+        slug: string;
     };
     props: {
         tag: string;

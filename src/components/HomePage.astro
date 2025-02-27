@@ -2,17 +2,16 @@
 import AppLayout from '../layouts/AppLayout.astro';
 import HeroSection from '@components/home/HeroSection.astro';
 import CardGrid from '@components/home/CardGrid.astro';
+import Lang from '@/models/Lang';
 
-type Lang = 'zh-cn' | 'en';
 export interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const title = lang === 'zh-cn' ? '快易知' : 'Quick Knowledge';
-const description =
-  lang === 'zh-cn'
-    ? '追寻知识的纯粹之光'
-    : 'Pursuing the Pure Light of Knowledge';
+const title = lang.isChinese() ? '快易知' : 'Quick Knowledge';
+const description = lang.isChinese()
+  ? '追寻知识的纯粹之光'
+  : 'Pursuing the Pure Light of Knowledge';
 ---
 
 <AppLayout

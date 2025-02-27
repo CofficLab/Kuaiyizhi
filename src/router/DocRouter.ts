@@ -1,8 +1,8 @@
-import { logger } from '../utils/logger';
-import ContentDB from './ContentDB';
-import TagDB from './TagDB';
+import { logger } from '@/utils/logger';
+import ContentDB from '@/database/ContentDB';
+import TagDB from '@/database/TagDB';
 
-export default class PathDB {
+export default class DocRouter {
     /**
      * 获取所有文档的路径，用于生成路由
     * 
@@ -22,7 +22,7 @@ export default class PathDB {
     *     },
     * ]
     */
-    static async getPaths() {
+    static async getPaths(): Promise<{ params: { slug: string } }[]> {
         const debug = false;
         const docs = await ContentDB.getDocsCollection();
 
@@ -41,37 +41,9 @@ export default class PathDB {
         });
 
         if (debug) {
-            logger.array('中文文档的路径', paths);
+            logger.array('所有文档的路径', paths);
         }
 
         return paths;
-    }
-
-
-    /**
-     * 获取所有标签的路径，用于生成路由
-     * 
-     * @param lang 语言代码，例如 'zh-cn', 'en'
-     * @returns 所有标签的路径数组, 例如：
-     * [
-     *     {
-     *         params: { id: 'default' },
-     *         props: { tag: 'default' },
-     *     },
-     *     {
-     *         params: { id: 'tag1' },
-     *         props: { tag: 'tag1' },
-     *     },
-     *     {
-     *         params: { id: 'tag2' },
-     *         props: { tag: 'tag2' },
-     *     },
-     * ]
-     */
-    static async getPathsForTags(lang: string) {
-        const tags = await TagDB.getTags(lang);
-
-        // 为每个标签创建一个路由
-        return tags.map((tag) => tag.toTagPath());
     }
 }

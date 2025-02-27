@@ -21,7 +21,7 @@ export class Tag {
 
     toTagPath(): TagStaticPath {
         return {
-            params: { id: this.name },
+            params: { slug: 'zh-cn/blogs/tags/' + this.name },
             props: { tag: this.name },
         };
     }

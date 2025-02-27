@@ -1,5 +1,6 @@
 ---
-type Lang = 'zh-cn' | 'en';
+import Lang from '@/models/Lang';
+
 export interface Props {
   lang: Lang;
 }
@@ -8,8 +9,8 @@ const { lang } = Astro.props;
 
 const cards: Array<{
   emoji: string;
-  title: Record<Lang, string>;
-  description: Record<Lang, string>;
+  title: Record<string, string>;
+  description: Record<string, string>;
 }> = [
   {
     emoji: '🚀',
@@ -53,8 +54,8 @@ const cards: Array<{
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <div class="text-3xl mb-4">{card.emoji}</div>
-          <h3 class="card-title">{card.title[lang]}</h3>
-          <p class="text-base-content/70">{card.description[lang]}</p>
+          <h3 class="card-title">{card.title[lang.code]}</h3>
+          <p class="text-base-content/70">{card.description[lang.code]}</p>
         </div>
       </div>
     ))

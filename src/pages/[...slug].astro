@@ -1,14 +1,40 @@
 ---
-import PathDB from '@/database/PathDB';
+import DocRouter from '@/router/DocRouter';
 import DocPage from '@/components/DocPage.astro';
-
+import CourseRouter from '@/router/CourseRouter';
+import CoursesPage from '@/components/CoursesPage.astro';
+import BlogsRouter from '@/router/BlogsRouter';
+import BlogsPage from '@/components/BlogsPage.astro';
+import HomeRouter from '@/router/HomeRouter';
+import HomePage from '@/components/HomePage.astro';
+import Lang from '@/models/Lang';
+import TagRouter from '@/router/TagRouter';
+import TagPage from '@/components/TagsPage.astro';
 export const prerender = true;
 
 export async function getStaticPaths() {
-  return PathDB.getPaths();
+  return [
+    ...(await TagRouter.getPaths()),
+    ...(await DocRouter.getPaths()),
+    ...(await CourseRouter.getPaths()),
+    ...(await BlogsRouter.getPaths()),
+    ...(await HomeRouter.getPaths()),
+  ];
 }
 
 const { slug } = Astro.params;
 ---
 
-<DocPage slug={slug} redirectPath="/404" />
+{
+  ['/', 'zh-cn', 'en'].includes(slug) ? (
+    <HomePage lang={Lang.fromString(slug)} />
+  ) : slug.includes('/courses') && slug.endsWith('/courses') ? (
+    <CoursesPage />
+  ) : slug.includes('/blogs') && slug.endsWith('/blogs') ? (
+    <BlogsPage />
+  ) : slug.includes('blogs/tags') ? (
+    <TagPage />
+  ) : (
+    <DocPage slug={slug} redirectPath="/404" />
+  )
+}

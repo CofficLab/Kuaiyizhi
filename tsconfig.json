@@ -34,8 +34,8 @@
       "@database/*": [
         "src/database/*"
       ],
-      "@paths/*": [
-        "src/paths/*"
+      "@router/*": [
+        "src/router/*"
       ]
     }
   }

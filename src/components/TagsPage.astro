@@ -1,22 +1,16 @@
 ---
 import BlogList from '@/components/BlogList.vue';
 import DocLayout from '@/layouts/DocLayout.astro';
-import PathDB from '@/database/PathDB';
 import BlogDB from '@/database/BlogDB';
 import Tag from '@/models/Tag';
 
-// 定义所有可能的路由
-export async function getStaticPaths() {
-  return PathDB.getPathsForTags('zh-cn');
-}
-
-const { id } = Astro.params;
-const blogs = await BlogDB.getBlogsWithTag(id, 'zh-cn');
+const { slug } = Astro.params;
+const blogs = await BlogDB.getBlogsWithTag(slug ?? '', 'zh-cn');
 ---
 
 <DocLayout
-  title={`标签: ${id}`}
-  description={`所有关于 ${id} 的文章`}
+  title={`标签: ${slug}`}
+  description={`所有关于 ${slug} 的文章`}
   sidebarItem={await Tag.makeRootSidebarItem()}
   hasSidebar={true}>
   <BlogList blogs={blogs} lang="zh-cn" />
