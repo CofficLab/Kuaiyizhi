@@ -14,3 +14,19 @@ export const getLangFromSlug = (slug: string) => {
 export const isValidLang = (lang: string) => {
     return ['zh-cn', 'en'].includes(lang);
 }
+
+export const getLang = (...args: string[]) => {
+    const debug = false 
+
+    if (debug) {
+        console.log('getLang', args);
+    }
+
+    for (const arg of args) {
+        let normalizedLang = normalizeLang(arg);
+        if (isValidLang(normalizedLang)) {
+            return normalizedLang;
+        }
+    }
+    return 'en';
+}

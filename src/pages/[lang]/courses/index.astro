@@ -1,0 +1,26 @@
+---
+import CoursesPage from '@/components/CoursesPage.astro';
+
+// 这里定义了每个语言的课程列表页，并将其作为静态页面预渲染。
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return [
+    {
+      params: {
+        lang: '/zh-cn',
+      },
+    },
+    {
+      params: {
+        lang: '/en',
+      },
+    },
+  ];
+}
+
+const { lang } = Astro.params;
+---
+
+<CoursesPage />

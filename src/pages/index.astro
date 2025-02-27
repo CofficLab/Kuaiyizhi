@@ -1,17 +1,10 @@
 ---
-import { logger } from '@utils/logger';
+import { getLang } from "@utils/lang";
 
-export const prerender = false;
+// 不要预渲染，因为这是一个动态页面（动态获取当前语言）
+export const prerender = false
 
-// 获取浏览器首选语言
-const preferredLocale = Astro.preferredLocale;
-const currentLocale = Astro.currentLocale;
+const langCode = getLang(Astro.preferredLocale ?? "", Astro.currentLocale ?? "")
 
-// 使用 preferredLocale 如果存在，否则使用 currentLocale
-const locale = preferredLocale || currentLocale;
-
-logger.info(`locale: ${locale}`);
-logger.info(`redirect to: /${locale}`);
-
-return Astro.redirect(`/${locale}`);
+return Astro.redirect(`/${langCode}`)
 ---

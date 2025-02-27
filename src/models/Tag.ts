@@ -15,7 +15,7 @@ export class Tag {
         return new SidebarItem({
             type: 'link',
             label: this.name,
-            link: `/blogs/tags/${this.name}`,
+            link: `/blogs/tag/${this.name}`,
         });
     }
 

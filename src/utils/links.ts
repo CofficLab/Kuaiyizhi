@@ -29,7 +29,7 @@ export function makeDocLink(lang: string, path: string): string {
  * @returns 标签页的完整URL路径
  */
 export function makeTagLink(lang: string, tag: string): string {
-    return `/${lang}/tags/${tag}`;
+    return `/${lang}/tag/${tag}`;
 }
 
 /**
@@ -118,4 +118,12 @@ export function makeTopLevelLink(category: string, lang: string): string {
  */
 export function makeLinkWithoutLang(id: string): string {
     return makeLink(id, false);
+}
+
+export function homeRedirect(locale: string) {
+if (locale == "" || !locale) {
+    locale = "en";
+}
+
+return locale
 }

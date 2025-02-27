@@ -1,5 +1,5 @@
 export default class Lang {
-    code: string;
+    code: string = '';
 
     constructor(code: string) {
         this.code = code;

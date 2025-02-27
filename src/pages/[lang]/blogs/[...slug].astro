@@ -1,0 +1,35 @@
+---
+import DocPage from '@/components/DocPage.astro';
+import ContentDB from '@/database/ContentDB';
+import { logger } from '@/utils/logger';
+
+// 全部预渲染
+export const prerender = true;
+export async function getStaticPaths() {
+  const debug = false;
+  const docs = await ContentDB.getDocsCollection();
+
+  // DocId 的格式为 courses/zh-cn/supervisor/index.md
+  // 需要转换为 /zh-cn/courses/supervisor/index.md
+
+  let paths = docs.map((doc) => {
+    return {
+      params: {
+        lang: doc.id.split('/')[1],
+        slug: doc.id.split('/').slice(2).join('/'),
+      },
+    };
+  });
+
+  if (debug) {
+    logger.array('所有文档的路径', paths);
+  }
+
+  return paths;
+}
+
+let { lang, slug } = Astro.params;
+let slugNew = `${lang}/blogs/${slug}`;
+---
+
+<DocPage slug={slugNew} redirectPath="/404" />

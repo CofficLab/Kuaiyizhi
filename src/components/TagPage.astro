@@ -4,13 +4,18 @@ import DocLayout from '@/layouts/DocLayout.astro';
 import BlogDB from '@/database/BlogDB';
 import Tag from '@/models/Tag';
 
-const { slug } = Astro.params;
-const blogs = await BlogDB.getBlogsWithTag(slug ?? '', 'zh-cn');
+interface Props {
+  lang: string;
+  id: string;
+}
+
+const { lang, id } = Astro.props;
+const blogs = await BlogDB.getBlogsWithTag(id ?? '', lang ?? '');
 ---
 
 <DocLayout
-  title={`标签: ${slug}`}
-  description={`所有关于 ${slug} 的文章`}
+  title={`标签: ${id}`}
+  description={`所有关于 ${id} 的文章`}
   sidebarItem={await Tag.makeRootSidebarItem()}
   hasSidebar={true}>
   <BlogList blogs={blogs} lang="zh-cn" />

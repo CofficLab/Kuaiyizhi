@@ -1,0 +1,37 @@
+---
+import TagPage from '@/components/TagPage.astro';
+import TagDB from '@/database/TagDB';
+
+interface StaticPath {
+  params: {
+    lang: string;
+    slug: string;
+  };
+
+  props: {
+    tag: string;
+  };
+}
+
+// 全部预渲染
+export const prerender = true;
+
+export async function getStaticPaths(): Promise<StaticPath[]> {
+  const tags = await TagDB.getTags('zh-cn');
+
+  // 为每个标签创建一个路由
+  return tags.map((tag) => {
+    return {
+      params: {
+        lang: 'zh-cn',
+        slug: tag.name,
+      },
+      props: { tag: tag.name },
+    };
+  });
+}
+
+const { lang, slug } = Astro.params;
+---
+
+<TagPage lang={lang} id={slug} />
