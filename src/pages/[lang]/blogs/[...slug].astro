@@ -7,7 +7,7 @@ import { logger } from '@/utils/logger';
 export const prerender = true;
 export async function getStaticPaths() {
   const debug = false;
-  const docs = await ContentDB.getDocsCollection();
+  const docs = await ContentDB.getDescendants('blogs');
 
   // DocId 的格式为 courses/zh-cn/supervisor/index.md
   // 需要转换为 /zh-cn/courses/supervisor/index.md
