@@ -1,4 +1,4 @@
-import { getAllCourseItemsZhCn, getAllCourseItemsEn } from '../database/courses';
+import { getAllCourseItemsZhCn, getAllCourseItemsEn } from './course_db';
 import { logger } from '../utils/logger';
 import { getDocsCollection } from './content_db';
 

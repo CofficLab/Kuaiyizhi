@@ -74,17 +74,31 @@ export async function getTopCategories(): Promise<string[]> {
  * 
  * @param {string} category - 顶级分类，例如 'courses', 'blogs'
  * @param {string} lang - 语言代码，例如 'zh-cn', 'en'
+ * @param {number} depth - 深度，例如 1, 2, 3
  * @returns {Promise<DataEntry[]>} 返回文档集合
  */
-export async function getDocsByTopCategory(category: string, lang: string): Promise<DataEntry[]> {
+export async function getDocsByTopCategory(category: string, lang: string, depth: number): Promise<DataEntry[]> {
+    const debug = true
+
+    if (debug) {
+        logger.info(`getDocsByTopCategory, category: ${category}, lang: ${lang}`);
+    }
+
     const allPosts = await getDocsCollection();
     const normalizedLang = normalizeLang(lang);
 
-    // id是这样的格式：courses/zh-cn/supervisor/index.md
-    // 所以我们要过滤出以 {normalizedLang}/{category} 开头的文档
+    if (debug) {
+        logger.array(`getDocsByTopCategory, allPosts`, allPosts);
+    }
 
-    const prefix = `${normalizedLang}/${category}`;
-    const filteredPosts = allPosts.filter((post) => post.id.startsWith(prefix));
+    // id是这样的格式：courses/zh-cn/supervisor/index.md
+    // 所以我们要过滤出以 {category}/{normalizedLang} 开头的文档
+
+    const prefix = `${category}/${normalizedLang}/`;
+    const filteredPosts = allPosts.filter((post) => post.id.startsWith(prefix)).filter((post) => {
+        const parts = post.id.split('/');
+        return parts.length === depth + 2;
+    });
 
     return filteredPosts;
 }

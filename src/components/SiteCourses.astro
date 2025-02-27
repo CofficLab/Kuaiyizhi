@@ -1,18 +1,18 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { getCourses } from '../database/courses';
-import CoursesPage from './CoursesPage.astro';
+import { getCourses } from '../database/course_db';
+import BookCard from './BookCard.astro';
+import { Book } from '@/models/Book';
+
 interface Props {
   lang?: string;
 }
 
 const { lang = 'zh-cn' } = Astro.props;
 const courses = await getCourses();
-const books: Book[] = courses.map((course) => ({
-  label: course.data.title ?? '',
-  title: course.data.title ?? '',
-  link: `/${lang}/courses/${course.id.replace('zh-cn/', '').replace('en/', '')}`,
-}));
+const books: Book[] = courses.map((course) => {
+  return Book.fromDataEntry(course);
+});
 
 const title = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
@@ -31,5 +31,16 @@ const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
   sidebar={null}
   headings={[]}
   hidePageTitle={true}>
-  <CoursesPage books={books} />
+  <div
+    class="not-content mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-8">
+    {
+      books.map((book) => (
+        <BookCard
+          link={book.link}
+          book={{ title: book.title }}
+          childrenCount={10}
+        />
+      ))
+    }
+  </div>
 </AppLayout>
