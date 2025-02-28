@@ -4,111 +4,135 @@ title: Laravel
 
 ![](./images/06-Laravel_1.jpeg)
 
-## What is Laravel
+## 什么是 Laravel
 
-Laravel is a PHP framework. It provides many useful tools to help you build web applications quickly and easily.
+Laravel 是一个 PHP 框架。它提供了许多有用的工具，帮助你快速轻松地构建 Web 应用程序。
 
-The word "Laravel" does not exist in English. How did this name come about? It is said that the creator of Laravel, Taylor Otwell, was inspired by Cair Paravel, the castle in the novel "The Chronicles of Narnia," and decided to name his framework Laravel.
+"Laravel"这个词在英语中并不存在。这个名字是怎么来的呢？据说，Laravel 的创建者 Taylor Otwell 受到了小说《纳尼亚传奇》中的城堡 Cair Paravel 的启发，决定将他的框架命名为 Laravel。
 
-**If you encounter any issues, remember to check the official documentation for answers first.**
+**如果你遇到任何问题，请记得先查阅官方文档寻找答案。**
 
 https://laravel.com/docs/11.x
 
-## Installation
+## 安装
 
-Before creating your first Laravel project, make sure that your local machine has PHP and Composer installed.
+在创建你的第一个 Laravel 项目之前，确保你的本地机器已安装 PHP 和 Composer。
 
 ### PHP
 
-Check if PHP is already installed
+检查 PHP 是否已安装
 
-php -vIf PHP is not installed, please follow the previous article to install PHP.
+php -v
+
+如果 PHP 未安装，请按照前面的文章安装 PHP。
 
 ### Composer
 
-Composer is a package manager for PHP. It helps you install and update the dependencies of your project.
+Composer 是 PHP 的包管理器。它帮助你安装和更新项目的依赖。
 
-Check if Composer is already installed
+检查 Composer 是否已安装
 
-It's a bit different here, Composer's -V is an uppercase V.
+这里有点不同，Composer 的 -V 是大写的 V。
 
-composer -VAnd you will see：
+composer -V
 
-Composer version 2.7.2 2024-03-11 17:12:18 PHP version 8.3.3 (/opt/homebrew/Cellar/php/8.3.3_1/bin/php)If Composere is not installed, you will see:
+你将看到：
 
-command not found: composerIf that's the case, let's install it.
+Composer version 2.7.2 2024-03-11 17:12:18 PHP version 8.3.3 (/opt/homebrew/Cellar/php/8.3.3_1/bin/php)
 
-Open the page: https://getcomposer.org/download/
+如果 Composer 未安装，你将看到：
 
-Run these commands:
+command not found: composer
 
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" php composer-setup.php php -r "unlink('composer-setup.php');"And
+如果是这种情况，让我们安装它。
 
-sudo mv composer.phar /usr/local/bin/composerThat’s all!
+打开页面：https://getcomposer.org/download/
+
+运行这些命令：
+
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" php composer-setup.php php -r "unlink('composer-setup.php');"
+
+然后
+
+sudo mv composer.phar /usr/local/bin/composer
+
+就这样！
 
 ### Node.js
 
-A very useful software that many projects require, just install it!
+一个非常有用的软件，许多项目都需要它，安装它吧！
 
-You can use the following command to install Node.js:
+你可以使用以下命令安装 Node.js：
 
-brew install nodeAfter installation is complete, enter this code in the terminal app and hit enter to run.
+brew install node
 
-node -vIf you see the following output, congratulations! You have successfully installed Node.js.
+安装完成后，在终端应用中输入此代码并按回车运行。
 
-v22.4.1### Laravel
+node -v
 
-It's time to give our project a name.
+如果你看到以下输出，恭喜！你已成功安装 Node.js。
 
-How about this name: luckara?
+v22.4.1
 
-cd your_workspace_folder &amp;&amp; composer create-project laravel/laravel luckara## Run
+### Laravel
 
-After the installation is complete, open the project with VSCode.
+是时候给我们的项目起个名字了。
 
-cd luckara &amp;&amp; code .![](./images/06-Laravel_2.png)
+这个名字怎么样：luckara？
 
-Click “New Terminal” to open the terminal
+cd your_workspace_folder && composer create-project laravel/laravel luckara
+
+## 运行
+
+安装完成后，用 VSCode 打开项目。
+
+cd luckara && code .
+
+![](./images/06-Laravel_2.png)
+
+点击"New Terminal"打开终端
 
 ![](./images/06-Laravel_3.png)
 
-Run the command “php artisan serve"
+运行命令"php artisan serve"
 
 ![](./images/06-Laravel_4.png)
 
-Server running on [http://127.0.0.1:8000].
+服务器运行在 [http://127.0.0.1:8000]。
 
-Then open your browser you will see the beautiful page
+然后打开你的浏览器，你将看到这个漂亮的页面
 
 ![](./images/06-Laravel_5.png)
 
-## Upload to GitHub
+## 上传到 GitHub
 
-After installation is complete, open the project with GitHub Desktop:
+安装完成后，用 GitHub Desktop 打开项目：
 
-github .![](./images/06-Laravel_6.png)
+github .
 
-If you are not logged in, please log in to GitHub Desktop first.
+![](./images/06-Laravel_6.png)
 
-Click “create a repository"
+如果你还没有登录，请先登录 GitHub Desktop。
+
+点击"create a repository"
 
 ![](./images/06-Laravel_7.png)
 
 ![](./images/06-Laravel_8.png)
 
-And, push it to GitHub
+然后，将它推送到 GitHub
 
 ![](./images/06-Laravel_9.png)
 
 ![](./images/06-Laravel_10.png)
 
-## Browser the GitHub Page
+## 浏览 GitHub 页面
 
-Finally, click “View on GitHub” to open the browser to see the project.
+最后，点击"View on GitHub"在浏览器中打开项目查看。
 
 ![](./images/06-Laravel_11.png)
 
-## References
+## 参考资料
 
 **https://laravel.com**
 

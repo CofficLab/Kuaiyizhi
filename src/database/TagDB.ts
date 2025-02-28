@@ -21,8 +21,12 @@ export default class TagDB {
             logger.array("posts", posts);
         }
 
+        if (posts.length === 0) {
+            return [];
+        }
+
         posts.forEach(post => {
-            post.tags.forEach(tag => tags.add(tag));
+            post.tags?.forEach(tag => tags.add(tag));
         });
 
         if (debug) {

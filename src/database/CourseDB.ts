@@ -16,12 +16,13 @@ export default class CourseDB {
     * 
     * 该函数获取所有课程内容集合，并过滤出一级目录的课程（即路径中只有一个斜杠的课程）。
     * 
+    * @param {string} lang - 语言代码，例如 'zh-cn', 'en'
     * @returns {Promise<Array>} 返回顶级课程数组
     * @example
     * const topLevelCourses = await getCourses();
     */
-    static async getCourses(): Promise<Course[]> {
-        const courses = await ContentDB.getDocsByTopCategory('courses', 'zh-cn', 1);
+    static async getCourses(lang: string): Promise<Course[]> {
+        const courses = await ContentDB.getDocsByTopCategory('courses', lang, 1);
         return courses.map((course) => Course.fromDataEntry(course));
     }
 }

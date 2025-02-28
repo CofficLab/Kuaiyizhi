@@ -1,5 +1,4 @@
 ---
-import Default from '@astrojs/starlight/components/Header.astro';
 import Navigation from '@/components/Navigation.astro';
 import { Image } from 'astro:assets';
 import logo from '@/assets/logo.png';
@@ -7,13 +6,6 @@ import Languages from '@/components/Languages.vue';
 import Themes from './Themes.astro';
 import SearchForm from '@/components/SearchForm.astro';
 import SocialLinks from '@/components/SocialLinks.astro';
-import { isHome } from '@/utils/links';
-import { getLangFromPathname } from '@/utils/lang';
-
-const currentPath = Astro.url.pathname;
-const locale = isHome(Astro.url.pathname)
-  ? Astro.preferredLocale
-  : getLangFromPathname(Astro.url.pathname);
 ---
 
 <div
@@ -30,12 +22,7 @@ const locale = isHome(Astro.url.pathname)
       <Image src={logo} alt="" class="sm:w-8 sm:h-8 mt-1 fill-current" />
     </a>
 
-    <Navigation
-      locale={locale}
-      currentPath={currentPath}
-      variant="dark"
-      transition:animate="slide"
-    />
+    <Navigation transition:animate="slide" />
   </div>
 
   <div class="h-12 flex flex-row justify-end gap-2">

@@ -24,8 +24,8 @@ export class Tag {
         };
     }
 
-    static async makeRootSidebarItem(): Promise<SidebarItem> {
-        const tags = await TagDB.getTags('zh-cn');
+    static async makeRootSidebarItem(lang: string): Promise<SidebarItem> {
+        const tags = await TagDB.getTags(lang);
 
         return new SidebarItem({
             label: 'Tags',

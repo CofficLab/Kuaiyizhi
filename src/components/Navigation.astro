@@ -1,56 +1,24 @@
 ---
-import { normalizeLang } from '@/utils/lang';
+import { getLangFromPathname } from '@/utils/lang';
 
-/**
- * 导航组件
- *
- * 用法:
- * <Navigation locale="zh" currentPath={Astro.url.pathname} variant="dark" />
- *
- * @prop {string} locale - 语言代码，例如 "zh", "en"，默认为 "zh"
- * @prop {string} currentPath - 当前页面路径，用于高亮当前导航项
- * @prop {string} variant - 颜色变体，可选 "light" 或 "dark"，默认为 "light"
- */
-
-interface Props {
-  locale?: string;
-  currentPath: string;
-  variant?: 'light' | 'dark';
-}
-
-const { locale = 'zh', currentPath, variant = 'light' } = Astro.props;
-const normalizedLocale = normalizeLang(locale);
-
-// 根据variant定义不同的样式配置
-const styles = {
-  light: {
-    link: 'text-base-content hover:text-primary hover:bg-base-200',
-    active: 'text-primary',
-  },
-  dark: {
-    link: 'text-base-200 hover:text-primary-content hover:bg-primary/20',
-    active: 'text-primary-content btn-accent',
-  },
-};
-
-// 选择当前使用的样式
-const currentStyle = styles[variant];
+const currentPath = Astro.url.pathname;
+const normalizedLocale = getLangFromPathname(Astro.url.pathname);
 
 const navItems = [
   {
     href: `/${normalizedLocale}`,
-    label: '首页',
+    label: normalizedLocale === 'zh-cn' ? '首页' : 'Home',
     match: (path: string) =>
       path === `/${normalizedLocale}` || path === `/${normalizedLocale}/`,
   },
   {
     href: `/${normalizedLocale}/courses`,
-    label: '课程',
+    label: normalizedLocale === 'zh-cn' ? '课程' : 'Courses',
     match: (path: string) => path.startsWith(`/${normalizedLocale}/courses`),
   },
   {
     href: `/${normalizedLocale}/blogs`,
-    label: '博客',
+    label: normalizedLocale === 'zh-cn' ? '博客' : 'Blogs',
     match: (path: string) => path.startsWith(`/${normalizedLocale}/blogs`),
   },
 ];
@@ -62,12 +30,12 @@ const navItems = [
       <a
         class:list={[
           'btn btn-sm no-underline',
-          currentStyle.link,
+          'hover:text-primary-content hover:bg-primary/20',
           'transition-all duration-300',
           {
             'btn-ghost': !item.match(currentPath),
             'btn-active': item.match(currentPath),
-            [currentStyle.active]: item.match(currentPath),
+            'btn-accent': item.match(currentPath),
           },
         ]}
         href={item.href}>

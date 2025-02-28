@@ -4,14 +4,16 @@ import BlogList from '@/components/BlogList.vue';
 import DocLayout from '@/layouts/DocLayout.astro';
 import { Tag } from '@/models/Tag';
 
-const blogs = await BlogDB.getAllBlogs('zh-cn');
-const sidebarItem = await Tag.makeRootSidebarItem();
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+
+const blogs = await BlogDB.getAllBlogs(lang);
+const sidebarItem = await Tag.makeRootSidebarItem(lang);
 ---
 
-<DocLayout
-  title="所有文章"
-  description="我的博客"
-  sidebarItem={sidebarItem}
-  hasSidebar={true}>
-  <BlogList blogs={blogs} lang="zh-cn" />
+<DocLayout title="所有文章" description="我的博客" sidebarItem={sidebarItem}>
+  <BlogList blogs={blogs} lang={lang} />
 </DocLayout>

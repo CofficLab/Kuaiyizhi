@@ -1,7 +1,457 @@
 ---
-title: Flutter 入门
+title: Getting Started with Flutter
+description: Learn Flutter from scratch - a powerful cross-platform app development framework
 ---
 
-## 什么是 Flutter？
+import PlatformPreview from './components/PlatformPreview.vue';
 
-Flutter 是一个由 Google 开发的开源 UI 软件开发工具包，用于构建跨平台的应用程序。它允许开发者使用一套代码库，同时构建适用于多个平台的应用程序，包括 iOS、Android、Web 和桌面。
+# Getting Started with Flutter
+
+## What is Flutter?
+
+Flutter is an open-source UI software development toolkit developed by Google for building cross-platform applications. It allows developers to use a single codebase to build applications that run on multiple platforms, including iOS, Android, Web, and desktop.
+
+<PlatformPreview client:load />
+
+## Why Choose Flutter?
+
+1. **Cross-Platform Development**
+   - Single codebase for multiple platforms
+   - Native performance experience
+   - Saves development time and cost
+
+2. **Hot Reload**
+   - Real-time preview of modifications
+   - Faster development and debugging
+   - Enhanced development experience
+
+3. **Rich Component Library**
+   - Material Design and Cupertino style components
+   - Highly flexible custom components
+   - Rich third-party package ecosystem
+
+4. **Excellent Performance**
+   - Compiles directly to native code
+   - Smooth 60fps rendering
+   - Excellent memory performance
+
+## Learning Path
+
+1. **Dart Language Basics**
+   - Variables and data types
+   - Functions and classes
+   - Asynchronous programming
+
+2. **Flutter Basics**
+   - Widget concepts
+   - Layout system
+   - State management
+
+3. **UI Development**
+   - Material Design
+   - Cupertino style
+   - Custom components
+
+4. **Data Processing**
+   - Network requests
+   - Local storage
+   - Advanced state management
+
+5. **Advanced Topics**
+   - Performance optimization
+   - Native integration
+   - App deployment
+
+## App Deployment
+
+Deploying a Flutter app to app stores is an important step in the development process. Here are the main steps and considerations:
+
+### 1. Pre-deployment Preparation
+
+1. **App Signing**
+   ```bash
+   # Generate keystore
+   keytool -genkey -v -keystore ~/key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+   
+   # Configure signing information
+   # Add to android/key.properties:
+   storePassword=<password>
+   keyPassword=<password>
+   keyAlias=key
+   storeFile=<keystore path>
+   ```
+
+2. **Version Configuration**
+   ```yaml
+   # pubspec.yaml
+   version: 1.0.0+1  # version number + build number
+   ```
+
+3. **Resource Optimization**
+   - Compress image resources
+   - Remove debug code
+   - Optimize dependency package size
+
+### 2. Building the App
+
+1. **Android Build**
+   ```bash
+   # Generate APK
+   flutter build apk --release
+   
+   # Generate App Bundle
+   flutter build appbundle --release
+   ```
+
+2. **iOS Build**
+   ```bash
+   # Generate archive file
+   flutter build ios --release
+   
+   # Open project in Xcode
+   cd ios
+   xed .
+   ```
+
+### 3. Publishing to App Stores
+
+1. **Google Play Store**
+   - Create developer account
+   - Fill in app information
+   - Upload App Bundle
+   - Configure store listing
+
+2. **Apple App Store**
+   - Register Apple Developer account
+   - Create app ID
+   - Submit app through App Store Connect
+   - Wait for review
+
+### 4. Release Checklist
+
+1. **Functionality Testing**
+   - Core functionality integrity
+   - Interface adaptation check
+   - Performance testing
+
+2. **Compliance Check**
+   - Privacy policy
+   - App permissions explanation
+   - Third-party library licenses
+
+3. **Release Materials**
+   - App icon
+   - Screenshots and previews
+   - App description
+   - Update log
+
+## Summary
+
+Flutter is a powerful cross-platform development framework. Through this tutorial, we have learned:
+
+1. **Basic Knowledge**
+   - How Flutter works
+   - Dart language basics
+   - Widget and layout system
+
+2. **Advanced Features**
+   - State management
+   - Route navigation
+   - Network requests
+   - Data persistence
+
+3. **Advanced Topics**
+   - Performance optimization
+   - Native integration
+   - App deployment
+
+Through learning and practicing these concepts, you now have the ability to develop complete Flutter applications. We recommend continuing to follow Flutter official documentation and community updates, participating in open-source projects, and continuously improving your skills through practice. Remember, programming learning is an ongoing process - maintain your curiosity and enthusiasm, and you'll go far in your Flutter development journey.
+
+Good luck with your Flutter development journey!
+
+## Route Navigation
+
+In Flutter, route navigation is the core mechanism for transitioning between application pages. Flutter provides a powerful navigation system that allows us to easily manage different pages of the application.
+
+### Basic Navigation
+
+1. **Named Routes**
+   ```dart
+   // Define routes in MaterialApp
+   MaterialApp(
+     routes: {
+       '/': (context) => HomePage(),
+       '/detail': (context) => DetailPage(),
+     },
+   )
+
+   // Use named route navigation
+   Navigator.pushNamed(context, '/detail');
+   ```
+
+2. **Dynamic Routes**
+   ```dart
+   // Navigate directly to new page
+   Navigator.push(
+     context,
+     MaterialPageRoute(builder: (context) => DetailPage()),
+   );
+   ```
+
+### Route Parameters
+
+1. **Passing Parameters through Constructor**
+   ```dart
+   // Define page with parameters
+   class DetailPage extends StatelessWidget {
+     final String title;
+     DetailPage({required this.title});
+
+     // ...
+   }
+
+   // Pass parameters
+   Navigator.push(
+     context,
+     MaterialPageRoute(
+       builder: (context) => DetailPage(title: 'Details'),
+     ),
+   );
+   ```
+
+2. **Named Route Parameters**
+   ```dart
+   // Pass parameters
+   Navigator.pushNamed(
+     context,
+     '/detail',
+     arguments: {'title': 'Details'},
+   );
+
+   // Receive parameters
+   final args = ModalRoute.of(context)!.settings.arguments as Map;
+   ```
+
+## Network Requests and Data Persistence
+
+Network requests and data persistence are essential features in modern applications. Flutter provides multiple ways to handle these requirements.
+
+### HTTP Network Requests
+
+1. **Using http package**
+   ```dart
+   import 'package:http/http.dart' as http;
+
+   // GET request
+   Future<void> fetchData() async {
+     final response = await http.get(
+       Uri.parse('https://api.example.com/data'),
+     );
+     if (response.statusCode == 200) {
+       // Handle response data
+       print(response.body);
+     }
+   }
+
+   // POST request
+   Future<void> postData() async {
+     final response = await http.post(
+       Uri.parse('https://api.example.com/create'),
+       body: {'name': 'Flutter', 'type': 'framework'},
+     );
+     // Handle response
+   }
+   ```
+
+### Data Persistence
+
+1. **SharedPreferences**
+   ```dart
+   import 'package:shared_preferences/shared_preferences.dart';
+
+   // Save data
+   Future<void> saveData() async {
+     final prefs = await SharedPreferences.getInstance();
+     await prefs.setString('username', 'Flutter User');
+   }
+
+   // Read data
+   Future<String?> loadData() async {
+     final prefs = await SharedPreferences.getInstance();
+     return prefs.getString('username');
+   }
+   ```
+
+2. **SQLite Database**
+   ```dart
+   import 'package:sqflite/sqflite.dart';
+
+   // Create database
+   Future<Database> getDatabase() async {
+     return openDatabase(
+       'my_db.db',
+       version: 1,
+       onCreate: (db, version) async {
+         await db.execute(
+           'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT)',
+         );
+       },
+     );
+   }
+
+   // Insert data
+   Future<void> insertUser(String name, String email) async {
+     final db = await getDatabase();
+     await db.insert('users', {
+       'name': name,
+       'email': email,
+     });
+   }
+   ```
+
+With these basic concepts learned, you can now start building fully functional Flutter applications. We suggest trying to combine these concepts by creating a small project, such as a todo list app or news reader, which will help you better understand and apply these concepts.
+
+## Performance Optimization
+
+Performance optimization is key to ensuring a good user experience in Flutter applications. Here are some important optimization techniques:
+
+### 1. Performance Monitoring
+
+```dart
+// Using Observatory for performance analysis
+void main() {
+  // Enable Observatory
+  debugPaintSizeEnabled = true;
+  runApp(MyApp());
+}
+
+// Using Performance Overlay
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      showPerformanceOverlay: true,  // Show performance overlay
+      home: MyHomePage(),
+    );
+  }
+}
+```
+
+### 2. Memory Optimization
+
+1. **Image Optimization**
+   ```dart
+   // Use appropriate image caching strategy
+   Image.network(
+     'https://example.com/image.jpg',
+     cacheWidth: 300,  // Specify cache size
+     cacheHeight: 300,
+   )
+   ```
+
+2. **List Optimization**
+   ```dart
+   // Use ListView.builder for lazy loading
+   ListView.builder(
+     itemCount: items.length,
+     itemBuilder: (context, index) {
+       return ListTile(
+         title: Text(items[index]),
+       );
+     },
+   )
+   ```
+
+### 3. Rendering Optimization
+
+1. **const Constructor**
+   ```dart
+   // Use const constructor to optimize rebuilds
+   const MyWidget(
+     key: Key('my_widget'),
+     child: Text('Hello'),
+   )
+   ```
+
+2. **RepaintBoundary**
+   ```dart
+   // Isolate frequently repainting widgets
+   RepaintBoundary(
+     child: MyAnimatedWidget(),
+   )
+   ```
+
+## Native Integration
+
+Flutter provides various ways to interact with native platforms, allowing you to fully utilize platform-specific features.
+
+### 1. Platform Channels
+
+```dart
+// Define platform channel
+static const platform = MethodChannel('samples.flutter.dev/battery');
+
+// Call native method
+Future<void> getBatteryLevel() async {
+  try {
+    final int result = await platform.invokeMethod('getBatteryLevel');
+    print('Battery level: $result%');
+  } on PlatformException catch (e) {
+    print('Failed to get battery level: ${e.message}');
+  }
+}
+```
+
+### 2. Native Plugin Development
+
+1. **Create Plugin**
+   ```bash
+   flutter create --org com.example --template=plugin my_plugin
+   ```
+
+2. **Implement Native Code**
+   - Android (Kotlin):
+   ```kotlin
+   class MyPlugin: FlutterPlugin {
+     override fun onMethodCall(call: MethodCall, result: Result) {
+       when (call.method) {
+         "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+         else -> result.notImplemented()
+       }
+     }
+   }
+   ```
+
+   - iOS (Swift):
+   ```swift
+   public class SwiftMyPlugin: NSObject, FlutterPlugin {
+     public static func register(with registrar: FlutterPluginRegistrar) {
+       let channel = FlutterMethodChannel(name: "my_plugin",
+                                         binaryMessenger: registrar.messenger())
+       let instance = SwiftMyPlugin()
+       registrar.addMethodCallDelegate(instance, channel: channel)
+     }
+   }
+   ```
+
+### 3. Platform Views
+
+```dart
+// Embed native view in Flutter
+Widget build(BuildContext context) {
+  return AndroidView(
+    viewType: 'native-view',
+    onPlatformViewCreated: _onPlatformViewCreated,
+  );
+}
+
+// iOS platform view
+Widget build(BuildContext context) {
+  return UiKitView(
+    viewType: 'native-view',
+    onPlatformViewCreated: _onPlatformViewCreated,
+  );
+}
+```
+
+By mastering these advanced topics, you'll be able to develop Flutter applications with excellent performance and rich features. Remember that performance optimization is an ongoing process, and you should choose optimization strategies based on your specific application scenarios. Additionally, proper use of native integration capabilities can help your application fully leverage the advantages of each platform.

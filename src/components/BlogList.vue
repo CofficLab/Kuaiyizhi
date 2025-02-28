@@ -5,12 +5,12 @@
                 <span class="badge badge-ghost font-mono text-sm">{{ blog.getDateForDisplay() }}</span>
                 <a :href="blog.link" class="text-blue-500 no-underline hover:no-underline">{{
                     blog.title
-                }}</a>
+                    }}</a>
             </li>
         </ul>
         <div v-else class="text-center py-8">
-            <div class="text-gray-400">
-                <RiInboxArchiveLine class="text-5xl mb-4" />
+            <div class="text-gray-400 flex flex-col items-center">
+                <RiInboxArchiveLine class="text-5xl mb-4 h-36 w-36" />
                 <p class="text-lg">{{ lang === 'zh' ? '暂无博客文章' : 'No blog posts yet' }}</p>
                 <p class="text-sm">{{ lang === 'zh' ? '稍后再来看看吧' : 'Check back later' }}</p>
             </div>

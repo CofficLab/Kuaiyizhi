@@ -1,0 +1,250 @@
+---
+title: "FastAPI: Getting Started with Python's High-Performance Web Framework"
+date: 2025-03-22
+excerpt: "Quickly get started with FastAPI, a modern Python web framework, and understand its high-performance features, dependency injection system, and automatic API documentation capabilities."
+authors:
+  - name: Nookery
+    picture: https://avatars.githubusercontent.com/u/5194193?s=200
+    url: https://github.com/nookery
+tags:
+  - Python
+  - Web Development
+  - FastAPI
+  - API Development
+---
+
+# FastAPI: Python's High-Performance Web Framework
+
+In this tutorial, we'll explore FastAPI—a modern, fast, high-performance Python web framework designed for API development. Even if you're new to web development, you can quickly get started and build efficient API services.
+
+## Why Choose FastAPI?
+
+FastAPI has many impressive features that make it a top choice for Python developers:
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <div class="bg-blue-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">🚀 High Performance</h3>
+    <p>Performance comparable to NodeJS and Go, one of the fastest Python web frameworks</p>
+  </div>
+  <div class="bg-green-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">📝 Automatic Documentation</h3>
+    <p>Automatically generates interactive API documentation, supporting Swagger UI and ReDoc</p>
+  </div>
+  <div class="bg-yellow-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">✅ Type Hints</h3>
+    <p>Data validation and serialization based on Python type hints</p>
+  </div>
+  <div class="bg-purple-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">🔍 Easy to Learn</h3>
+    <p>Concise and intuitive API design, easy to get started and use</p>
+  </div>
+</div>
+
+## Environment Setup
+
+First, we need to install FastAPI and the ASGI server Uvicorn:
+
+```bash
+pip install fastapi uvicorn
+```
+
+## Your First FastAPI Application
+
+Create a file named `main.py` with the following content:
+
+```python
+from fastapi import FastAPI
+
+# Create FastAPI instance
+app = FastAPI()
+
+# Define root route
+@app.get("/")
+def read_root():
+    return {"message": "Hello World"}
+
+# Route with parameters
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
+```
+
+Run the application:
+
+```bash
+uvicorn main:app --reload
+```
+
+Now, visit http://127.0.0.1:8000 to see the JSON response from your API!
+
+<div class="bg-gray-100 p-4 rounded-lg my-4">
+  <p class="font-semibold">💡 Tip</p>
+  <p>The --reload parameter makes the server automatically restart when code changes, perfect for development</p>
+</div>
+
+## Request Body and Data Models
+
+FastAPI uses the Pydantic library for data validation. By defining data models, you can easily handle request bodies:
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+# Define data model
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = None
+
+@app.post("/items/")
+def create_item(item: Item):
+    return item
+```
+
+This code defines an `Item` model, and when clients send POST requests, FastAPI will automatically:
+- Parse JSON request body
+- Validate data types
+- Provide complete editor support and error hints
+
+## Parameter Validation
+
+FastAPI provides rich validation features to ensure input data meets expectations:
+
+```python
+from fastapi import FastAPI, Path, Query
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+def read_item(
+    item_id: int = Path(..., title="The ID of the item", ge=1),
+    q: str = Query(None, max_length=50)
+):
+    return {"item_id": item_id, "q": q}
+```
+
+The above code implements:
+- `item_id` must be greater than or equal to 1
+- Query parameter `q` has a maximum length of 50 characters
+
+<div class="flex p-4 mb-4 border border-blue-200 rounded bg-blue-50">
+  <div class="mr-4 text-blue-500">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+  </div>
+  <div>
+    <p class="font-medium">FastAPI automatically generates error responses</p>
+    <p>When users provide invalid data, it returns clear error messages including the location and reason.</p>
+  </div>
+</div>
+
+## Dependency Injection System
+
+FastAPI's dependency injection system makes code organization more flexible:
+
+```python
+from fastapi import FastAPI, Depends, HTTPException
+
+app = FastAPI()
+
+def common_parameters(q: str = None, skip: int = 0, limit: int = 100):
+    return {"q": q, "skip": skip, "limit": limit}
+
+@app.get("/items/")
+def read_items(commons: dict = Depends(common_parameters)):
+    return {"commons": commons}
+
+@app.get("/users/")
+def read_users(commons: dict = Depends(common_parameters)):
+    return {"commons": commons}
+```
+
+This allows sharing code between multiple path operations while maintaining code readability and maintainability.
+
+## Automatic API Documentation
+
+One of FastAPI's most powerful features is automatic interactive API documentation:
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <div class="border rounded p-4">
+    <h3 class="text-lg font-bold mb-2">Swagger UI</h3>
+    <p class="mb-2">Access interactive documentation based on Swagger UI at the <code>/docs</code> path</p>
+  </div>
+  <div class="border rounded p-4">
+    <h3 class="text-lg font-bold mb-2">ReDoc</h3>
+    <p class="mb-2">Access alternative documentation style based on ReDoc at the <code>/redoc</code> path</p>
+  </div>
+</div>
+
+These docs not only show API specifications but also allow testing API calls directly on the page!
+
+## Practical Example: Building a Todo API
+
+Here's a practical example of a Todo API:
+
+```python
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
+from uuid import uuid4, UUID
+
+app = FastAPI(title="Todo API")
+
+# Data models
+class TodoCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    completed: bool = False
+
+class Todo(TodoCreate):
+    id: UUID
+
+# In-memory storage
+todos = []
+
+@app.post("/todos/", response_model=Todo)
+def create_todo(todo: TodoCreate):
+    new_todo = Todo(id=uuid4(), **todo.dict())
+    todos.append(new_todo)
+    return new_todo
+
+@app.get("/todos/", response_model=List[Todo])
+def read_todos(skip: int = 0, limit: int = 10):
+    return todos[skip : skip + limit]
+
+@app.get("/todos/{todo_id}", response_model=Todo)
+def read_todo(todo_id: UUID):
+    for todo in todos:
+        if todo.id == todo_id:
+            return todo
+    raise HTTPException(status_code=404, detail="Todo not found")
+
+@app.put("/todos/{todo_id}", response_model=Todo)
+def update_todo(todo_id: UUID, todo: TodoCreate):
+    for i, saved_todo in enumerate(todos):
+        if saved_todo.id == todo_id:
+            updated_todo = Todo(id=todo_id, **todo.dict())
+            todos[i] = updated_todo
+            return updated_todo
+    raise HTTPException(status_code=404, detail="Todo not found")
+
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: UUID):
+    for i, todo in enumerate(todos):
+        if todo.id == todo_id:
+            del todos[i]
+            return {"detail": "Todo deleted"}
+    raise HTTPException(status_code=404, detail="Todo not found")
+```
+
+## Conclusion
+
+FastAPI is a powerful and elegant Python web framework that combines modern Python features to provide an excellent development experience:
+
+- **Fast Development**: Intuitive API design and excellent documentation
+- **Fast Execution**: High-performance implementation based on Starlette and Pydantic
+- **Fewer Errors**: Strong type system and automatic data validation
+- **Easy Maintenance**: Clear code structure and dependency injection system
+
+Whether you're building simple microservices or complex API backends, FastAPI helps you complete tasks efficiently. 

@@ -43,7 +43,7 @@ if (topCategory === 'meta') {
     2
   );
 } else if (topCategory === 'blogs') {
-  sidebarItem = await Tag.makeRootSidebarItem();
+  sidebarItem = await Tag.makeRootSidebarItem(lang);
 } else {
   sidebarItem = await SidebarDB.getSidebarItemByDocId(
     ContentDB.slugToId(slug),
@@ -60,7 +60,6 @@ if (debug) {
   title={doc.data.title as string}
   description={doc.data.description as string}
   sidebarItem={sidebarItem}
-  headings={headings}
-  hasSidebar={true}>
+  headings={headings}>
   <Content />
 </DocLayout>

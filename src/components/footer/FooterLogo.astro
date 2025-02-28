@@ -2,13 +2,11 @@
 import { Image } from 'astro:assets';
 import logo from '@assets/logo.png';
 import { makeHomeLink } from '@utils/links';
+import { getLangFromPathname } from '@/utils/lang';
 
-interface Props {
-  lang: string;
-  siteName?: string;
-}
+const lang = getLangFromPathname(Astro.url.pathname);
 
-const { lang, siteName = '快易知' } = Astro.props;
+const siteName = lang === 'zh-cn' ? '快易知' : 'Quick Knowledge';
 ---
 
 <a

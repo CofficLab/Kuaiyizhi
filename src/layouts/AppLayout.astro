@@ -48,7 +48,7 @@ const locale = isHome(Astro.url.pathname)
       <slot />
     </div>
 
-    <Footer />
+    <Footer transition:persist />
     <ClientRouter />
   </body>
 </html>

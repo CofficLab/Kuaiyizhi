@@ -1,6 +1,7 @@
 ---
 import { RiListOrdered } from '@remixicon/vue';
 import type { Heading } from '@/models/Heading';
+import { getLangFromPathname } from '@/utils/lang';
 
 interface Props {
   headings: Heading[];
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const { headings, showDebugBorders = false } = Astro.props;
+const lang = getLangFromPathname(Astro.url.pathname);
 
 // 只显示 h2 和 h3 标题
 const filteredHeadings = headings.filter(
@@ -26,7 +28,7 @@ const filteredHeadings = headings.filter(
       { 'border border-teal-400': showDebugBorders },
     ]}>
     <RiListOrdered class="text-slate-500" />
-    <span>本页内容</span>
+    <span>{lang.startsWith('zh') ? '本页内容' : 'Contents'}</span>
   </div>
 
   {
@@ -55,7 +57,9 @@ const filteredHeadings = headings.filter(
         ))}
       </ul>
     ) : (
-      <p class="text-sm text-slate-500">本页没有小节</p>
+      <p class="text-sm text-slate-500">
+        {lang.startsWith('zh') ? '本页没有小节' : 'No sections on this page'}
+      </p>
     )
   }
 </div>

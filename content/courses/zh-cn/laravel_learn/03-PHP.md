@@ -4,17 +4,17 @@ title: PHP
 
 ![](./images/03-PHP_1.jpeg)
 
-## Instruction
+## 介绍
 
-PHP, which stands for "Hypertext Preprocessor," is a popular server-side scripting language used for web development.
+PHP（Hypertext Preprocessor 的缩写）是一种广泛使用的服务器端脚本语言，主要用于网站开发。
 
-PHP can perform a range of tasks, but its main purpose is still to create websites.
+PHP 可以执行各种任务，但其主要用途仍然是创建网站。
 
-## Code with AI
+## 使用 AI 编程
 
-Sometimes you may encounter simple questions, such as how to format time, how to concatenate two strings, etc. Don't forget about your AI assistant, they are particularly good at answering these questions.
+有时你可能会遇到一些简单的问题，比如如何格式化时间，如何连接两个字符串等。别忘了你的 AI 助手，他们特别擅长回答这些问题。
 
-Here are some great AI assistants:
+以下是一些优秀的 AI 助手：
 
 https://sider.ai
 
@@ -22,106 +22,133 @@ https://openai.com/chatgpt/mac/
 
 https://monica.im
 
-## Installation on macOS
+## 在 macOS 上安装
 
-### Install PHP
+### 安装 PHP
 
-There are many ways to install PHP, but here we choose the most common and simplest method: installing using Homebrew.
+安装 PHP 的方法有很多，但这里我们选择最常用和最简单的方法：使用 Homebrew 安装。
 
-Once Homebrew is installed you can install PHP by running the following command:
+一旦安装了 Homebrew，你就可以通过运行以下命令来安装 PHP：
 
-brew install phpAt the end of the installation process, you will see something like this:
+brew install php
+
+安装过程结束时，你会看到类似这样的内容：
 
 ![](./images/03-PHP_2.png)
 
-### Verify Installation
+### 验证安装
 
-To verify that PHP is installed, run the following command in Terminal:
+要验证 PHP 是否已安装，在终端中运行以下命令：
 
-php -vThis will output the PHP version information, like this:
+php -v
 
-PHP 8.3.12 (cli) (built: Sep 24 2024 18:08:04) (NTS) Copyright (c) The PHP Group Zend Engine v4.3.12, Copyright (c) Zend Technologies with Zend OPcache v8.3.12, Copyright (c), by Zend TechnologiesPerhaps what you see here is not exactly the same, but the format is consistent.
+这将输出 PHP 版本信息，如下所示：
 
-## Say Hello to PHP
+PHP 8.3.12 (cli) (built: Sep 24 2024 18:08:04) (NTS) Copyright (c) The PHP Group Zend Engine v4.3.12, Copyright (c) Zend Technologies with Zend OPcache v8.3.12, Copyright (c), by Zend Technologies
 
-Next, you will learn how to run a PHP file.
+也许你看到的内容与此不完全相同，但格式是一致的。
 
-My workspace folder is: ~/Code, so I open it with this command:
+## PHP 入门
 
-cd ~/Code &amp;&amp; code .Here is the result:
+接下来，你将学习如何运行 PHP 文件。
+
+我的工作空间文件夹是：~/Code，所以我用这个命令打开它：
+
+cd ~/Code && code .
+
+结果如下：
 
 ![](./images/03-PHP_3.png)
 
-### Create
+### 创建
 
-Open Visual Studio Code. Write your PHP code, for example:
+打开 Visual Studio Code。编写你的 PHP 代码，例如：
 
-&lt;?php
+<?php
 
-echo "Hello, World!";Save the file with a .php extension, example hello.php.
+echo "Hello, World!";
+
+将文件保存为 .php 扩展名，例如 hello.php。
 
 ![](./images/03-PHP_4.png)
 
-### Run
+### 运行
 
-Click ’New Terminal’ to open a terminal:
+点击"新建终端"打开终端：
 
 ![](./images/03-PHP_5.png)
 
-Run the PHP file using the following command:
+使用以下命令运行 PHP 文件：
 
-php hello.phpYou should see the output Hello, World!\* in the Terminal.
+php hello.php
+
+你应该在终端中看到输出 "Hello, World!"。
 
 ![](./images/03-PHP_6.png)
 
-### Print the time
+### 打印时间
 
-Follow the steps below to print the time.
+按照以下步骤打印时间。
 
-Create a new file called time.php in your workspace folder
+在你的工作空间文件夹中创建一个名为 time.php 的新文件
 
-Write the following code in the file:
+在文件中写入以下代码：
 
-&lt;?php echo date("Y-m-d H:i:s"); Enter this code within the terminal and hit enter to run:
+<?php echo date("Y-m-d H:i:s");
 
-php time.php If you see the following output, congratulations! You have successfully printed the time.
+在终端中输入此代码并按回车运行：
 
-2021-12-31 16:45:09 If you find something difficult to deal with, ask your AI assistant without hesitation.
+php time.php
 
-### Function
+如果你看到以下输出，恭喜！你已成功打印出时间。
 
-Create a new file called function.php in your workspace folder.
+2021-12-31 16:45:09
 
-Write a function to print the Fibonacci sequence. Fill in the missing code.
+如果你遇到难以处理的问题，请毫不犹豫地询问你的 AI 助手。
 
-&lt;?php
+### 函数
+
+在你的工作空间文件夹中创建一个名为 function.php 的新文件。
+
+编写一个函数来打印斐波那契数列。填写缺失的代码。
+
+<?php
 
 echo fibonacci(100);
 
-function fibonacci($n) { // your code here }### Array Sorting
+function fibonacci($n) { // 在这里写你的代码 }
 
-Create a new file called array_sorting.php in your workspace folder.
+### 数组排序
 
-Here is a function that takes two arrays and merges them into one and sort in ascending order.
+在你的工作空间文件夹中创建一个名为 array_sorting.php 的新文件。
 
-Fill in the missing code.
+这是一个将两个数组合并并按升序排序的函数。
 
-&lt;?php $a = [1, 2, 5];
+填写缺失的代码。
+
+<?php
+$a = [1, 2, 5];
 $b = [3, 4];
 
 $c = array_merge_and_sort($a, $b);
 print_r($c);
 
-function array_merge_and_sort($a, $b) { // your code here }The array c should be: [1,2,3,4,5].
+function array_merge_and_sort($a, $b) { // 在这里写你的代码 }
 
-### HTTP Server
+数组 c 应该是：[1,2,3,4,5]。
 
-Create a new file called http_server.php in your workspace folder.
+### HTTP 服务器
 
-Create a HTTP server that listens on port 8000 with this shell command:
+在你的工作空间文件夹中创建一个名为 http_server.php 的新文件。
 
-php -S localhost:8000 http_server.phpWhen the user accesses the homepage, print "Hello World!".
+使用以下 shell 命令创建一个监听 8000 端口的 HTTP 服务器：
 
-&lt;?php // your code hereFinally, open the link in your browser.
+php -S localhost:8000 http_server.php
 
-This is the basic principle of developing web pages.
+当用户访问主页时，打印 "Hello World!"。
+
+<?php // 在这里写你的代码
+
+最后，在浏览器中打开链接。
+
+这就是开发网页的基本原理。

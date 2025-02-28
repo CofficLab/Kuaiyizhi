@@ -19,6 +19,8 @@ export async function getStaticPaths() {
     },
   ];
 }
+
+const { lang } = Astro.params;
 ---
 
-<BlogsPage />
+<BlogsPage lang={lang} />

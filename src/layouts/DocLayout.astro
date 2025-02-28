@@ -8,19 +8,12 @@ interface Props {
   title: string;
   description: string;
   sidebarItem: SidebarItem;
-  hasSidebar: boolean;
   headings?: Array<{ depth: number; slug: string; text: string }>;
 }
 
-const {
-  title,
-  description,
-  sidebarItem,
-  headings = [],
-  hasSidebar,
-} = Astro.props;
+const { title, description, sidebarItem, headings = [] } = Astro.props;
 
-const currentPath = Astro.url.pathname;
+const shouldShowSidebar = sidebarItem.getItems().length > 0;
 const hasTableOfContents = headings.length > 0;
 ---
 
@@ -37,7 +30,7 @@ const hasTableOfContents = headings.length > 0;
   <div class="flex relative overflow-hidden">
     {/* 侧边栏 */}
     {
-      hasSidebar && sidebarItem && (
+      shouldShowSidebar && (
         <aside class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
           <div class="h-full px-4 py-6">
             <Sidebar item={sidebarItem} />
@@ -49,7 +42,7 @@ const hasTableOfContents = headings.length > 0;
     <div
       class:list={[
         'flex-1 min-h-[calc(100vh-4rem)] overflow-hidden',
-        hasSidebar ? 'ml-64' : '',
+        shouldShowSidebar ? 'ml-64' : '',
       ]}>
       <div class="container mx-auto px-4 pb-16 overflow-hidden">
         {/* 主内容 */}

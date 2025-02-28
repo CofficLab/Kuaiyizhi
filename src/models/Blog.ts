@@ -5,7 +5,7 @@ export class Blog {
     link: string;
     title: string;
     date: string;
-    tags: string[];
+    tags?: string[];
     content: string;
 
     constructor(link: string, title: string, date: string, tags: string[], content: string) {
@@ -26,10 +26,21 @@ export class Blog {
     }
 
     getDateForDisplay() {
-        return new Date(this.date).toLocaleDateString('zh-CN', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
+        try {
+            const dateObj = new Date(this.date);
+            // Check if date is valid
+            if (isNaN(dateObj.getTime())) {
+                console.warn(`Invalid date format: ${this.date}`);
+                return 'Date unavailable: ' + this.title + ' ' + this.link;
+            }
+            return dateObj.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+        } catch (error) {
+            console.error(`Error formatting date: ${this.date}`, error);
+            return 'Date unavailable';
+        }
     }
 }
