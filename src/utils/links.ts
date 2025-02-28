@@ -29,7 +29,7 @@ export function makeDocLink(lang: string, path: string): string {
  * @returns 标签页的完整URL路径
  */
 export function makeTagLink(lang: string, tag: string): string {
-    return `/${lang}/tag/${tag}`;
+    return `/${lang}/blogs/tag/${tag}`;
 }
 
 /**

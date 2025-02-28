@@ -1,9 +1,10 @@
-import { makeLink } from "@/utils/links";
+import { makeLink, makeTagLink } from "@/utils/links";
 
 export class SidebarItem {
     private label: string;
     private link?: string;
     private docId?: string;
+    private tagId?: string;
     private items?: SidebarItem[];
 
     constructor(config: {
@@ -19,8 +20,8 @@ export class SidebarItem {
         return this;
     }
 
-    setLink(link: string): this {
-        this.link = link;
+    setTagId(tagId: string): this {
+        this.tagId = tagId;
         return this;
     }
 
@@ -38,6 +39,11 @@ export class SidebarItem {
         return !!this.link;
     }
 
+    // 判断是否是标签
+    isTag(): boolean {
+        return !!this.tagId;
+    }
+
     // 判断是否是文档
     isDoc(): boolean {
         return !!this.docId;
@@ -48,6 +54,10 @@ export class SidebarItem {
     }
 
     getLink(): string {
+        if (this.isTag() && this.tagId) {
+            return makeTagLink('zh-cn', this.tagId);
+        }
+
         if (this.isDoc() && this.docId) {
             return makeLink(this.docId);
         }

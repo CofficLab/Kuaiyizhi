@@ -14,8 +14,7 @@ export class Tag {
     toSidebarItem(): SidebarItem {
         return new SidebarItem({
             label: this.name,
-            link: `/blogs/tag/${this.name}`,
-        });
+        }).setTagId(`${this.name}`);
     }
 
     toTagPath(): TagStaticPath {
