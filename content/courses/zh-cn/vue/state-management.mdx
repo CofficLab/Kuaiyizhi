@@ -1,0 +1,324 @@
+---
+title: Vue 状态管理：使用 Vuex 和 Pinia 管理应用状态
+description: 深入理解 Vue 的状态管理方案，掌握 Vuex 和 Pinia 的核心概念和使用技巧
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## 为什么需要状态管理？
+
+在 Vue 应用中，当我们需要在多个组件之间共享状态时，简单的父子组件通信可能会变得复杂和难以维护。状态管理工具提供了一个集中管理共享状态的解决方案。
+
+### 什么时候需要状态管理
+
+1. **多个组件共享状态**
+   - 用户信息需要在多个页面显示
+   - 购物车数据需要在多个组件更新
+
+2. **组件间通信复杂**
+   - 多层级组件通信
+   - 兄弟组件通信频繁
+
+3. **需要持久化数据**
+   - 页面刷新后保持状态
+   - 数据需要存储到本地
+
+## Vuex：Vue 的经典状态管理方案
+
+### 核心概念
+
+<Tabs>
+    <TabItem label="State">
+    ```js
+    // store/index.js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+      state: {
+        count: 0,
+        todos: [],
+        user: null
+      }
+    })
+
+    // 组件中使用
+    import { useStore } from 'vuex'
+
+    const store = useStore()
+    console.log(store.state.count)
+    ```
+    </TabItem>
+    <TabItem label="Getters">
+    ```js
+    const store = createStore({
+      state: {
+        todos: [
+          { id: 1, text: '学习 Vue', done: true },
+          { id: 2, text: '学习 Vuex', done: false }
+        ]
+      },
+      getters: {
+        doneTodos: (state) => {
+          return state.todos.filter(todo => todo.done)
+        },
+        doneTodosCount: (state, getters) => {
+          return getters.doneTodos.length
+        }
+      }
+    })
+    ```
+    </TabItem>
+    <TabItem label="Mutations">
+    ```js
+    const store = createStore({
+      state: {
+        count: 0
+      },
+      mutations: {
+        increment(state) {
+          state.count++
+        },
+        incrementBy(state, payload) {
+          state.count += payload.amount
+        }
+      }
+    })
+
+    // 组件中使用
+    store.commit('increment')
+    store.commit('incrementBy', { amount: 10 })
+    ```
+    </TabItem>
+    <TabItem label="Actions">
+    ```js
+    const store = createStore({
+      state: {
+        user: null
+      },
+      mutations: {
+        setUser(state, user) {
+          state.user = user
+        }
+      },
+      actions: {
+        async login({ commit }, credentials) {
+          try {
+            const user = await api.login(credentials)
+            commit('setUser', user)
+            return user
+          } catch (error) {
+            console.error('登录失败：', error)
+            throw error
+          }
+        }
+      }
+    })
+
+    // 组件中使用
+    await store.dispatch('login', {
+      username: 'admin',
+      password: '123456'
+    })
+    ```
+    </TabItem>
+</Tabs>
+
+### 模块化
+
+对于大型应用，我们可以将 store 分割成模块：
+
+```js
+// store/modules/user.js
+export default {
+  namespaced: true,
+  state: {
+    user: null,
+    token: null
+  },
+  mutations: {
+    setUser(state, user) {
+      state.user = user
+    },
+    setToken(state, token) {
+      state.token = token
+    }
+  },
+  actions: {
+    async login({ commit }, credentials) {
+      const { user, token } = await api.login(credentials)
+      commit('setUser', user)
+      commit('setToken', token)
+    }
+  },
+  getters: {
+    isLoggedIn: state => !!state.token
+  }
+}
+
+// store/index.js
+import { createStore } from 'vuex'
+import user from './modules/user'
+
+export default createStore({
+  modules: {
+    user
+  }
+})
+
+// 组件中使用
+store.dispatch('user/login', credentials)
+console.log(store.getters['user/isLoggedIn'])
+```
+
+## Pinia：新一代状态管理工具
+
+Pinia 是 Vue 官方推荐的新一代状态管理工具，它提供了更简单的 API 和更好的 TypeScript 支持。
+
+### 基础用法
+
+<Tabs>
+    <TabItem label="定义 Store">
+    ```js
+    // stores/counter.js
+    import { defineStore } from 'pinia'
+
+    export const useCounterStore = defineStore('counter', {
+      // 状态
+      state: () => ({
+        count: 0,
+        name: 'Counter'
+      }),
+
+      // 计算属性
+      getters: {
+        doubleCount: (state) => state.count * 2
+      },
+
+      // 方法
+      actions: {
+        increment() {
+          this.count++
+        },
+        async fetchCount() {
+          const result = await api.getCount()
+          this.count = result
+        }
+      }
+    })
+    ```
+    </TabItem>
+    <TabItem label="使用 Store">
+    ```vue
+    <template>
+      <div>
+        <p>Count: {{ counter.count }}</p>
+        <p>Double: {{ counter.doubleCount }}</p>
+        <button @click="counter.increment">+1</button>
+        <button @click="counter.fetchCount">获取远程数据</button>
+      </div>
+    </template>
+
+    <script setup>
+    import { useCounterStore } from '@/stores/counter'
+
+    const counter = useCounterStore()
+    </script>
+    ```
+    </TabItem>
+</Tabs>
+
+### 组合式 API 风格
+
+Pinia 也支持使用组合式 API 风格定义 store：
+
+```js
+// stores/user.js
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+
+export const useUserStore = defineStore('user', () => {
+  // 状态
+  const user = ref(null)
+  const token = ref(null)
+
+  // 计算属性
+  const isLoggedIn = computed(() => !!token.value)
+
+  // 方法
+  async function login(credentials) {
+    const response = await api.login(credentials)
+    user.value = response.user
+    token.value = response.token
+  }
+
+  function logout() {
+    user.value = null
+    token.value = null
+  }
+
+  return {
+    user,
+    token,
+    isLoggedIn,
+    login,
+    logout
+  }
+})
+```
+
+### Pinia 的优势
+
+1. **更简单的 API**
+   - 无需手动添加模块
+   - 无需嵌套模块命名空间
+   - 更接近 Vue 组合式 API 的写法
+
+2. **更好的 TypeScript 支持**
+   - 自动类型推导
+   - IDE 智能提示
+   - 更少的类型标注
+
+3. **更轻量级**
+   - 体积更小
+   - 性能更好
+   - 代码更简洁
+
+## 最佳实践
+
+1. **Store 的组织**
+   - 按功能模块拆分 store
+   - 避免过度拆分
+   - 保持状态树的扁平结构
+
+2. **状态更新原则**
+   - 同步更新使用 mutations/直接修改
+   - 异步操作使用 actions
+   - 避免在组件中直接修改状态
+
+3. **性能优化**
+   - 合理使用计算属性
+   - 避免存储大量数据
+   - 按需加载模块
+
+## 选择建议
+
+1. **使用 Vuex 的场景**
+   - 大型复杂应用
+   - 需要严格的状态管理
+   - 团队已经熟悉 Vuex
+
+2. **使用 Pinia 的场景**
+   - 新项目
+   - 中小型应用
+   - 使用 TypeScript
+   - 需要更简单的 API
+
+## 总结
+
+状态管理是构建大型 Vue 应用的重要工具：
+
+- Vuex 提供了经典且成熟的解决方案
+- Pinia 带来了更现代的开发体验
+- 选择合适的工具取决于项目需求
+
+无论选择哪种方案，关键是遵循最佳实践，保持代码的可维护性和性能。

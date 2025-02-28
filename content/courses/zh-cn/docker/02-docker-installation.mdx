@@ -1,0 +1,240 @@
+---
+title: 02 - Docker 安装与配置
+description: 学习如何在不同操作系统上安装和配置Docker环境
+excerpt: 本文详细介绍了在Windows、macOS和Linux系统上安装Docker的步骤，以及基本的配置选项，帮助你快速搭建Docker环境。
+---
+
+# Docker 安装与配置
+
+在开始使用Docker之前，我们需要先在系统上安装Docker。本文将介绍如何在不同操作系统上安装和配置Docker环境。
+
+## 系统要求
+
+在安装Docker之前，请确保你的系统满足以下要求：
+
+### Windows
+- Windows 10 64位：专业版、企业版或教育版（Build 16299或更高版本）
+- 启用Hyper-V和容器功能
+- 至少4GB内存
+
+### macOS
+- macOS 10.14 (Mojave)或更高版本
+- 至少4GB内存
+
+### Linux
+- 64位版本的Ubuntu、Debian、CentOS、Fedora等
+- 内核版本3.10或更高
+- 至少4GB内存
+
+## 在Windows上安装Docker
+
+### 安装Docker Desktop for Windows
+
+1. 访问[Docker官网](https://www.docker.com/products/docker-desktop)下载Docker Desktop for Windows安装程序
+2. 双击下载的安装文件（Docker Desktop Installer.exe）
+3. 按照安装向导的指示完成安装
+4. 安装完成后，Docker会自动启动
+
+### 验证安装
+
+打开命令提示符或PowerShell，运行以下命令：
+
+```bash
+docker --version
+docker-compose --version
+```
+
+如果显示版本信息，说明安装成功。
+
+## 在macOS上安装Docker
+
+### 安装Docker Desktop for Mac
+
+1. 访问[Docker官网](https://www.docker.com/products/docker-desktop)下载Docker Desktop for Mac安装程序
+2. 双击下载的.dmg文件
+3. 将Docker拖到Applications文件夹
+4. 从Applications文件夹启动Docker
+5. 系统可能会要求输入密码以允许Docker安装其网络组件
+
+### 验证安装
+
+打开终端，运行以下命令：
+
+```bash
+docker --version
+docker-compose --version
+```
+
+如果显示版本信息，说明安装成功。
+
+## 在Linux上安装Docker
+
+以Ubuntu为例，其他Linux发行版可参考[Docker官方文档](https://docs.docker.com/engine/install/)。
+
+### 使用官方脚本安装（推荐新用户）
+
+```bash
+# 下载安装脚本
+curl -fsSL https://get.docker.com -o get-docker.sh
+
+# 执行脚本安装Docker
+sudo sh get-docker.sh
+```
+
+### 手动安装
+
+1. 更新apt包索引并安装依赖：
+
+```bash
+sudo apt-get update
+sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
+```
+
+2. 添加Docker官方GPG密钥：
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
+
+3. 设置稳定版仓库：
+
+```bash
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+4. 安装Docker Engine：
+
+```bash
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+
+### 将用户添加到docker组（避免每次使用sudo）
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+注意：添加用户到docker组后，需要注销并重新登录才能生效。
+
+### 验证安装
+
+```bash
+docker --version
+```
+
+## Docker基本配置
+
+### 配置Docker镜像加速
+
+在国内使用Docker时，从Docker Hub下载镜像可能会很慢，可以配置镜像加速器来提高下载速度。
+
+#### Windows和macOS（Docker Desktop）
+
+1. 右键点击系统托盘中的Docker图标
+2. 选择「Settings」（Windows）或「Preferences」（macOS）
+3. 点击「Docker Engine」
+4. 在配置文件中添加以下内容（以阿里云镜像为例）：
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry.cn-hangzhou.aliyuncs.com"
+  ]
+}
+```
+
+5. 点击「Apply & Restart」应用更改
+
+#### Linux
+
+1. 创建或编辑daemon.json文件：
+
+```bash
+sudo mkdir -p /etc/docker
+sudo nano /etc/docker/daemon.json
+```
+
+2. 添加以下内容：
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry.cn-hangzhou.aliyuncs.com"
+  ]
+}
+```
+
+3. 重启Docker服务：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+### 配置Docker默认存储位置
+
+默认情况下，Docker将所有数据存储在系统盘上，如果你的系统盘空间有限，可以考虑更改默认存储位置。
+
+#### Windows（Docker Desktop）
+
+1. 右键点击系统托盘中的Docker图标
+2. 选择「Settings」
+3. 点击「Resources」>「Advanced」
+4. 在「Disk image location」中设置新的存储位置
+5. 点击「Apply & Restart」应用更改
+
+#### macOS（Docker Desktop）
+
+1. 右键点击系统托盘中的Docker图标
+2. 选择「Preferences」
+3. 点击「Resources」>「Advanced」
+4. 在「Disk image location」中设置新的存储位置
+5. 点击「Apply & Restart」应用更改
+
+#### Linux
+
+1. 停止Docker服务：
+
+```bash
+sudo systemctl stop docker
+```
+
+2. 添加或修改/etc/docker/daemon.json文件：
+
+```json
+{
+  "data-root": "/path/to/your/docker/data"
+}
+```
+
+3. 将现有Docker数据复制到新位置：
+
+```bash
+sudo rsync -aP /var/lib/docker/ /path/to/your/docker/data/
+```
+
+4. 重启Docker服务：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start docker
+```
+
+## 验证Docker安装和配置
+
+运行以下命令来验证Docker是否正确安装和配置：
+
+```bash
+# 检查Docker版本
+docker --version
+
+# 运行hello-world容器测试
+docker run hello-world
+```
+
+如果一切正常，你应该能看到"Hello from Docker!"的消息，这表明Docker已经成功安装和配置。
+
+## 总结
+
+本文介绍了如何在Windows、macOS和Linux系统上安装Docker，以及一些基本的配置选项。在下一篇教程中，我们将学习Docker的基本命令，开始创建和管理容器。

@@ -1,0 +1,237 @@
+---
+title: JavaScript 类和面向对象编程
+description: 学习 JavaScript 中的类、继承、封装和多态等面向对象编程概念
+---
+
+## 类的基础
+
+### 类的定义
+```javascript
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+
+    speak() {
+        console.log(`${this.name} makes a sound`);
+    }
+}
+
+const dog = new Animal('Dog');
+dog.speak(); // "Dog makes a sound"
+```
+
+### 构造函数和方法
+```javascript
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    sayHello() {
+        console.log(`Hello, I'm ${this.name}`);
+    }
+
+    getAge() {
+        return this.age;
+    }
+}
+
+const alice = new Person('Alice', 25);
+alice.sayHello(); // "Hello, I'm Alice"
+```
+
+### 静态方法和属性
+```javascript
+class MathHelper {
+    static PI = 3.14159;
+
+    static square(x) {
+        return x * x;
+    }
+
+    static cube(x) {
+        return x * x * x;
+    }
+}
+
+console.log(MathHelper.PI);        // 3.14159
+console.log(MathHelper.square(4)); // 16
+console.log(MathHelper.cube(3));   // 27
+```
+
+## 继承
+
+### 基本继承
+```javascript
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+
+    speak() {
+        console.log(`${this.name} makes a sound`);
+    }
+}
+
+class Dog extends Animal {
+    bark() {
+        console.log(`${this.name} barks`);
+    }
+}
+
+const dog = new Dog('Rex');
+dog.speak(); // "Rex makes a sound"
+dog.bark();  // "Rex barks"
+```
+
+### 方法重写
+```javascript
+class Cat extends Animal {
+    speak() {
+        console.log(`${this.name} meows`);
+    }
+}
+
+const cat = new Cat('Whiskers');
+cat.speak(); // "Whiskers meows"
+```
+
+### super 关键字
+```javascript
+class Bird extends Animal {
+    constructor(name, wingspan) {
+        super(name);
+        this.wingspan = wingspan;
+    }
+
+    speak() {
+        super.speak();
+        console.log(`${this.name} has a wingspan of ${this.wingspan}cm`);
+    }
+}
+
+const eagle = new Bird('Eagle', 200);
+eagle.speak();
+// "Eagle makes a sound"
+// "Eagle has a wingspan of 200cm"
+```
+
+## 封装
+
+### 私有字段和方法
+```javascript
+class BankAccount {
+    #balance = 0; // 私有字段
+
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+    }
+
+    deposit(amount) {
+        if (amount > 0) {
+            this.#balance += amount;
+            this.#logTransaction('deposit', amount);
+        }
+    }
+
+    getBalance() {
+        return this.#balance;
+    }
+
+    #logTransaction(type, amount) { // 私有方法
+        console.log(`${type}: ${amount}`);
+    }
+}
+
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+// console.log(account.#balance); // 错误：无法访问私有字段
+```
+
+### getter 和 setter
+```javascript
+class Circle {
+    #radius = 0;
+
+    constructor(radius) {
+        this.radius = radius; // 使用 setter
+    }
+
+    get radius() {
+        return this.#radius;
+    }
+
+    set radius(value) {
+        if (value >= 0) {
+            this.#radius = value;
+        } else {
+            throw new Error('Radius must be positive');
+        }
+    }
+
+    get area() {
+        return Math.PI * this.#radius * this.#radius;
+    }
+}
+
+const circle = new Circle(5);
+console.log(circle.radius); // 5
+console.log(circle.area);   // 78.54...
+```
+
+## 多态
+```javascript
+class Shape {
+    getArea() {
+        return 0;
+    }
+}
+
+class Rectangle extends Shape {
+    constructor(width, height) {
+        super();
+        this.width = width;
+        this.height = height;
+    }
+
+    getArea() {
+        return this.width * this.height;
+    }
+}
+
+class Circle extends Shape {
+    constructor(radius) {
+        super();
+        this.radius = radius;
+    }
+
+    getArea() {
+        return Math.PI * this.radius * this.radius;
+    }
+}
+
+function printArea(shape) {
+    console.log(`Area: ${shape.getArea()}`);
+}
+
+const rect = new Rectangle(5, 3);
+const circle = new Circle(3);
+
+printArea(rect);   // Area: 15
+printArea(circle); // Area: 28.27...
+```
+
+## 练习
+1. 创建一个图书管理系统，使用类来表示图书和图书馆
+2. 实现一个简单的银行账户系统，包含不同类型的账户
+3. 使用私有字段实现数据封装
+
+## 小结
+- 理解类的基本语法和使用方法
+- 掌握继承和方法重写的概念
+- 学会使用私有字段和方法进行封装
+- 理解 getter 和 setter 的作用
+- 掌握多态的实现方式

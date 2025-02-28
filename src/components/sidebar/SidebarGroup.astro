@@ -6,10 +6,9 @@ import SidebarGroupComponent from './SidebarGroup.astro';
 interface Props {
   label: string;
   items: SidebarItem[];
-  currentPath: string;
 }
 
-const { label, items, currentPath } = Astro.props;
+const { label, items } = Astro.props;
 ---
 
 <li>
@@ -19,16 +18,11 @@ const { label, items, currentPath } = Astro.props;
       {
         items.map((item) =>
           item.isNotGroup() ? (
-            <SidebarLink
-              label={item.getLabel()}
-              link={item.getLink()}
-              isActive={currentPath === item.getLink()}
-            />
+            <SidebarLink label={item.getLabel()} link={item.getLink()} />
           ) : (
             <SidebarGroupComponent
               label={item.getLabel()}
-              items={item.getItems()}
-              currentPath={currentPath}
+              items={item.getItemsIncludingSelf()}
             />
           )
         )

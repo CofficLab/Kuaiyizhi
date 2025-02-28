@@ -1,0 +1,166 @@
+---
+title: JavaScript 运算符和控制流程
+description: 学习 JavaScript 中的各种运算符、条件语句和循环结构
+---
+
+## 运算符
+
+### 算术运算符
+用于执行基本的数学运算：
+```javascript
+let a = 10;
+let b = 3;
+
+console.log(a + b);  // 13（加法）
+console.log(a - b);  // 7（减法）
+console.log(a * b);  // 30（乘法）
+console.log(a / b);  // 3.3333...（除法）
+console.log(a % b);  // 1（取余）
+console.log(a ** b); // 1000（幂运算，ES2016）
+```
+
+### 赋值运算符
+用于给变量赋值：
+```javascript
+let x = 5;      // 基本赋值
+x += 3;         // 等同于 x = x + 3
+x -= 2;         // 等同于 x = x - 2
+x *= 4;         // 等同于 x = x * 4
+x /= 2;         // 等同于 x = x / 2
+x %= 3;         // 等同于 x = x % 3
+```
+
+### 比较运算符
+用于比较两个值：
+```javascript
+let a = 5;
+let b = '5';
+
+console.log(a == b);   // true（相等，会进行类型转换）
+console.log(a === b);  // false（严格相等，不会进行类型转换）
+console.log(a != b);   // false（不相等）
+console.log(a !== b);  // true（严格不相等）
+console.log(a > 3);    // true（大于）
+console.log(a <= 5);   // true（小于等于）
+```
+
+### 逻辑运算符
+用于组合多个条件：
+```javascript
+let x = 5;
+let y = 10;
+
+console.log(x > 0 && y < 20);  // true（与运算）
+console.log(x > 10 || y > 5);  // true（或运算）
+console.log(!true);            // false（非运算）
+
+// 短路运算
+let a = null;
+let b = a || 'default';        // b = 'default'
+let c = a && 'value';          // c = null
+```
+
+## 控制流程
+
+### if 语句
+用于条件判断：
+```javascript
+let age = 18;
+
+if (age >= 18) {
+    console.log('成年人');
+} else if (age >= 12) {
+    console.log('青少年');
+} else {
+    console.log('儿童');
+}
+```
+
+### switch 语句
+用于多条件分支：
+```javascript
+let day = 'Monday';
+
+switch (day) {
+    case 'Monday':
+        console.log('星期一');
+        break;
+    case 'Tuesday':
+        console.log('星期二');
+        break;
+    default:
+        console.log('其他日子');
+}
+```
+
+### 三元运算符
+简洁的条件判断：
+```javascript
+let age = 20;
+let status = age >= 18 ? '成年' : '未成年';
+```
+
+### for 循环
+用于重复执行代码：
+```javascript
+// 基本 for 循环
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+
+// for...of 循环（用于数组）
+let colors = ['red', 'green', 'blue'];
+for (let color of colors) {
+    console.log(color);
+}
+
+// for...in 循环（用于对象）
+let person = { name: 'Alice', age: 25 };
+for (let key in person) {
+    console.log(key + ': ' + person[key]);
+}
+```
+
+### while 和 do...while 循环
+```javascript
+// while 循环
+let count = 0;
+while (count < 5) {
+    console.log(count);
+    count++;
+}
+
+// do...while 循环
+let num = 0;
+do {
+    console.log(num);
+    num++;
+} while (num < 3);
+```
+
+### break 和 continue
+控制循环流程：
+```javascript
+// break 示例
+for (let i = 0; i < 10; i++) {
+    if (i === 5) break;
+    console.log(i);
+}
+
+// continue 示例
+for (let i = 0; i < 5; i++) {
+    if (i === 2) continue;
+    console.log(i);
+}
+```
+
+## 练习
+1. 使用不同类型的循环遍历数组
+2. 实现一个简单的计算器，使用 switch 语句处理不同的运算符
+3. 使用逻辑运算符的短路特性设置默认值
+
+## 小结
+- 掌握各种运算符的使用和优先级
+- 理解条件语句的应用场景
+- 熟练使用各种循环结构
+- 注意 break 和 continue 的使用时机

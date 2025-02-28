@@ -34,39 +34,43 @@ const hasTableOfContents = headings.length > 0;
     description: description,
     template: 'doc',
   }}>
-  <div class="flex relative">
+  <div class="flex relative overflow-hidden">
     {/* 侧边栏 */}
     {
       hasSidebar && sidebarItem && (
         <aside class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
           <div class="h-full px-4 py-6">
-            <Sidebar items={sidebarItem} currentPath={currentPath} />
+            <Sidebar item={sidebarItem} />
           </div>
         </aside>
       )
     }
 
-    {/* 主内容区域 */}
     <div
       class:list={[
-        'flex-1 min-h-[calc(100vh-4rem)]',
+        'flex-1 min-h-[calc(100vh-4rem)] overflow-hidden',
         hasSidebar ? 'ml-64' : '',
       ]}>
-      <div class="container mx-auto px-4 pb-16">
+      <div class="container mx-auto px-4 pb-16 overflow-hidden">
         {/* 主内容 */}
-        <main class="transition-all duration-300 w-full">
-          <div class="lg:flex flex justify-center">
-            <div class={hasTableOfContents ? '' : 'max-w-4xl mx-auto'}>
-              <div transition:animate="fade" class="max-w-4xl mx-auto p-4">
+        <main class="transition-all duration-300 w-full overflow-hidden">
+          <div class="lg:flex justify-center overflow-hidden">
+            <div
+              class={hasTableOfContents
+                ? 'w-full lg:pr-[calc(16rem+1.5rem)] overflow-hidden'
+                : 'max-w-4xl mx-auto w-full overflow-hidden'}>
+              <div
+                transition:animate="fade"
+                class="max-w-4xl mx-auto p-4 overflow-hidden">
                 <div
-                  class="prose prose-slate dark:prose-invert w-full max-w-none">
+                  class="prose prose-slate dark:prose-invert w-full max-w-none overflow-hidden">
                   <slot />
                 </div>
               </div>
             </div>
             {
               hasTableOfContents && (
-                <aside class="hidden lg:block sticky top-24 w-64 h-fit border-l border-slate-200 dark:border-slate-800">
+                <aside class="hidden lg:block fixed right-4 top-24 w-64 h-[calc(100vh-8rem)] border-l border-slate-200 dark:border-slate-800 overflow-y-auto">
                   <TableOfContents headings={headings} />
                 </aside>
               )

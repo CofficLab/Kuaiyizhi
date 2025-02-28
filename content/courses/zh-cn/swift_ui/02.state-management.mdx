@@ -1,0 +1,259 @@
+---
+title: SwiftUI 状态管理
+---
+
+# SwiftUI 状态管理
+
+## 状态的概念
+
+在 SwiftUI 中，状态是驱动用户界面更新的关键机制。当状态发生变化时，SwiftUI 会自动更新相关的视图。
+
+### @State
+
+`@State` 用于管理视图内部的简单状态：
+
+```swift
+struct CounterView: View {
+    @State private var count = 0
+    
+    var body: some View {
+        VStack {
+            Text("计数: \(count)")
+            
+            Button("增加") {
+                count += 1
+            }
+        }
+    }
+}
+```
+
+### @Binding
+
+`@Binding` 允许子视图修改父视图的状态：
+
+```swift
+struct ToggleButton: View {
+    @Binding var isOn: Bool
+    
+    var body: some View {
+        Button(isOn ? "开启" : "关闭") {
+            isOn.toggle()
+        }
+    }
+}
+
+struct ParentView: View {
+    @State private var isEnabled = false
+    
+    var body: some View {
+        ToggleButton(isOn: $isEnabled)
+    }
+}
+```
+
+## 可观察对象
+
+### ObservableObject
+
+对于更复杂的状态管理，使用 `ObservableObject`：
+
+```swift
+class UserSettings: ObservableObject {
+    @Published var username = ""
+    @Published var isLoggedIn = false
+    
+    func login() {
+        username = "张三"
+        isLoggedIn = true
+    }
+    
+    func logout() {
+        username = ""
+        isLoggedIn = false
+    }
+}
+```
+
+### @StateObject 和 @ObservedObject
+
+```swift
+struct SettingsView: View {
+    @StateObject private var settings = UserSettings()
+    
+    var body: some View {
+        VStack {
+            if settings.isLoggedIn {
+                Text("欢迎, \(settings.username)!")
+                Button("登出") {
+                    settings.logout()
+                }
+            } else {
+                Button("登录") {
+                    settings.login()
+                }
+            }
+        }
+    }
+}
+```
+
+## 环境对象
+
+### @EnvironmentObject
+
+使用环境对象在视图层次结构中共享数据：
+
+```swift
+class AppState: ObservableObject {
+    @Published var theme = "light"
+    @Published var fontSize = 14
+}
+
+struct RootView: View {
+    @StateObject private var appState = AppState()
+    
+    var body: some View {
+        ContentView()
+            .environmentObject(appState)
+    }
+}
+
+struct ContentView: View {
+    @EnvironmentObject var appState: AppState
+    
+    var body: some View {
+        VStack {
+            Text("当前主题: \(appState.theme)")
+            Button("切换主题") {
+                appState.theme = appState.theme == "light" ? "dark" : "light"
+            }
+        }
+    }
+}
+```
+
+## 数据流最佳实践
+
+### 状态提升
+
+当多个视图需要共享状态时，将状态提升到它们的共同父视图：
+
+```swift
+struct ParentView: View {
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        VStack {
+            TabView(selection: $selectedTab) {
+                FirstTabView()
+                    .tabItem { Text("第一页") }
+                    .tag(0)
+                SecondTabView()
+                    .tabItem { Text("第二页") }
+                    .tag(1)
+            }
+            
+            // 共享状态的控制器
+            TabController(selectedTab: $selectedTab)
+        }
+    }
+}
+```
+
+### 依赖注入
+
+使用依赖注入来提高代码的可测试性和可维护性：
+
+```swift
+protocol DataService {
+    func fetchData() async throws -> [String]
+}
+
+class UserDataService: DataService {
+    func fetchData() async throws -> [String] {
+        // 实际的网络请求
+        return ["数据1", "数据2"]
+    }
+}
+
+class ViewModel: ObservableObject {
+    private let dataService: DataService
+    @Published var items: [String] = []
+    
+    init(dataService: DataService) {
+        self.dataService = dataService
+    }
+    
+    func loadData() async {
+        do {
+            items = try await dataService.fetchData()
+        } catch {
+            print("加载失败: \(error)")
+        }
+    }
+}
+```
+
+## 练习
+
+创建一个简单的待办事项应用，练习状态管理：
+
+```swift
+struct TodoItem: Identifiable {
+    let id = UUID()
+    var title: String
+    var isCompleted: Bool
+}
+
+class TodoStore: ObservableObject {
+    @Published var items: [TodoItem] = []
+    
+    func addItem(_ title: String) {
+        items.append(TodoItem(title: title, isCompleted: false))
+    }
+    
+    func toggleItem(_ item: TodoItem) {
+        if let index = items.firstIndex(where: { $0.id == item.id }) {
+            items[index].isCompleted.toggle()
+        }
+    }
+}
+
+struct TodoListView: View {
+    @StateObject private var store = TodoStore()
+    @State private var newItemTitle = ""
+    
+    var body: some View {
+        VStack {
+            List(store.items) { item in
+                HStack {
+                    Text(item.title)
+                    Spacer()
+                    Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
+                }
+                .onTapGesture {
+                    store.toggleItem(item)
+                }
+            }
+            
+            HStack {
+                TextField("新任务", text: $newItemTitle)
+                Button("添加") {
+                    if !newItemTitle.isEmpty {
+                        store.addItem(newItemTitle)
+                        newItemTitle = ""
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+```
+
+通过这个练习，你可以学习如何：
+1. 使用 @StateObject 管理应用状态
+2. 使用 @State 处理局部状态
+3. 实现数据的增加和更新
+4. 在视图中响应状态变化

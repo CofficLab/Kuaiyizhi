@@ -53,6 +53,10 @@ export class SidebarItem {
         return this.label;
     }
 
+    getDocId(): string {
+        return this.docId || '';
+    }
+
     getLink(): string {
         if (this.isTag() && this.tagId) {
             return makeTagLink('zh-cn', this.tagId);
@@ -67,5 +71,16 @@ export class SidebarItem {
 
     getItems(): SidebarItem[] {
         return this.items || [];
+    }
+
+    getItemsIncludingSelf(): SidebarItem[] {
+        return [this.toLinkItem(), ...this.getItems()];
+    }
+
+    // 将 Group Item 转换为 Link Item
+    toLinkItem(): SidebarItem {
+        return new SidebarItem({
+            label: this.label,
+        }).setDocId(this.getDocId());
     }
 } 

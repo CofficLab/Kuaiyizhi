@@ -1,0 +1,318 @@
+---
+title: Go 语言网络编程实践
+---
+
+## TCP 编程
+
+### TCP 服务器
+
+创建一个简单的 TCP 服务器：
+
+```go
+package main
+
+import (
+    "fmt"
+    "net"
+)
+
+func main() {
+    listener, err := net.Listen("tcp", ":8080")
+    if err != nil {
+        panic(err)
+    }
+    defer listener.Close()
+
+    fmt.Println("服务器启动，监听端口 8080...")
+
+    for {
+        conn, err := listener.Accept()
+        if err != nil {
+            fmt.Println("接受连接错误:", err)
+            continue
+        }
+
+        go handleConnection(conn)
+    }
+}
+
+func handleConnection(conn net.Conn) {
+    defer conn.Close()
+
+    buffer := make([]byte, 1024)
+    for {
+        n, err := conn.Read(buffer)
+        if err != nil {
+            fmt.Println("读取数据错误:", err)
+            return
+        }
+
+        fmt.Printf("收到数据: %s\n", buffer[:n])
+        
+        // 回复客户端
+        _, err = conn.Write([]byte("服务器已收到消息"))
+        if err != nil {
+            fmt.Println("发送数据错误:", err)
+            return
+        }
+    }
+}
+```
+
+### TCP 客户端
+
+创建对应的 TCP 客户端：
+
+```go
+package main
+
+import (
+    "fmt"
+    "net"
+)
+
+func main() {
+    conn, err := net.Dial("tcp", "localhost:8080")
+    if err != nil {
+        panic(err)
+    }
+    defer conn.Close()
+
+    // 发送数据
+    _, err = conn.Write([]byte("Hello, 服务器!"))
+    if err != nil {
+        panic(err)
+    }
+
+    // 接收响应
+    buffer := make([]byte, 1024)
+    n, err := conn.Read(buffer)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf("服务器响应: %s\n", buffer[:n])
+}
+```
+
+## UDP 编程
+
+### UDP 服务器
+
+实现一个 UDP 服务器：
+
+```go
+package main
+
+import (
+    "fmt"
+    "net"
+)
+
+func main() {
+    addr, err := net.ResolveUDPAddr("udp", ":8081")
+    if err != nil {
+        panic(err)
+    }
+
+    conn, err := net.ListenUDP("udp", addr)
+    if err != nil {
+        panic(err)
+    }
+    defer conn.Close()
+
+    fmt.Println("UDP 服务器启动，监听端口 8081...")
+
+    buffer := make([]byte, 1024)
+    for {
+        n, remoteAddr, err := conn.ReadFromUDP(buffer)
+        if err != nil {
+            fmt.Println("读取数据错误:", err)
+            continue
+        }
+
+        fmt.Printf("从 %v 收到数据: %s\n", remoteAddr, buffer[:n])
+
+        // 回复客户端
+        _, err = conn.WriteToUDP([]byte("服务器已收到消息"), remoteAddr)
+        if err != nil {
+            fmt.Println("发送数据错误:", err)
+            continue
+        }
+    }
+}
+```
+
+## WebSocket
+
+### WebSocket 服务器
+
+使用 gorilla/websocket 实现 WebSocket 服务器：
+
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "github.com/gorilla/websocket"
+)
+
+var upgrader = websocket.Upgrader{
+    ReadBufferSize:  1024,
+    WriteBufferSize: 1024,
+    CheckOrigin: func(r *http.Request) bool {
+        return true // 允许所有来源
+    },
+}
+
+func handleWebSocket(w http.ResponseWriter, r *http.Request) {
+    conn, err := upgrader.Upgrade(w, r, nil)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    defer conn.Close()
+
+    for {
+        messageType, p, err := conn.ReadMessage()
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        fmt.Printf("收到消息: %s\n", string(p))
+
+        err = conn.WriteMessage(messageType, []byte("服务器收到消息: "+string(p)))
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+    }
+}
+
+func main() {
+    http.HandleFunc("/ws", handleWebSocket)
+    fmt.Println("WebSocket 服务器启动在 ws://localhost:8082/ws")
+    http.ListenAndServe(":8082", nil)
+}
+```
+
+## HTTP 客户端
+
+### 使用 HTTP 客户端
+
+实现 HTTP 请求：
+
+```go
+package main
+
+import (
+    "fmt"
+    "io"
+    "net/http"
+    "time"
+)
+
+func main() {
+    // 创建自定义客户端
+    client := &http.Client{
+        Timeout: time.Second * 10,
+    }
+
+    // GET 请求
+    resp, err := client.Get("https://api.example.com/data")
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf("响应状态码: %d\n", resp.StatusCode)
+    fmt.Printf("响应内容: %s\n", string(body))
+
+    // POST 请求
+    resp, err = client.Post(
+        "https://api.example.com/data",
+        "application/json",
+        strings.NewReader(`{"name":"张三","age":25}`),
+    )
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    // 处理响应...
+}
+```
+
+## 网络安全
+
+### TLS/SSL
+
+实现 HTTPS 服务器：
+
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hello, HTTPS!")
+}
+
+func main() {
+    http.HandleFunc("/", handler)
+    
+    // 使用 TLS 证书和密钥
+    err := http.ListenAndServeTLS(
+        ":443",
+        "server.crt",
+        "server.key",
+        nil,
+    )
+    if err != nil {
+        panic(err)
+    }
+}
+```
+
+## 代理服务器
+
+### 反向代理
+
+实现简单的反向代理：
+
+```go
+package main
+
+import (
+    "net/http"
+    "net/http/httputil"
+    "net/url"
+)
+
+func main() {
+    // 目标服务器地址
+    target, _ := url.Parse("http://localhost:8080")
+
+    proxy := httputil.NewSingleHostReverseProxy(target)
+
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        proxy.ServeHTTP(w, r)
+    })
+
+    http.ListenAndServe(":9090", nil)
+}
+```
+
+## 总结
+
+Go 语言提供了强大而灵活的网络编程功能，从基本的 TCP/UDP 编程到 WebSocket、HTTP 客户端，再到 TLS/SSL 安全通信和代理服务器的实现，都有完善的支持。在实际开发中，开发者可以根据具体需求选择合适的网络编程方案，同时注意处理网络异常、实现错误重试、保证通信安全等关键点。建议在进行网络编程时，充分考虑性能、安全性和可靠性等因素。

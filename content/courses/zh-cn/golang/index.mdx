@@ -5,3 +5,456 @@ title: Go 语言入门
 ## 什么是 Go 语言？
 
 Go 语言是一种开源的编程语言，由 Google 开发。它是一种静态类型、编译型语言，具有高效的性能和强大的并发处理能力。Go 语言的设计目标是提供一种简单、高效、安全的编程语言，同时保持语言的简洁性和易学性。
+
+## 并发编程
+
+### Goroutine
+
+Goroutine 是 Go 语言中最基本的并发执行单元。它比线程更轻量，能够让我们轻松地编写并发程序：
+
+```go
+func main() {
+    // 启动一个 goroutine
+    go func() {
+        fmt.Println("Hello from goroutine!")
+    }()
+
+    time.Sleep(time.Second)
+}
+```
+
+### Channel
+
+Channel 是 Go 语言中用于 goroutine 之间通信的管道：
+
+```go
+func main() {
+    ch := make(chan string)
+
+    go func() {
+        ch <- "Hello from channel!"
+    }()
+
+    msg := <-ch
+    fmt.Println(msg)
+}
+```
+
+## 工程实践
+
+### 错误处理
+
+Go 语言使用返回错误值的方式进行错误处理：
+
+```go
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New("除数不能为零")
+    }
+    return a / b, nil
+}
+```
+
+### 单元测试
+
+Go 语言内置了测试框架，可以轻松编写和运行测试：
+
+```go
+func TestDivide(t *testing.T) {
+    result, err := divide(10, 2)
+    if err != nil {
+        t.Errorf("预期无错误，但得到错误：%v", err)
+    }
+    if result != 5 {
+        t.Errorf("预期结果为 5，但得到 %v", result)
+    }
+}
+```
+
+## 包管理
+
+### Go Modules
+
+Go Modules 是 Go 语言的官方依赖管理工具：
+
+```go
+// 初始化一个新模块
+go mod init example.com/myproject
+
+// 添加依赖
+go get github.com/gin-gonic/gin
+
+// 更新依赖
+go get -u
+```
+
+## Web 开发
+
+### HTTP 服务器
+
+使用标准库 `net/http` 创建 Web 服务器：
+
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hello, Web!")
+}
+
+func main() {
+    http.HandleFunc("/", handler)
+    http.ListenAndServe(":8080", nil)
+}
+```
+
+### 使用 Gin 框架
+
+Gin 是一个流行的 Go Web 框架：
+
+```go
+package main
+
+import "github.com/gin-gonic/gin"
+
+func main() {
+    r := gin.Default()
+    r.GET("/ping", func(c *gin.Context) {
+        c.JSON(200, gin.H{
+            "message": "pong",
+        })
+    })
+    r.Run()
+}
+```
+
+## 数据库操作
+
+### 连接数据库
+
+使用 `database/sql` 包连接 MySQL 数据库：
+
+```go
+package main
+
+import (
+    "database/sql"
+    _ "github.com/go-sql-driver/mysql"
+)
+
+func main() {
+    db, err := sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+}
+```
+
+### 执行查询
+
+```go
+rows, err := db.Query("SELECT id, name FROM users WHERE age > ?", 18)
+if err != nil {
+    panic(err)
+}
+defer rows.Close()
+
+for rows.Next() {
+    var id int
+    var name string
+    if err := rows.Scan(&id, &name); err != nil {
+        panic(err)
+    }
+    fmt.Printf("id: %d, name: %s\n", id, name)
+}
+```
+
+## 微服务开发
+
+### gRPC 服务
+
+使用 gRPC 构建微服务：
+
+```go
+package main
+
+import (
+    "context"
+    "log"
+    "net"
+
+    "google.golang.org/grpc"
+    pb "path/to/proto"
+)
+
+type server struct {
+    pb.UnimplementedGreeterServer
+}
+
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+    return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+}
+
+func main() {
+    lis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        log.Fatalf("failed to listen: %v", err)
+    }
+    s := grpc.NewServer()
+    pb.RegisterGreeterServer(s, &server{})
+    log.Printf("server listening at %v", lis.Addr())
+    if err := s.Serve(lis); err != nil {
+        log.Fatalf("failed to serve: %v", err)
+    }
+}
+```
+
+### 服务发现
+
+使用 Consul 进行服务注册与发现：
+
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/hashicorp/consul/api"
+)
+
+func main() {
+    config := api.DefaultConfig()
+    client, err := api.NewClient(config)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    registration := &api.AgentServiceRegistration{
+        ID:      "service1",
+        Name:    "web",
+        Port:    8080,
+        Address: "127.0.0.1",
+    }
+
+    err = client.Agent().ServiceRegister(registration)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println("Service registered successfully")
+}
+```
+
+## 消息队列
+
+### RabbitMQ
+
+使用 RabbitMQ 实现消息队列：
+
+```go
+package main
+
+import (
+    "log"
+
+    "github.com/streadway/amqp"
+)
+
+func main() {
+    conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer conn.Close()
+
+    ch, err := conn.Channel()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer ch.Close()
+
+    q, err := ch.QueueDeclare(
+        "hello", // name
+        false,   // durable
+        false,   // delete when unused
+        false,   // exclusive
+        false,   // no-wait
+        nil,     // arguments
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    body := "Hello World!"
+    err = ch.Publish(
+        "",     // exchange
+        q.Name, // routing key
+        false,  // mandatory
+        false,  // immediate
+        amqp.Publishing{
+            ContentType: "text/plain",
+            Body:        []byte(body),
+        })
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+## 日志系统
+
+### 使用 Zap
+
+使用 Uber 的 Zap 日志库：
+
+```go
+package main
+
+import (
+    "go.uber.org/zap"
+    "go.uber.org/zap/zapcore"
+)
+
+func main() {
+    config := zap.NewProductionConfig()
+    config.EncoderConfig.TimeKey = "timestamp"
+    config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+
+    logger, _ := config.Build()
+    defer logger.Sync()
+
+    logger.Info("failed to fetch URL",
+        zap.String("url", "http://example.com"),
+        zap.Int("attempt", 3),
+        zap.Duration("backoff", time.Second),
+    )
+}
+```
+
+## 缓存系统
+
+### Redis 缓存
+
+使用 Redis 实现缓存：
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/go-redis/redis/v8"
+)
+
+func main() {
+    ctx := context.Background()
+
+    rdb := redis.NewClient(&redis.Options{
+        Addr:     "localhost:6379",
+        Password: "", // no password set
+        DB:       0,  // use default DB
+    })
+
+    err := rdb.Set(ctx, "key", "value", 0).Err()
+    if err != nil {
+        panic(err)
+    }
+
+    val, err := rdb.Get(ctx, "key").Result()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("key", val)
+}
+```
+
+## API 网关
+
+### 使用 Traefik
+
+配置 Traefik 作为 API 网关：
+
+```go
+package main
+
+import (
+    "log"
+    "net/http"
+    "github.com/gorilla/mux"
+)
+
+func main() {
+    r := mux.NewRouter()
+    
+    r.HandleFunc("/api/v1/{service}", func(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        service := vars["service"]
+        // 转发到相应的微服务
+        // ...
+    })
+
+    log.Fatal(http.ListenAndServe(":8080", r))
+}
+```
+
+## 容器化应用
+
+### Docker 集成
+
+创建 Dockerfile：
+
+```dockerfile
+FROM golang:1.17-alpine
+
+WORKDIR /app
+
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
+COPY *.go ./
+
+RUN go build -o /docker-gs-ping
+
+EXPOSE 8080
+
+CMD [ "/docker-gs-ping" ]
+```
+
+## 性能优化
+
+### 性能分析
+
+使用 pprof 进行性能分析：
+
+```go
+package main
+
+import (
+    "net/http"
+    _ "net/http/pprof"
+    "runtime"
+)
+
+func main() {
+    runtime.SetBlockProfileRate(1) // 开启对阻塞操作的分析
+    runtime.SetMutexProfileFraction(1) // 开启对锁的分析
+
+    go func() {
+        http.ListenAndServe(":6060", nil)
+    }()
+
+    // 你的应用代码
+}
+```
+
+## 总结
+
+Go 语言在现代软件开发中扮演着越来越重要的角色，特别是在云原生和微服务架构领域。通过以上实战示例，我们可以看到 Go 语言在各个应用场景中的强大能力。建议读者在学习过程中，多动手实践，并结合实际项目需求选择合适的技术方案。

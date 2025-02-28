@@ -1,0 +1,147 @@
+---
+title: JavaScript 变量和数据类型
+description: 学习 JavaScript 中的变量声明、基本数据类型和类型转换
+---
+
+## 变量声明
+
+JavaScript 中有三种声明变量的方式：`var`、`let` 和 `const`。
+
+### var
+`var` 是最早的变量声明方式，但现在不推荐使用，因为它有一些问题：
+- 可以重复声明
+- 存在变量提升
+- 没有块级作用域
+
+```javascript
+var name = 'Alice';
+var name = 'Bob'; // 可以重复声明
+```
+
+### let
+`let` 是 ES6 引入的新的变量声明方式，推荐使用：
+- 不能重复声明
+- 有块级作用域
+- 不存在变量提升
+
+```javascript
+let age = 25;
+// let age = 30; // 错误：不能重复声明
+
+if (true) {
+  let blockVar = 'only in block';
+}
+// console.log(blockVar); // 错误：blockVar 只在 if 块中可用
+```
+
+### const
+`const` 用于声明常量，一旦赋值就不能改变：
+
+```javascript
+const PI = 3.14159;
+// PI = 3.14; // 错误：不能修改 const 声明的变量
+```
+
+## 数据类型
+
+JavaScript 有七种基本数据类型：
+
+### 1. 数字（Number）
+包括整数和浮点数：
+```javascript
+let count = 42;        // 整数
+let price = 99.99;     // 浮点数
+let infinity = Infinity; // 无穷大
+let notANumber = NaN;   // 非数字
+```
+
+### 2. 字符串（String）
+用单引号或双引号包围的文本：
+```javascript
+let name = 'Alice';
+let greeting = "Hello, World!";
+
+// 模板字符串（ES6）
+let message = `Hello, ${name}!`; // 支持变量插值
+```
+
+### 3. 布尔值（Boolean）
+只有 `true` 和 `false` 两个值：
+```javascript
+let isOnline = true;
+let isLoggedIn = false;
+```
+
+### 4. undefined
+表示变量未赋值：
+```javascript
+let undefinedVar;
+console.log(undefinedVar); // undefined
+```
+
+### 5. null
+表示空值或不存在：
+```javascript
+let emptyValue = null;
+```
+
+### 6. Symbol（ES6）
+表示唯一的标识符：
+```javascript
+let sym1 = Symbol();
+let sym2 = Symbol('description');
+```
+
+### 7. BigInt（ES2020）
+用于表示大整数：
+```javascript
+let bigNumber = 9007199254740991n;
+```
+
+## 类型检查和转换
+
+### typeof 运算符
+使用 `typeof` 检查变量类型：
+```javascript
+console.log(typeof 42);        // "number"
+console.log(typeof 'Hello');   // "string"
+console.log(typeof true);      // "boolean"
+console.log(typeof undefined); // "undefined"
+console.log(typeof null);      // "object"（这是一个历史遗留的 bug）
+```
+
+### 类型转换
+1. 转换为字符串：
+```javascript
+let num = 123;
+let str1 = String(num);     // 使用 String() 函数
+let str2 = num.toString();  // 使用 toString() 方法
+let str3 = num + '';        // 使用加号运算符
+```
+
+2. 转换为数字：
+```javascript
+let str = '123';
+let num1 = Number(str);     // 使用 Number() 函数
+let num2 = parseInt(str);   // 转换为整数
+let num3 = parseFloat(str); // 转换为浮点数
+let num4 = +str;           // 使用一元加号运算符
+```
+
+3. 转换为布尔值：
+```javascript
+let value = 'Hello';
+let bool1 = Boolean(value); // 使用 Boolean() 函数
+let bool2 = !!value;        // 使用双重否定
+```
+
+## 练习
+1. 声明一个常量 `MAX_USERS`，值为 100
+2. 使用模板字符串创建一个包含变量的消息
+3. 尝试不同类型的转换，观察结果
+
+## 小结
+- 使用 `let` 声明变量，`const` 声明常量
+- JavaScript 有 7 种基本数据类型
+- 使用 `typeof` 检查变量类型
+- 了解不同类型之间的转换方法

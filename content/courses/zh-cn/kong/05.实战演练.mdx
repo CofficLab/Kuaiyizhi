@@ -1,0 +1,760 @@
+---
+title: "实战演练"
+---
+
+# 第五章：实战演练 💪
+
+理论知识已经掌握了不少，现在是时候将这些知识应用到实际场景中了。本章将通过三个完整的案例，展示Kong在不同环境下的应用，并分享一些常见的"坑"及其解决方法。
+
+## 案例1：构建一个完整的API网关架构
+
+在这个案例中，我们将构建一个完整的API网关架构，包括认证、限流、日志和监控等功能。
+
+### 需求分析
+
+假设我们正在为一个电子商务平台构建API网关，需要满足以下需求：
+
+1. 对外暴露统一的API入口
+2. 对不同API实施不同的认证策略
+3. 对高频API进行限流保护
+4. 记录所有API调用日志
+5. 监控API性能和使用情况
+
+### 架构设计
+
+```
+客户端 → Kong API网关 → 微服务集群
+                     ↓
+                  监控系统
+                     ↓
+                  日志系统
+```
+
+### 实施步骤
+
+#### 1. 安装和配置Kong
+
+使用Docker Compose快速部署Kong和PostgreSQL：
+
+```yaml
+# docker-compose.yml
+version: '3'
+
+services:
+  kong-database:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kongpass
+    volumes:
+      - kong_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "kong"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  kong-migration:
+    image: kong:latest
+    depends_on:
+      - kong-database
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kongpass
+    command: kong migrations bootstrap
+
+  kong:
+    image: kong:latest
+    depends_on:
+      - kong-database
+      - kong-migration
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kongpass
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8443:8443"
+      - "8444:8444"
+
+volumes:
+  kong_data:
+```
+
+启动服务：
+
+```bash
+docker-compose up -d
+```
+
+#### 2. 配置服务和路由
+
+假设我们有以下微服务：
+
+- 产品服务：`http://product-service:8080`
+- 订单服务：`http://order-service:8080`
+- 用户服务：`http://user-service:8080`
+
+创建服务：
+
+```bash
+# 产品服务
+curl -X POST http://localhost:8001/services \
+  --data "name=product-service" \
+  --data "url=http://product-service:8080"
+
+# 订单服务
+curl -X POST http://localhost:8001/services \
+  --data "name=order-service" \
+  --data "url=http://order-service:8080"
+
+# 用户服务
+curl -X POST http://localhost:8001/services \
+  --data "name=user-service" \
+  --data "url=http://user-service:8080"
+```
+
+创建路由：
+
+```bash
+# 产品路由
+curl -X POST http://localhost:8001/services/product-service/routes \
+  --data "name=product-route" \
+  --data "paths[]=/api/products"
+
+# 订单路由
+curl -X POST http://localhost:8001/services/order-service/routes \
+  --data "name=order-route" \
+  --data "paths[]=/api/orders"
+
+# 用户路由
+curl -X POST http://localhost:8001/services/user-service/routes \
+  --data "name=user-route" \
+  --data "paths[]=/api/users"
+```
+
+#### 3. 配置认证
+
+对产品API使用API密钥认证：
+
+```bash
+# 启用key-auth插件
+curl -X POST http://localhost:8001/services/product-service/plugins \
+  --data "name=key-auth" \
+  --data "config.key_names=apikey"
+
+# 创建消费者
+curl -X POST http://localhost:8001/consumers \
+  --data "username=mobile-app"
+
+# 为消费者创建API密钥
+curl -X POST http://localhost:8001/consumers/mobile-app/key-auth \
+  --data "key=MOBILE-APP-KEY"
+```
+
+对订单API使用JWT认证：
+
+```bash
+# 启用JWT插件
+curl -X POST http://localhost:8001/services/order-service/plugins \
+  --data "name=jwt"
+
+# 为消费者创建JWT凭证
+curl -X POST http://localhost:8001/consumers/mobile-app/jwt \
+  --data "algorithm=HS256" \
+  --data "secret=jwt_secret"
+```
+
+对用户API使用OAuth2认证：
+
+```bash
+# 启用OAuth2插件
+curl -X POST http://localhost:8001/services/user-service/plugins \
+  --data "name=oauth2" \
+  --data "config.scopes=email,profile" \
+  --data "config.mandatory_scope=true" \
+  --data "config.enable_authorization_code=true"
+
+# 创建OAuth应用
+curl -X POST http://localhost:8001/consumers/mobile-app/oauth2 \
+  --data "name=Mobile App" \
+  --data "client_id=MOBILE-CLIENT-ID" \
+  --data "client_secret=MOBILE-CLIENT-SECRET" \
+  --data "redirect_uris=https://example.com/callback"
+```
+
+#### 4. 配置限流
+
+对产品API进行限流：
+
+```bash
+curl -X POST http://localhost:8001/services/product-service/plugins \
+  --data "name=rate-limiting" \
+  --data "config.second=10" \
+  --data "config.minute=100" \
+  --data "config.hour=1000" \
+  --data "config.policy=local"
+```
+
+#### 5. 配置日志
+
+启用HTTP日志插件，将日志发送到ELK堆栈：
+
+```bash
+curl -X POST http://localhost:8001/plugins \
+  --data "name=http-log" \
+  --data "config.http_endpoint=http://logstash:8080" \
+  --data "config.method=POST" \
+  --data "config.timeout=10000" \
+  --data "config.keepalive=60000"
+```
+
+#### 6. 配置监控
+
+启用Prometheus插件：
+
+```bash
+curl -X POST http://localhost:8001/plugins \
+  --data "name=prometheus"
+```
+
+然后配置Prometheus抓取Kong的指标，并使用Grafana创建仪表板。
+
+### 测试和验证
+
+使用curl测试各个API：
+
+```bash
+# 测试产品API（需要API密钥）
+curl -i http://localhost:8000/api/products \
+  -H "apikey: MOBILE-APP-KEY"
+
+# 测试订单API（需要JWT）
+curl -i http://localhost:8000/api/orders \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+# 测试用户API（需要OAuth2令牌）
+curl -i http://localhost:8000/api/users \
+  -H "Authorization: Bearer ACCESS_TOKEN"
+```
+
+## 案例2：微服务架构中的Kong最佳实践
+
+在这个案例中，我们将探讨如何在微服务架构中最佳地使用Kong，包括服务发现、负载均衡和熔断降级。
+
+### 需求分析
+
+假设我们有一个微服务架构的应用，需要：
+
+1. 自动发现和注册服务
+2. 在多个服务实例间进行负载均衡
+3. 实现熔断和降级，防止级联故障
+4. 支持蓝绿部署和金丝雀发布
+
+### 架构设计
+
+```
+                    ┌─ 服务A (v1) ─┐
+                    │              │
+客户端 → Kong → 服务发现 ─ 服务B (v1) ─ 数据库
+                    │              │
+                    └─ 服务B (v2) ─┘
+```
+
+### 实施步骤
+
+#### 1. 集成服务发现
+
+我们将使用Consul作为服务注册中心，并与Kong集成：
+
+```bash
+# 安装Consul插件
+curl -X POST http://localhost:8001/plugins \
+  --data "name=consul" \
+  --data "config.host=consul" \
+  --data "config.port=8500" \
+  --data "config.register_service=true" \
+  --data "config.token=CONSUL_TOKEN"
+```
+
+#### 2. 配置上游和负载均衡
+
+创建上游服务：
+
+```bash
+# 创建服务A的上游
+curl -X POST http://localhost:8001/upstreams \
+  --data "name=service-a-upstream"
+
+# 添加服务A的实例
+curl -X POST http://localhost:8001/upstreams/service-a-upstream/targets \
+  --data "target=service-a-1:8080" \
+  --data "weight=100"
+
+curl -X POST http://localhost:8001/upstreams/service-a-upstream/targets \
+  --data "target=service-a-2:8080" \
+  --data "weight=100"
+
+# 创建服务并指向上游
+curl -X POST http://localhost:8001/services \
+  --data "name=service-a" \
+  --data "host=service-a-upstream"
+```
+
+配置健康检查：
+
+```bash
+curl -X PATCH http://localhost:8001/upstreams/service-a-upstream \
+  --data "healthchecks.active.healthy.interval=5" \
+  --data "healthchecks.active.healthy.successes=2" \
+  --data "healthchecks.active.unhealthy.interval=5" \
+  --data "healthchecks.active.unhealthy.http_failures=2" \
+  --data "healthchecks.active.type=http" \
+  --data "healthchecks.active.http_path=/health"
+```
+
+#### 3. 实现熔断和降级
+
+使用社区插件circuit-breaker实现熔断：
+
+```bash
+curl -X POST http://localhost:8001/services/service-a/plugins \
+  --data "name=circuit-breaker" \
+  --data "config.error_threshold=50" \
+  --data "config.window_size=10" \
+  --data "config.min_calls=5"
+```
+
+配置降级响应：
+
+```bash
+curl -X POST http://localhost:8001/services/service-a/plugins \
+  --data "name=request-termination" \
+  --data "config.status_code=503" \
+  --data "config.message={\"error\":\"服务暂时不可用，请稍后再试\"}" \
+  --data "config.content_type=application/json" \
+  --data "config.trigger=circuit-open"
+```
+
+#### 4. 实现蓝绿部署
+
+使用路由和标签实现蓝绿部署：
+
+```bash
+# 创建蓝色版本的服务
+curl -X POST http://localhost:8001/services \
+  --data "name=service-b-blue" \
+  --data "url=http://service-b-v1:8080" \
+  --data "tags=blue"
+
+# 创建绿色版本的服务
+curl -X POST http://localhost:8001/services \
+  --data "name=service-b-green" \
+  --data "url=http://service-b-v2:8080" \
+  --data "tags=green"
+
+# 初始路由指向蓝色版本
+curl -X POST http://localhost:8001/services/service-b-blue/routes \
+  --data "name=service-b-route" \
+  --data "paths[]=/api/service-b"
+```
+
+切换到绿色版本：
+
+```bash
+# 更新路由指向绿色版本
+curl -X PATCH http://localhost:8001/routes/service-b-route \
+  --data "service.id=$(curl -s http://localhost:8001/services/service-b-green | jq -r '.id')"
+```
+
+#### 5. 实现金丝雀发布
+
+使用请求转换和路由优先级实现金丝雀发布：
+
+```bash
+# 创建金丝雀路由（10%流量）
+curl -X POST http://localhost:8001/services/service-b-green/routes \
+  --data "name=service-b-canary" \
+  --data "paths[]=/api/service-b" \
+  --data "priority=200"
+
+# 添加请求转换插件，只有10%的请求会被处理
+curl -X POST http://localhost:8001/routes/service-b-canary/plugins \
+  --data "name=request-transformer" \
+  --data "config.functions=[\"math.random() <= 0.1\"]"
+```
+
+### 测试和验证
+
+使用压力测试工具验证负载均衡和熔断功能：
+
+```bash
+# 使用wrk进行压力测试
+wrk -t10 -c100 -d30s http://localhost:8000/api/service-a
+
+# 模拟服务故障，验证熔断
+# (在服务A中注入故障，然后观察Kong的响应)
+```
+
+## 案例3：Kong与K8s的完美配合
+
+在这个案例中，我们将探讨如何在Kubernetes环境中部署和使用Kong，实现云原生API管理。
+
+### 需求分析
+
+假设我们有一个运行在Kubernetes上的微服务应用，需要：
+
+1. 在K8s中部署Kong
+2. 使用Kubernetes Ingress API管理路由
+3. 使用CRD（自定义资源定义）管理Kong配置
+4. 实现自动扩展和高可用
+
+### 架构设计
+
+```
+外部流量 → Ingress Controller → Kong → K8s服务 → Pod
+```
+
+### 实施步骤
+
+#### 1. 安装Kong Ingress Controller
+
+使用Helm安装Kong Ingress Controller：
+
+```bash
+# 添加Kong Helm仓库
+helm repo add kong https://charts.konghq.com
+helm repo update
+
+# 安装Kong Ingress Controller
+helm install kong kong/kong \
+  --namespace kong \
+  --create-namespace \
+  --set ingressController.enabled=true \
+  --set admin.enabled=true \
+  --set admin.http.enabled=true \
+  --set proxy.type=LoadBalancer
+```
+
+#### 2. 创建Kubernetes服务和部署
+
+创建示例应用：
+
+```yaml
+# echo-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo
+        image: hashicorp/http-echo
+        args:
+        - "-text=Hello, Kong!"
+        ports:
+        - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo
+  namespace: default
+spec:
+  selector:
+    app: echo
+  ports:
+  - port: 80
+    targetPort: 5678
+```
+
+应用配置：
+
+```bash
+kubectl apply -f echo-service.yaml
+```
+
+#### 3. 创建Ingress资源
+
+使用Kubernetes Ingress API创建路由：
+
+```yaml
+# echo-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  namespace: default
+  annotations:
+    konghq.com/strip-path: "true"
+spec:
+  ingressClassName: kong
+  rules:
+  - http:
+      paths:
+      - path: /echo
+        pathType: Prefix
+        backend:
+          service:
+            name: echo
+            port:
+              number: 80
+```
+
+应用Ingress：
+
+```bash
+kubectl apply -f echo-ingress.yaml
+```
+
+#### 4. 使用KongPlugin CRD添加插件
+
+创建速率限制插件：
+
+```yaml
+# rate-limiting-plugin.yaml
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: rate-limiting
+  namespace: default
+config:
+  minute: 5
+  policy: local
+plugin: rate-limiting
+```
+
+将插件应用到Ingress：
+
+```yaml
+# echo-ingress-with-plugin.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  namespace: default
+  annotations:
+    konghq.com/strip-path: "true"
+    konghq.com/plugins: rate-limiting
+spec:
+  ingressClassName: kong
+  rules:
+  - http:
+      paths:
+      - path: /echo
+        pathType: Prefix
+        backend:
+          service:
+            name: echo
+            port:
+              number: 80
+```
+
+应用更新：
+
+```bash
+kubectl apply -f rate-limiting-plugin.yaml
+kubectl apply -f echo-ingress-with-plugin.yaml
+```
+
+#### 5. 配置自动扩展
+
+使用Horizontal Pod Autoscaler自动扩展Kong：
+
+```yaml
+# kong-hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: kong-hpa
+  namespace: kong
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kong-kong
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+```
+
+应用HPA：
+
+```bash
+kubectl apply -f kong-hpa.yaml
+```
+
+### 测试和验证
+
+测试API访问：
+
+```bash
+# 获取Kong代理的外部IP
+export PROXY_IP=$(kubectl get svc -n kong kong-kong-proxy -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+# 测试API
+curl -i http://$PROXY_IP/echo
+
+# 测试速率限制
+for i in {1..10}; do curl -i http://$PROXY_IP/echo; done
+```
+
+## 踩坑指南：那些年我们踩过的坑
+
+在使用Kong的过程中，你可能会遇到各种各样的问题。以下是一些常见的"坑"及其解决方法。
+
+### 1. 数据库连接问题
+
+**问题**：Kong无法连接到PostgreSQL数据库。
+
+**症状**：
+```
+[error] failed to connect to PostgreSQL: host=kong-database port=5432 user=kong database=kong: connection refused
+```
+
+**解决方法**：
+- 确保PostgreSQL服务正在运行
+- 检查网络连接和防火墙设置
+- 验证数据库凭证是否正确
+- 使用`pg_isready`命令检查PostgreSQL是否准备好接受连接
+
+### 2. 插件配置错误
+
+**问题**：插件配置错误导致请求失败。
+
+**症状**：
+```
+[error] [plugin:rate-limiting] config.minute is required
+```
+
+**解决方法**：
+- 仔细检查插件文档，确保所有必需的配置项都已提供
+- 使用Kong Admin API的`/schemas/plugins/{plugin-name}`端点查看插件的配置架构
+- 在应用插件前，先测试配置是否有效
+
+### 3. 路由匹配问题
+
+**问题**：请求没有匹配到预期的路由。
+
+**症状**：
+- 请求返回404错误
+- 请求被错误的服务处理
+
+**解决方法**：
+- 检查路由的`paths`、`hosts`和`methods`配置
+- 使用Kong Admin API的`/routes`端点查看所有路由
+- 启用Kong的调试日志，查看请求匹配过程
+- 注意路由的优先级，Kong会选择优先级最高的匹配路由
+
+### 4. 证书和SSL问题
+
+**问题**：HTTPS配置不正确。
+
+**症状**：
+- SSL握手失败
+- 证书验证错误
+
+**解决方法**：
+- 确保证书和私钥格式正确
+- 检查证书链是否完整
+- 验证证书的域名是否与请求的`Host`头匹配
+- 使用`openssl`命令行工具验证证书
+
+### 5. 性能调优问题
+
+**问题**：Kong性能不佳。
+
+**症状**：
+- 高延迟
+- 高CPU使用率
+- 连接错误
+
+**解决方法**：
+- 增加Kong节点数量
+- 调整Nginx工作进程数（`nginx_worker_processes`）
+- 优化数据库查询（使用Redis缓存）
+- 考虑使用DB-less模式提高性能
+- 监控并调整上游连接池设置
+
+### 6. 插件执行顺序问题
+
+**问题**：插件执行顺序不符合预期。
+
+**症状**：
+- 认证插件在其他插件之后执行，导致未授权请求被处理
+- 请求转换插件在日志插件之后执行，导致日志记录的是转换前的请求
+
+**解决方法**：
+- 了解Kong插件的优先级机制
+- 查看插件的`PRIORITY`属性（数字越大，优先级越低）
+- 如果需要，开发自定义插件并设置适当的优先级
+
+### 7. Kubernetes集成问题
+
+**问题**：Kong Ingress Controller不正常工作。
+
+**症状**：
+- Ingress资源未被处理
+- CRD无法应用
+
+**解决方法**：
+- 检查Kong Ingress Controller的日志
+- 验证RBAC权限是否正确
+- 确保使用了正确的`ingressClassName`
+- 检查CRD是否已正确安装
+
+### 8. 升级相关问题
+
+**问题**：升级Kong版本后出现问题。
+
+**症状**：
+- 配置不兼容
+- 插件行为变化
+
+**解决方法**：
+- 总是阅读升级指南和变更日志
+- 在升级前备份数据库
+- 在非生产环境中先测试升级
+- 考虑使用蓝绿部署策略进行升级
+
+## 小结
+
+在本章中，我们通过三个实际案例，展示了Kong在不同场景下的应用：
+
+1. 构建完整的API网关架构，包括认证、限流、日志和监控
+2. 在微服务架构中应用Kong的最佳实践，包括服务发现、负载均衡和熔断降级
+3. 在Kubernetes环境中部署和使用Kong，实现云原生API管理
+
+我们还分享了一些常见的"坑"及其解决方法，帮助你在实际使用Kong时避免这些问题。
+
+在下一章中，我们将深入探讨Kong的性能调优、安全防护和高级管理技巧，帮助你成为真正的Kong大师。
+
+---
+
+> 温馨提示：本教程是系列内容的一部分，请继续阅读下一章节，逐步掌握Kong的各项功能。 

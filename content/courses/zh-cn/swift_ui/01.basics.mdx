@@ -1,0 +1,176 @@
+---
+title: SwiftUI 基础知识
+---
+
+# SwiftUI 基础知识
+
+## SwiftUI 的工作原理
+
+SwiftUI 采用声明式编程范式，这意味着你只需描述界面应该是什么样子，而不是详细指定如何构建它。这种方式让代码更加直观和易于维护。
+
+### 声明式语法
+
+```swift
+struct ContentView: View {
+    var body: some View {
+        Text("Hello, SwiftUI!")
+            .font(.title)
+            .foregroundColor(.blue)
+    }
+}
+```
+
+在上面的例子中，我们声明了一个简单的视图，它显示蓝色的标题文本。注意代码的可读性和简洁性。
+
+## 视图（View）的概念
+
+在 SwiftUI 中，一切都是视图。视图是用户界面的基本构建块，可以是简单的文本、图像，也可以是复杂的自定义组件。
+
+### 视图协议
+
+所有 SwiftUI 视图都必须遵循 `View` 协议：
+
+```swift
+protocol View {
+    associatedtype Body : View
+    var body: Self.Body { get }
+}
+```
+
+### 组合视图
+
+SwiftUI 鼓励通过组合小的视图来构建复杂的界面：
+
+```swift
+struct ProfileView: View {
+    var body: some View {
+        VStack {
+            CircleImage()
+            UserInfoView()
+            ActionButtons()
+        }
+    }
+}
+```
+
+### 视图修饰符
+
+使用修饰符可以自定义视图的外观和行为：
+
+```swift
+Text("Hello, World!")
+    .font(.title)
+    .foregroundColor(.blue)
+    .padding()
+    .background(Color.yellow)
+    .cornerRadius(10)
+```
+
+修饰符按照链式调用的顺序依次应用，每个修饰符都会返回一个新的视图。
+
+## 基础组件
+
+SwiftUI 提供了丰富的内置组件：
+
+### 文本和图像
+
+```swift
+// 文本组件
+Text("Hello, World!")
+
+// 图像组件
+Image("photo")
+    .resizable()
+    .scaledToFit()
+```
+
+### 按钮和输入控件
+
+```swift
+// 按钮
+Button(action: {
+    print("Button tapped!")
+}) {
+    Text("点击我")
+}
+
+// 文本输入框
+TextField("请输入", text: $inputText)
+```
+
+## 布局系统
+
+SwiftUI 提供了强大的布局工具：
+
+### 堆栈视图
+
+```swift
+// 垂直堆栈
+VStack {
+    Text("第一行")
+    Text("第二行")
+}
+
+// 水平堆栈
+HStack {
+    Text("左边")
+    Text("右边")
+}
+
+// Z轴堆栈
+ZStack {
+    Color.blue
+    Text("覆盖在蓝色背景上")
+}
+```
+
+### 间距和对齐
+
+```swift
+VStack(alignment: .leading, spacing: 20) {
+    Text("标题")
+        .font(.title)
+    Text("副标题")
+        .font(.subheadline)
+}
+.padding()
+```
+
+## 练习
+
+尝试创建一个简单的个人资料卡片：
+
+```swift
+struct ProfileCard: View {
+    var body: some View {
+        VStack {
+            Image("avatar")
+                .resizable()
+                .frame(width: 100, height: 100)
+                .clipShape(Circle())
+            
+            Text("张三")
+                .font(.title)
+            
+            Text("iOS 开发者")
+                .foregroundColor(.gray)
+            
+            Button(action: {
+                // 处理关注事件
+            }) {
+                Text("关注")
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(8)
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(radius: 5)
+    }
+}
+```
+
+通过这个练习，你可以熟悉 SwiftUI 的基本组件和布局系统的使用。尝试修改代码，添加新的功能，这样可以加深对 SwiftUI 的理解。

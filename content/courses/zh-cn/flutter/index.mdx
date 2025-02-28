@@ -1,7 +1,457 @@
 ---
 title: Flutter 入门
+description: 从零开始学习 Flutter，一个强大的跨平台应用开发框架
 ---
+
+import PlatformPreview from './components/PlatformPreview.vue';
+
+# Flutter 入门
 
 ## 什么是 Flutter？
 
 Flutter 是一个由 Google 开发的开源 UI 软件开发工具包，用于构建跨平台的应用程序。它允许开发者使用一套代码库，同时构建适用于多个平台的应用程序，包括 iOS、Android、Web 和桌面。
+
+<PlatformPreview />
+
+## 为什么选择 Flutter？
+
+1. **跨平台开发**
+   - 一套代码运行在多个平台
+   - 原生性能体验
+   - 节省开发时间和成本
+
+2. **热重载**
+   - 实时预览修改效果
+   - 加快开发调试速度
+   - 提升开发体验
+
+3. **丰富的组件库**
+   - Material Design 和 Cupertino 风格组件
+   - 自定义组件灵活性高
+   - 丰富的第三方包生态
+
+4. **优秀的性能**
+   - 直接编译成原生代码
+   - 60fps 流畅渲染
+   - 优秀的内存性能
+
+## 学习路线
+
+1. **Dart 语言基础**
+   - 变量和数据类型
+   - 函数和类
+   - 异步编程
+
+2. **Flutter 基础**
+   - Widget 概念
+   - 布局系统
+   - 状态管理
+
+3. **UI 开发**
+   - Material Design
+   - Cupertino 风格
+   - 自定义组件
+
+4. **数据处理**
+   - 网络请求
+   - 本地存储
+   - 状态管理进阶
+
+5. **高级主题**
+   - 性能优化
+   - 原生集成
+   - 应用发布部署
+
+## 应用发布部署
+
+将 Flutter 应用发布到应用商店是开发流程中的重要一步。以下是主要步骤和注意事项：
+
+### 1. 发布前准备
+
+1. **应用签名**
+   ```bash
+   # 生成密钥库
+   keytool -genkey -v -keystore ~/key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+   
+   # 配置签名信息
+   # 在 android/key.properties 中添加：
+   storePassword=<密码>
+   keyPassword=<密码>
+   keyAlias=key
+   storeFile=<密钥库路径>
+   ```
+
+2. **版本配置**
+   ```yaml
+   # pubspec.yaml
+   version: 1.0.0+1  # 版本号+构建号
+   ```
+
+3. **资源优化**
+   - 压缩图片资源
+   - 移除调试代码
+   - 优化依赖包大小
+
+### 2. 打包应用
+
+1. **Android 打包**
+   ```bash
+   # 生成 APK
+   flutter build apk --release
+   
+   # 生成 App Bundle
+   flutter build appbundle --release
+   ```
+
+2. **iOS 打包**
+   ```bash
+   # 生成归档文件
+   flutter build ios --release
+   
+   # 使用 Xcode 打开项目
+   cd ios
+   xed .
+   ```
+
+### 3. 发布到应用商店
+
+1. **Google Play Store**
+   - 创建开发者账号
+   - 填写应用信息
+   - 上传 App Bundle
+   - 配置商店列表
+
+2. **Apple App Store**
+   - 注册 Apple Developer 账号
+   - 创建应用 ID
+   - 通过 App Store Connect 提交应用
+   - 等待审核
+
+### 4. 发布清单
+
+1. **功能测试**
+   - 核心功能完整性
+   - 界面适配检查
+   - 性能测试
+
+2. **合规检查**
+   - 隐私政策
+   - 应用权限说明
+   - 第三方库许可证
+
+3. **发布材料**
+   - 应用图标
+   - 截图和预览
+   - 应用描述
+   - 更新日志
+
+## 总结
+
+Flutter 是一个强大的跨平台开发框架，通过本教程，我们已经学习了：
+
+1. **基础知识**
+   - Flutter 的工作原理
+   - Dart 语言基础
+   - Widget 和布局系统
+
+2. **进阶特性**
+   - 状态管理
+   - 路由导航
+   - 网络请求
+   - 数据持久化
+
+3. **高级主题**
+   - 性能优化
+   - 原生集成
+   - 应用发布
+
+通过这些知识的学习和实践，你已经具备了开发完整 Flutter 应用的能力。建议继续关注 Flutter 官方文档和社区动态，参与开源项目，在实践中不断提升技能。记住，编程学习是一个持续的过程，保持好奇心和学习热情，你会在 Flutter 开发的道路上走得更远。
+
+祝你的 Flutter 开发之旅顺利！
+
+## 路由导航
+
+在 Flutter 中，路由导航是应用程序页面之间跳转的核心机制。Flutter 提供了强大的导航系统，让我们能够轻松地管理应用程序的各个页面。
+
+### 基础导航
+
+1. **命名路由**
+   ```dart
+   // 在 MaterialApp 中定义路由
+   MaterialApp(
+     routes: {
+       '/': (context) => HomePage(),
+       '/detail': (context) => DetailPage(),
+     },
+   )
+
+   // 使用命名路由导航
+   Navigator.pushNamed(context, '/detail');
+   ```
+
+2. **动态路由**
+   ```dart
+   // 直接导航到新页面
+   Navigator.push(
+     context,
+     MaterialPageRoute(builder: (context) => DetailPage()),
+   );
+   ```
+
+### 路由参数传递
+
+1. **通过构造函数传参**
+   ```dart
+   // 定义带参数的页面
+   class DetailPage extends StatelessWidget {
+     final String title;
+     DetailPage({required this.title});
+
+     // ...
+   }
+
+   // 传递参数
+   Navigator.push(
+     context,
+     MaterialPageRoute(
+       builder: (context) => DetailPage(title: '详情页'),
+     ),
+   );
+   ```
+
+2. **命名路由传参**
+   ```dart
+   // 传递参数
+   Navigator.pushNamed(
+     context,
+     '/detail',
+     arguments: {'title': '详情页'},
+   );
+
+   // 接收参数
+   final args = ModalRoute.of(context)!.settings.arguments as Map;
+   ```
+
+## 网络请求与数据持久化
+
+在现代应用程序中，网络请求和数据持久化是不可或缺的功能。Flutter 提供了多种方式来处理这些需求。
+
+### HTTP 网络请求
+
+1. **使用 http 包**
+   ```dart
+   import 'package:http/http.dart' as http;
+
+   // GET 请求
+   Future<void> fetchData() async {
+     final response = await http.get(
+       Uri.parse('https://api.example.com/data'),
+     );
+     if (response.statusCode == 200) {
+       // 处理响应数据
+       print(response.body);
+     }
+   }
+
+   // POST 请求
+   Future<void> postData() async {
+     final response = await http.post(
+       Uri.parse('https://api.example.com/create'),
+       body: {'name': 'Flutter', 'type': 'framework'},
+     );
+     // 处理响应
+   }
+   ```
+
+### 数据持久化
+
+1. **SharedPreferences**
+   ```dart
+   import 'package:shared_preferences/shared_preferences.dart';
+
+   // 保存数据
+   Future<void> saveData() async {
+     final prefs = await SharedPreferences.getInstance();
+     await prefs.setString('username', 'Flutter用户');
+   }
+
+   // 读取数据
+   Future<String?> loadData() async {
+     final prefs = await SharedPreferences.getInstance();
+     return prefs.getString('username');
+   }
+   ```
+
+2. **SQLite 数据库**
+   ```dart
+   import 'package:sqflite/sqflite.dart';
+
+   // 创建数据库
+   Future<Database> getDatabase() async {
+     return openDatabase(
+       'my_db.db',
+       version: 1,
+       onCreate: (db, version) async {
+         await db.execute(
+           'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT)',
+         );
+       },
+     );
+   }
+
+   // 插入数据
+   Future<void> insertUser(String name, String email) async {
+     final db = await getDatabase();
+     await db.insert('users', {
+       'name': name,
+       'email': email,
+     });
+   }
+   ```
+
+通过这些基础知识的学习，你已经可以开始构建功能完整的 Flutter 应用了。接下来，我们建议你尝试结合这些知识，创建一个小型项目，比如一个待办事项应用或者新闻阅读器，这将帮助你更好地理解和运用这些概念。
+
+## 性能优化
+
+Flutter 应用的性能优化是确保用户体验的关键。以下是一些重要的优化技巧：
+
+### 1. 性能监控
+
+```dart
+// 使用 Observatory 进行性能分析
+void main() {
+  // 启用 Observatory
+  debugPaintSizeEnabled = true;
+  runApp(MyApp());
+}
+
+// 使用 Performance Overlay
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      showPerformanceOverlay: true,  // 显示性能图层
+      home: MyHomePage(),
+    );
+  }
+}
+```
+
+### 2. 内存优化
+
+1. **图片优化**
+   ```dart
+   // 使用适当的图片缓存策略
+   Image.network(
+     'https://example.com/image.jpg',
+     cacheWidth: 300,  // 指定缓存尺寸
+     cacheHeight: 300,
+   )
+   ```
+
+2. **列表优化**
+   ```dart
+   // 使用 ListView.builder 进行懒加载
+   ListView.builder(
+     itemCount: items.length,
+     itemBuilder: (context, index) {
+       return ListTile(
+         title: Text(items[index]),
+       );
+     },
+   )
+   ```
+
+### 3. 渲染优化
+
+1. **const 构造函数**
+   ```dart
+   // 使用 const 构造函数优化重建
+   const MyWidget(
+     key: Key('my_widget'),
+     child: Text('Hello'),
+   )
+   ```
+
+2. **RepaintBoundary**
+   ```dart
+   // 隔离频繁重绘的组件
+   RepaintBoundary(
+     child: MyAnimatedWidget(),
+   )
+   ```
+
+## 原生集成
+
+Flutter 提供了与原生平台交互的多种方式，让你能够充分利用平台特定的功能。
+
+### 1. 平台通道
+
+```dart
+// 定义平台通道
+static const platform = MethodChannel('samples.flutter.dev/battery');
+
+// 调用原生方法
+Future<void> getBatteryLevel() async {
+  try {
+    final int result = await platform.invokeMethod('getBatteryLevel');
+    print('Battery level: $result%');
+  } on PlatformException catch (e) {
+    print('Failed to get battery level: ${e.message}');
+  }
+}
+```
+
+### 2. 原生插件开发
+
+1. **创建插件**
+   ```bash
+   flutter create --org com.example --template=plugin my_plugin
+   ```
+
+2. **实现原生代码**
+   - Android (Kotlin):
+   ```kotlin
+   class MyPlugin: FlutterPlugin {
+     override fun onMethodCall(call: MethodCall, result: Result) {
+       when (call.method) {
+         "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+         else -> result.notImplemented()
+       }
+     }
+   }
+   ```
+
+   - iOS (Swift):
+   ```swift
+   public class SwiftMyPlugin: NSObject, FlutterPlugin {
+     public static func register(with registrar: FlutterPluginRegistrar) {
+       let channel = FlutterMethodChannel(name: "my_plugin",
+                                         binaryMessenger: registrar.messenger())
+       let instance = SwiftMyPlugin()
+       registrar.addMethodCallDelegate(instance, channel: channel)
+     }
+   }
+   ```
+
+### 3. 平台视图
+
+```dart
+// 在 Flutter 中嵌入原生视图
+Widget build(BuildContext context) {
+  return AndroidView(
+    viewType: 'native-view',
+    onPlatformViewCreated: _onPlatformViewCreated,
+  );
+}
+
+// iOS 平台视图
+Widget build(BuildContext context) {
+  return UiKitView(
+    viewType: 'native-view',
+    onPlatformViewCreated: _onPlatformViewCreated,
+  );
+}
+```
+
+通过掌握这些高级主题，你将能够开发出性能优秀、功能丰富的 Flutter 应用。记住，性能优化是一个持续的过程，要根据实际应用场景选择合适的优化策略。同时，合理使用原生集成能力，可以让你的应用充分发挥各平台的优势。
