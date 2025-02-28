@@ -1,19 +1,19 @@
 ---
-interface Props {
-  lang?: string;
-}
+import { getLangFromPathname } from '@/utils/lang';
 
-const { lang = 'en' } = Astro.props;
+const lang = getLangFromPathname(Astro.url.pathname);
+
+console.log('lang', lang);
 
 const translations = {
   slogan: {
-    zh: '也许，这是一番成就的开始',
+    'zh-cn': '也许，这是一番成就的开始',
     en: 'Perhaps, this is the beginning of achievement',
   },
 };
 
 const t = (key: keyof typeof translations) => {
-  return translations[key][lang.startsWith('zh') ? 'zh' : 'en'];
+  return translations[key][lang.startsWith('zh') ? 'zh-cn' : 'en'];
 };
 ---
 

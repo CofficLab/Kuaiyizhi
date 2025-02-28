@@ -5,6 +5,8 @@ import SmartHeader from './SmartHeader.astro';
 import type { SidebarItem } from '@/models/SidebarItem';
 import type { Heading } from '@/models/Heading';
 import { ClientRouter } from 'astro:transitions';
+import { getLangFromPathname } from '@/utils/lang';
+import { isHome } from '@/utils/links';
 
 interface Props {
   title: string;
@@ -24,7 +26,9 @@ interface Props {
 const props = Astro.props as Props;
 const { title, description, frontmatter, isDocContent } = props;
 
-const locale = Astro.preferredLocale || 'en';
+const locale = isHome(Astro.url.pathname)
+  ? Astro.preferredLocale
+  : getLangFromPathname(Astro.url.pathname);
 ---
 
 <!doctype html>
@@ -38,7 +42,7 @@ const locale = Astro.preferredLocale || 'en';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
-    <SmartHeader locale={locale} />
+    <SmartHeader />
 
     <div class:list={['py-24', isDocContent ? 'bg-base-100/90' : '']}>
       <slot />

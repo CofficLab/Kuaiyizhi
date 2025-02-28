@@ -110,3 +110,7 @@ export function homeRedirect(locale: string) {
 
     return locale
 }
+
+export function isHome(pathname: string) {
+    return pathname == "/" || pathname == "";
+}

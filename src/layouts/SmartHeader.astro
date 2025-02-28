@@ -3,17 +3,17 @@ import Default from '@astrojs/starlight/components/Header.astro';
 import Navigation from '@/components/Navigation.astro';
 import { Image } from 'astro:assets';
 import logo from '@/assets/logo.png';
-import Languages from './Languages.astro';
+import Languages from '@/components/Languages.vue';
 import Themes from './Themes.astro';
 import SearchForm from '@/components/SearchForm.astro';
 import SocialLinks from '@/components/SocialLinks.astro';
+import { isHome } from '@/utils/links';
+import { getLangFromPathname } from '@/utils/lang';
 
-interface Props {
-  locale: string;
-}
-
-const { locale } = Astro.props as Props;
 const currentPath = Astro.url.pathname;
+const locale = isHome(Astro.url.pathname)
+  ? Astro.preferredLocale
+  : getLangFromPathname(Astro.url.pathname);
 ---
 
 <div
@@ -40,7 +40,7 @@ const currentPath = Astro.url.pathname;
 
   <div class="h-12 flex flex-row justify-end gap-2">
     <div class="m-auto">
-      <Languages />
+      <Languages client:load />
     </div>
     <div class="m-auto">
       <SearchForm />
