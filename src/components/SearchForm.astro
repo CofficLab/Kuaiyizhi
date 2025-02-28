@@ -1,0 +1,57 @@
+---
+import Search from 'astro-pagefind/components/Search';
+import { RiSearch2Line } from '@remixicon/vue';
+---
+
+<!-- Open the modal using ID.showModal() method -->
+<button class="btn btn-sm btn-ghost" onclick="my_modal_1.showModal()"
+  ><RiSearch2Line /></button
+>
+<dialog id="my_modal_1" class="modal">
+  <div class="modal-box">
+    <Search />
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  .pagefind-ui {
+    --pagefind-ui-scale: 0.75;
+    --pagefind-ui-primary: navy;
+    --pagefind-ui-text: black;
+    --pagefind-ui-border: slategrey;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0.25rem;
+    --pagefind-ui-font: sans-serif;
+    width: 100%;
+  }
+
+  .pagefind-ui.yellow {
+    --pagefind-ui-background: lightyellow;
+  }
+
+  .pagefind-ui.red {
+    --pagefind-ui-background: peachpuff;
+    width: 100%;
+  }
+
+  .pagefind-ui .pagefind-ui__drawer:not(.pagefind-ui__hidden) {
+    position: relative; /* 改为相对定位，因为在 modal 中不需要绝对定位 */
+    padding: 0;
+    box-shadow: none; /* 移除阴影，因为已经在 modal 中 */
+    background-color: transparent;
+  }
+
+  .pagefind-ui .pagefind-ui__result-link {
+    color: var(--pagefind-ui-primary);
+  }
+
+  .pagefind-ui .pagefind-ui__result-excerpt {
+    color: var(--pagefind-ui-text);
+  }
+</style>

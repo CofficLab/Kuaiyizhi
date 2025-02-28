@@ -13,6 +13,7 @@ import smartArticleActionsPlugin from './plugins/smart-article-actions/index.ts'
 
 import node from '@astrojs/node';
 import path from 'path';
+import pagefind from 'astro-pagefind';
 
 // https://astro.build/config
 export default defineConfig({
@@ -45,7 +46,9 @@ export default defineConfig({
   },
 
   integrations: [
+    pagefind(),
     starlight({
+      pagefind: true,
       title: '快易知',
       defaultLocale: 'zh-cn',
       plugins: [

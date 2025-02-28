@@ -32,6 +32,7 @@ const {
 } = props;
 ---
 
+
 <StarlightPage
     frontmatter={{
         title: title ?? frontmatter.title,
@@ -51,8 +52,13 @@ const {
             }
         </style>
     )}
+
+
     <div 
     transition:animate="fade"><slot /></div>
     
     <ClientRouter/>
 </StarlightPage>
+
+
+
