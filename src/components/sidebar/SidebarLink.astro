@@ -1,0 +1,15 @@
+---
+interface Props {
+  label: string;
+  link: string;
+  isActive: boolean;
+}
+
+const { label, link, isActive } = Astro.props;
+---
+
+<li>
+  <a href={link} class:list={[{ active: isActive }]}>
+    {label}
+  </a>
+</li>

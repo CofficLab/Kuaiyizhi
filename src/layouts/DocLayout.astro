@@ -1,5 +1,5 @@
 ---
-import type { SidebarItem } from '@/models/Sidebar';
+import type { SidebarItem } from '@/models/SidebarItem';
 import AppLayout from './AppLayout.astro';
 
 interface Props {
@@ -28,11 +28,11 @@ const {
     description: description,
     template: 'doc',
   }}
-  hasSidebar={hasSidebar}
   sidebar={sidebarItem}
   headings={headings}
   hidePageTitle={false}>
-  <div class="markdown-content prose prose-slate dark:prose-invert max-w-none">
+  <div
+    class="markdown-content prose prose-slate dark:prose-invert max-w-none card border-2 border-gray-200 dark:border-gray-800 p-4">
     <slot />
   </div>
 </AppLayout>

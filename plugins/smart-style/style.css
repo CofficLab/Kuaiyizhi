@@ -1,7 +1,0 @@
-@import './header.css';
-@import './sidebar.css';
-@import './body.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-

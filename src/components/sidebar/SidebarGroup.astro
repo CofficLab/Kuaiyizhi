@@ -1,0 +1,38 @@
+---
+import type { SidebarItem } from '@/models/SidebarItem';
+import SidebarLink from './SidebarLink.astro';
+import SidebarGroupComponent from './SidebarGroup.astro';
+
+interface Props {
+  label: string;
+  items: SidebarItem[];
+  currentPath: string;
+}
+
+const { label, items, currentPath } = Astro.props;
+---
+
+<li>
+  <details open>
+    <summary>{label}</summary>
+    <ul>
+      {
+        items.map((item) =>
+          item.isNotGroup() ? (
+            <SidebarLink
+              label={item.getLabel()}
+              link={item.getLink()}
+              isActive={currentPath === item.getLink()}
+            />
+          ) : (
+            <SidebarGroupComponent
+              label={item.getLabel()}
+              items={item.getItems()}
+              currentPath={currentPath}
+            />
+          )
+        )
+      }
+    </ul>
+  </details>
+</li>

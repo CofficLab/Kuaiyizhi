@@ -6,6 +6,10 @@ import pagefind from 'astro-pagefind';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@astrojs/vue';
 
+import markdoc from '@astrojs/markdoc';
+
+import mdx from '@astrojs/mdx';
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
@@ -40,7 +44,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [pagefind(), vue()],
+  integrations: [pagefind(), vue(), markdoc(), mdx()],
 
   adapter: node({
     mode: 'standalone',

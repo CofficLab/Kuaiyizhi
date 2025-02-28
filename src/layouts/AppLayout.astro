@@ -1,7 +1,11 @@
 ---
-import CustomPage from '@/layouts/CustomPage.astro';
-import { SidebarItem } from '@/models/Sidebar';
+import Footer from '@/components/footer/Footer.astro';
+import '../app.css';
+import SmartHeader from './SmartHeader.astro';
+import type { SidebarItem } from '@/models/SidebarItem';
 import { ClientRouter } from 'astro:transitions';
+import Sidebar from '../components/sidebar/Sidebar.astro';
+import TableOfContents from '../components/toc/TableOfContents.astro';
 
 interface Props {
   title: string;
@@ -12,37 +16,75 @@ interface Props {
     description: string;
     template: 'splash' | 'doc';
   };
-  hasSidebar: boolean;
   headings: Array<{ depth: number; slug: string; text: string }>;
-  sidebar: SidebarItem | null;
+  sidebar?: SidebarItem | null | undefined;
   hidePageTitle: boolean;
 }
 
 const props = Astro.props as Props;
+const { title, description, frontmatter, headings, sidebar, template } = props;
 
-const {
-  title,
-  description,
-  frontmatter,
-  template,
-  hasSidebar,
-  headings,
-  sidebar,
-  hidePageTitle,
-} = props;
+const currentPath = Astro.url.pathname;
+const locale = Astro.preferredLocale || 'en';
+
+const hasTableOfContents = headings.length > 0 && template === 'doc';
 ---
 
-<div>
-  <CustomPage
-    title={title ?? frontmatter.title}
-    description={description ?? frontmatter.description}
-    sidebar={sidebar ? [sidebar.toStarlightFormat()] : []}
-    hasSidebar={hasSidebar ?? false}
-    headings={headings}>
-    <div transition:animate="fade">
-      <slot />
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title ?? frontmatter.title}</title>
+    <meta name="description" content={description ?? frontmatter.description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-screen">
+    <SmartHeader locale={locale} />
+
+    <div class="flex">
+      {/* 固定侧边栏 */}
+      {
+        sidebar && (
+          <aside class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-base-200 bg-base-100">
+            <div class="h-full overflow-y-auto px-4 py-8">
+              <Sidebar items={sidebar} currentPath={currentPath} />
+            </div>
+          </aside>
+        )
+      }
+
+      {/* 主内容区域，根据是否有侧边栏调整边距 */}
+      <main
+        class:list={[
+          'flex-1 min-h-[calc(100vh-4rem)]',
+          'transition-all duration-300',
+          sidebar ? 'ml-64' : '',
+          hasTableOfContents ? 'mr-64' : '',
+          'p-4 lg:p-8',
+        ]}>
+        <div class="max-w-4xl mx-auto">
+          <div
+            class="markdown-content prose prose-slate dark:prose-invert max-w-none">
+            <div transition:animate="fade">
+              <slot />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* 右侧目录导航 */}
+      {
+        hasTableOfContents && (
+          <aside class="hidden xl:block fixed top-16 right-0 w-64 h-[calc(100vh-4rem)] border-l border-base-200 bg-base-100">
+            <TableOfContents headings={headings} />
+          </aside>
+        )
+      }
     </div>
 
+    <Footer />
     <ClientRouter />
-  </CustomPage>
-</div>
+  </body>
+</html>

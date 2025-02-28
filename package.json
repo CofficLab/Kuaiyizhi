@@ -10,7 +10,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/markdoc": "^0.12.10",
+    "@astrojs/mdx": "^4.1.0",
     "@astrojs/node": "^9.1.2",
+    "@astrojs/starlight": "^0.32.2",
     "@astrojs/vue": "^5.0.7",
     "@remixicon/vue": "^4.6.0",
     "@tailwindcss/vite": "^4.0.9",

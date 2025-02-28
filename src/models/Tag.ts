@@ -1,5 +1,5 @@
 import TagDB from "@/database/TagDB";
-import { SidebarItem } from "@/models/Sidebar";
+import { SidebarItem } from "@/models/SidebarItem";
 import { type TagStaticPath } from "@/interface/StaticPath";
 
 export class Tag {
@@ -13,7 +13,6 @@ export class Tag {
 
     toSidebarItem(): SidebarItem {
         return new SidebarItem({
-            type: 'link',
             label: this.name,
             link: `/blogs/tag/${this.name}`,
         });
@@ -30,7 +29,6 @@ export class Tag {
         const tags = await TagDB.getTags('zh-cn');
 
         return new SidebarItem({
-            type: 'group',
             label: 'Tags',
             items: tags.map((tag) => tag.toSidebarItem()),
         });

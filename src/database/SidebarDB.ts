@@ -8,7 +8,7 @@
  */
 
 import { logger } from '@/utils/logger';
-import { SidebarItem } from '@/models/Sidebar';
+import { SidebarItem } from '@/models/SidebarItem';
 import ContentDB from './ContentDB';
 import { makeLink, makeTopLevelLink } from '@/utils/links';
 
@@ -39,10 +39,8 @@ export default class SidebarDB {
 
         return topLevelCategories.map((category) => {
             return new SidebarItem({
-                type: 'link',
-                link: makeTopLevelLink(category, lang),
                 label: category,
-            });
+            }).setDocId(category);
         });
     }
 
@@ -70,16 +68,13 @@ export default class SidebarDB {
 
             if (childSidebarItems.length > 0) {
                 items.push(new SidebarItem({
-                    type: 'group',
                     label: child.data.title as string,
-                    items: childSidebarItems,
-                }));
+                    items: childSidebarItems
+                }).setDocId(child.id));
             } else {
                 items.push(new SidebarItem({
-                    type: 'link',
-                    link: makeLink(child.id, false),
                     label: child.data.title as string,
-                }));
+                }).setDocId(child.id));
             }
         }
 
@@ -107,10 +102,9 @@ export default class SidebarDB {
         if (parsedDocId.split('/').length === 2) {
             const sidebarItems = await SidebarDB.getSidebarItemsByDocId(parsedDocId, level + 2);
             return new SidebarItem({
-                type: 'group',
                 label: parsedDocId,
                 items: sidebarItems,
-            });
+            }).setDocId(parsedDocId);
         }
 
         // 如果比顶级文档低一级，返回其子文档转换成的侧边栏
@@ -118,10 +112,9 @@ export default class SidebarDB {
             const doc = await ContentDB.getDocById(parsedDocId);
             const sidebarItems = await SidebarDB.getSidebarItemsByDocId(parsedDocId, level);
             return new SidebarItem({
-                type: 'group',
                 label: doc.data.title as string,
                 items: sidebarItems,
-            });
+            }).setDocId(parsedDocId);
         }
 
         // 其他情况，返回getSidebarItemsByDocId(其父文档, level - 1)

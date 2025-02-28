@@ -3,7 +3,6 @@ import AppLayout from '../layouts/AppLayout.astro';
 import HeroSection from '@components/home/HeroSection.astro';
 import CardGrid from '@components/home/CardGrid.astro';
 import Lang from '@/models/Lang';
-import { getLang } from "@/utils/lang";
 
 export interface Props {
   lang: Lang;
@@ -16,9 +15,7 @@ const description = lang.isChinese()
 ---
 
 <AppLayout
-  hasSidebar={false}
   headings={[]}
-  sidebar={null}
   title={title}
   description={description}
   template="splash"

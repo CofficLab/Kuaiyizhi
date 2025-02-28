@@ -73,12 +73,12 @@ export function normalizeLanguage(lang: string): string {
  * // id=courses/en/supervisor/index.md，则返回/en/courses/supervisor
  * const link = makeLink('courses/zh-cn/supervisor/index.md');
  */
-export function makeLink(id: string, withLang: boolean = true): string {
+export function makeLink(id: string): string {
     let category = id.split('/')[0];
     let lang = id.split('/')[1];
     let path = id.split('/').slice(2).join('/');
 
-    let link = `/${withLang ? lang : ''}/${category}/${path}`;
+    let link = `/${lang}/${category}/${path}`;
 
     // 如果开头有多个 /，则去掉
     link = link.replace(/\/+/g, '/');
@@ -103,27 +103,10 @@ export function makeTopLevelLink(category: string, lang: string): string {
     return `/${lang}/${category}`;
 }
 
-/**
- * 根据ID生成不带语言的链接
- * 
- * 该函数根据文档ID生成不带语言前缀的链接路径。
- * 
- * @param {string} id - 文档ID, 例如 'courses/zh-cn/supervisor/index.md'
- * @returns {string} 返回生成的不带语言前缀的链接路径
- * @example
- * // 例如：
- * // id=courses/zh-cn/supervisor/index.md，则返回/courses/supervisor
- * // id=courses/en/supervisor/index.md，则返回/courses/supervisor
- * const link = makeLinkWithoutLang('courses/zh-cn/supervisor/index.md');
- */
-export function makeLinkWithoutLang(id: string): string {
-    return makeLink(id, false);
-}
-
 export function homeRedirect(locale: string) {
-if (locale == "" || !locale) {
-    locale = "en";
-}
+    if (locale == "" || !locale) {
+        locale = "en";
+    }
 
-return locale
+    return locale
 }

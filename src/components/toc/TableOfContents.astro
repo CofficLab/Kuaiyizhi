@@ -1,0 +1,40 @@
+---
+import { RiListOrdered } from '@remixicon/vue';
+
+interface Props {
+  headings: Array<{ depth: number; slug: string; text: string }>;
+}
+
+const { headings } = Astro.props;
+
+// 只显示 h2 和 h3 标题
+const filteredHeadings = headings.filter(
+  (heading) => heading.depth >= 2 && heading.depth <= 3
+);
+---
+
+<div class="h-full overflow-y-auto px-4 py-8">
+  <div class="flex items-center gap-2 text-lg font-semibold mb-4">
+    <RiListOrdered />
+    <span>本页内容</span>
+  </div>
+
+  {
+    filteredHeadings.length > 0 ? (
+      <ul class="menu menu-sm">
+        {filteredHeadings.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class:list={[{ 'ml-4': heading.depth === 3 }]}>
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-sm text-gray-500">本页没有小节</p>
+    )
+  }
+</div>
+

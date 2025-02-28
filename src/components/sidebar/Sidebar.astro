@@ -1,0 +1,31 @@
+---
+import type { SidebarItem } from '@/models/SidebarItem';
+import SidebarLink from './SidebarLink.astro';
+import SidebarGroup from './SidebarGroup.astro';
+
+interface Props {
+  items: SidebarItem;
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+---
+
+<ul class="menu menu-sm w-full bg-base-100">
+  {
+    items &&
+      (items.isLink() ? (
+        <SidebarLink
+          label={items.getLabel()}
+          link={items.getLink()}
+          isActive={currentPath === items.getLink()}
+        />
+      ) : (
+        <SidebarGroup
+          label={items.getLabel()}
+          items={items.getItems()}
+          currentPath={currentPath}
+        />
+      ))
+  }
+</ul>
