@@ -57,9 +57,9 @@ const hasTableOfContents = headings.length > 0;
         <main class="transition-all duration-300 w-full">
           <div class="lg:flex flex justify-center">
             <div class={hasTableOfContents ? '' : 'max-w-4xl mx-auto'}>
-              <div transition:animate="fade">
+              <div transition:animate="fade" class="max-w-4xl mx-auto p-4">
                 <div
-                  class="prose prose-slate dark:prose-invert max-w-4xl mx-auto p-4">
+                  class="prose prose-slate dark:prose-invert w-full max-w-none">
                   <slot />
                 </div>
               </div>
