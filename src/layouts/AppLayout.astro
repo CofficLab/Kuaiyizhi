@@ -1,64 +1,48 @@
 ---
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import CustomPage from '@/layouts/CustomPage.astro';
 import { SidebarItem } from '@/models/Sidebar';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
+  title: string;
+  description: string;
+  template: 'splash' | 'doc';
+  frontmatter: {
     title: string;
     description: string;
-    template: "splash" | "doc";
-    frontmatter: {
-        title: string;
-        description: string;
-        template: "splash" | "doc";
-    };
-    hasSidebar: boolean;
-    headings: Array<{ depth: number; slug: string; text: string }>;
-    sidebar: SidebarItem | null;
-    hidePageTitle: boolean;
+    template: 'splash' | 'doc';
+  };
+  hasSidebar: boolean;
+  headings: Array<{ depth: number; slug: string; text: string }>;
+  sidebar: SidebarItem | null;
+  hidePageTitle: boolean;
 }
 
 const props = Astro.props as Props;
 
 const {
-    title,
-    description,
-    frontmatter,
-    template,
-    hasSidebar,
-    headings,
-    sidebar,
-    hidePageTitle,
+  title,
+  description,
+  frontmatter,
+  template,
+  hasSidebar,
+  headings,
+  sidebar,
+  hidePageTitle,
 } = props;
 ---
 
-
-<StarlightPage
-    frontmatter={{
-        title: title ?? frontmatter.title,
-        description: description ?? frontmatter.description,
-        template: template ?? 'splash',
-    }}
+<div>
+  <CustomPage
+    title={title ?? frontmatter.title}
+    description={description ?? frontmatter.description}
     sidebar={sidebar ? [sidebar.toStarlightFormat()] : []}
     hasSidebar={hasSidebar ?? false}
     headings={headings}>
-    {hidePageTitle && (
-        <style is:global>
-            .content-panel {
-                border-top: 0 !important;
-            }
-            main .content-panel:first-child {
-                display: none;
-            }
-        </style>
-    )}
+    <div transition:animate="fade">
+      <slot />
+    </div>
 
-
-    <div 
-    transition:animate="fade"><slot /></div>
-    
-    <ClientRouter/>
-</StarlightPage>
-
-
-
+    <ClientRouter />
+  </CustomPage>
+</div>

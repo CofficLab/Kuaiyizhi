@@ -32,5 +32,7 @@ const {
   sidebar={sidebarItem}
   headings={headings}
   hidePageTitle={false}>
-  <slot />
+  <div class="markdown-content prose prose-slate dark:prose-invert max-w-none">
+    <slot />
+  </div>
 </AppLayout>

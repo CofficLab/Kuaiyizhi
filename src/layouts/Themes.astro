@@ -1,0 +1,44 @@
+---
+import ThemeItem from './ThemeItem.astro';
+import { RiSunCloudyLine } from '@remixicon/vue';
+
+// 定义所有主题
+const themes = [
+  { id: 'default', name: 'Default' },
+  { id: 'light', name: 'Light' },
+  { id: 'dark', name: 'Dark' },
+  { id: 'pastel', name: 'Pastel' },
+  { id: 'lemonade', name: 'Lemonade' },
+];
+---
+
+<div class="dropdown dropdown-end">
+  <div tabindex="0" role="button" class="btn btn-ghost btn-sm p-1">
+    <RiSunCloudyLine class="w-5 h-5" />
+  </div>
+
+  <ul
+    tabindex="0"
+    class="dropdown-content menu bg-base-100 rounded-box z-[1] w-56 p-2 shadow">
+    {themes.map((theme) => <ThemeItem theme={theme.id} label={theme.name} />)}
+  </ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeItems = document.querySelectorAll('[data-set-theme]');
+    themeItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        const theme = item.getAttribute('data-set-theme');
+        document.documentElement.setAttribute('data-theme', theme ?? 'default');
+        localStorage.setItem('theme', theme ?? 'default');
+      });
+    });
+
+    // 从本地存储中获取主题
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  });
+</script>

@@ -37,6 +37,7 @@
       "@router/*": [
         "src/router/*"
       ]
-    }
+    },
+    "jsx": "preserve"
   }
 }

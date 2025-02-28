@@ -1,0 +1,26 @@
+---
+export interface Props {
+  theme: string;
+  label: string;
+}
+
+const { theme, label } = Astro.props;
+---
+
+<li>
+  <div
+    class="menu-item w-full flex"
+    data-set-theme={theme}
+    data-act-class="active">
+    <div
+      data-theme={theme}
+      class="flex flex-row gap-2 items-center justify-between w-full h-full px-2 py-1 flex-1">
+      <span class="text-left">{label}</span>
+      <div class="flex gap-1">
+        <span class="bg-primary w-2 h-8 rounded-full"></span>
+        <span class="bg-secondary w-2 h-8 rounded-full"></span>
+        <span class="bg-accent w-2 h-8 rounded-full"></span>
+      </div>
+    </div>
+  </div>
+</li>

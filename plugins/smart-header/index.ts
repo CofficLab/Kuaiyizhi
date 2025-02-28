@@ -10,7 +10,7 @@ export default function smartHeaderPlugin(): StarlightPlugin {
                 updateConfig({
                     components: {
                         ...config.components,
-                        Header: './plugins/smart-header/SmartHeader.astro',
+                        Header: '@layouts/SmartHeader.astro',
                     },
                 });
             }
