@@ -17,6 +17,11 @@ const navItems = [
     match: (path: string) => path.startsWith(`/${normalizedLocale}/courses`),
   },
   {
+    href: `/${normalizedLocale}/lessions`,
+    label: normalizedLocale === 'zh-cn' ? '教程' : 'Build Your Own',
+    match: (path: string) => path.startsWith(`/${normalizedLocale}/lessions`),
+  },
+  {
     href: `/${normalizedLocale}/blogs`,
     label: normalizedLocale === 'zh-cn' ? '博客' : 'Blogs',
     match: (path: string) => path.startsWith(`/${normalizedLocale}/blogs`),

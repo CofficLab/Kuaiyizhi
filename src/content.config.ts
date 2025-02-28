@@ -19,4 +19,19 @@ export const collections = {
 			})).optional(),
 		}),
 	}),
+
+	lession: defineCollection({
+		loader: glob({
+			pattern: '**/*.{md,mdx}',
+			base: './content/lessions',
+		}),
+		schema: z.object({
+			title: z.string(),
+			description: z.string().optional(),
+			authors: z.array(z.object({
+				name: z.string(),
+				picture: z.string().optional(),
+			})).optional(),
+		}),
+	}),
 };
