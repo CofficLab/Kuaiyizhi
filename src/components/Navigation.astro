@@ -1,4 +1,6 @@
 ---
+import { normalizeLang } from '@/utils/lang';
+
 /**
  * 导航组件
  *
@@ -10,8 +12,6 @@
  * @prop {string} variant - 颜色变体，可选 "light" 或 "dark"，默认为 "light"
  */
 
-import { makeMetaLink } from '@/utils/links';
-
 interface Props {
   locale?: string;
   currentPath: string;
@@ -19,6 +19,7 @@ interface Props {
 }
 
 const { locale = 'zh', currentPath, variant = 'light' } = Astro.props;
+const normalizedLocale = normalizeLang(locale);
 
 // 根据variant定义不同的样式配置
 const styles = {
@@ -37,19 +38,20 @@ const currentStyle = styles[variant];
 
 const navItems = [
   {
-    href: `/${locale}`,
+    href: `/${normalizedLocale}`,
     label: '首页',
-    match: (path: string) => path === `/${locale}` || path === `/${locale}/`,
+    match: (path: string) =>
+      path === `/${normalizedLocale}` || path === `/${normalizedLocale}/`,
   },
   {
-    href: `/${locale}/courses`,
+    href: `/${normalizedLocale}/courses`,
     label: '课程',
-    match: (path: string) => path.startsWith(`/${locale}/courses`),
+    match: (path: string) => path.startsWith(`/${normalizedLocale}/courses`),
   },
   {
-    href: `/${locale}/blogs`,
+    href: `/${normalizedLocale}/blogs`,
     label: '博客',
-    match: (path: string) => path.startsWith(`/${locale}/blogs`),
+    match: (path: string) => path.startsWith(`/${normalizedLocale}/blogs`),
   },
 ];
 ---

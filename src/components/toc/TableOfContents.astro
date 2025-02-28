@@ -1,11 +1,13 @@
 ---
 import { RiListOrdered } from '@remixicon/vue';
+import type { Heading } from '@/models/Heading';
 
 interface Props {
-  headings: Array<{ depth: number; slug: string; text: string }>;
+  headings: Heading[];
+  showDebugBorders?: boolean;
 }
 
-const { headings } = Astro.props;
+const { headings, showDebugBorders = false } = Astro.props;
 
 // 只显示 h2 和 h3 标题
 const filteredHeadings = headings.filter(
@@ -13,28 +15,47 @@ const filteredHeadings = headings.filter(
 );
 ---
 
-<div class="h-full overflow-y-auto px-4 py-8">
-  <div class="flex items-center gap-2 text-lg font-semibold mb-4">
-    <RiListOrdered />
+<div
+  class:list={[
+    'h-full overflow-y-auto px-4 py-6',
+    { 'border-2 border-orange-400': showDebugBorders },
+  ]}>
+  <div
+    class:list={[
+      'flex items-center gap-2 text-base font-medium text-slate-700 dark:text-slate-300 mb-4',
+      { 'border border-teal-400': showDebugBorders },
+    ]}>
+    <RiListOrdered class="text-slate-500" />
     <span>本页内容</span>
   </div>
 
   {
     filteredHeadings.length > 0 ? (
-      <ul class="menu menu-sm">
+      <ul
+        class:list={[
+          'menu menu-sm space-y-1',
+          { 'border border-pink-400': showDebugBorders },
+        ]}>
         {filteredHeadings.map((heading) => (
-          <li>
+          <li
+            class:list={[
+              'transition-colors',
+              { 'border-b border-gray-200 last:border-0': showDebugBorders },
+            ]}>
             <a
               href={`#${heading.slug}`}
-              class:list={[{ 'ml-4': heading.depth === 3 }]}>
+              class:list={[
+                'block py-1 px-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors',
+                { 'ml-4': heading.depth === 3 },
+                { 'border border-indigo-300': showDebugBorders },
+              ]}>
               {heading.text}
             </a>
           </li>
         ))}
       </ul>
     ) : (
-      <p class="text-sm text-gray-500">本页没有小节</p>
+      <p class="text-sm text-slate-500">本页没有小节</p>
     )
   }
 </div>
-

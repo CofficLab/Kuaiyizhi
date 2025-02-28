@@ -1,6 +1,9 @@
 ---
 import type { SidebarItem } from '@/models/SidebarItem';
+import type { Heading } from '@/models/Heading';
 import AppLayout from './AppLayout.astro';
+import Sidebar from '../components/sidebar/Sidebar.astro';
+import TableOfContents from '../components/toc/TableOfContents.astro';
 
 interface Props {
   title: string;
@@ -17,22 +20,72 @@ const {
   headings = [],
   hasSidebar,
 } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const hasTableOfContents = headings.length > 0;
 ---
 
 <AppLayout
   title={title}
   description={description}
   template="doc"
+  isDocContent={true}
   frontmatter={{
     title: title,
     description: description,
     template: 'doc',
-  }}
-  sidebar={sidebarItem}
-  headings={headings}
-  hidePageTitle={false}>
-  <div
-    class="markdown-content prose prose-slate dark:prose-invert max-w-none card border-2 border-gray-200 dark:border-gray-800 p-4">
-    <slot />
+  }}>
+  <div class="flex relative">
+    {/* 侧边栏 */}
+    {
+      hasSidebar && sidebarItem && (
+        <aside class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
+          <div class="h-full px-4 py-6">
+            <Sidebar items={sidebarItem} currentPath={currentPath} />
+          </div>
+        </aside>
+      )
+    }
+
+    {/* 主内容区域 */}
+    <div
+      class:list={[
+        'flex-1 min-h-[calc(100vh-4rem)]',
+        hasSidebar ? 'ml-64' : '',
+      ]}>
+      <div class="container mx-auto px-4 pb-16">
+        {/* 主内容 */}
+        <main class="transition-all duration-300">
+          {
+            hasTableOfContents ? (
+              <div class="lg:flex">
+                <div class="">
+                  <div class="flex-1 rounded-lg p-8">
+                    <div transition:animate="fade">
+                      <div class="prose prose-slate dark:prose-invert">
+                        <slot />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <aside class="hidden lg:block sticky top-24 w-64 h-fit border-l border-slate-200 dark:border-slate-800">
+                  <TableOfContents headings={headings} />
+                </aside>
+              </div>
+            ) : (
+              <div class="max-w-4xl mx-auto">
+                <div class="rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+                  <div transition:animate="fade">
+                    <div class="prose prose-slate dark:prose-invert">
+                      <slot />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+        </main>
+      </div>
+    </div>
   </div>
 </AppLayout>

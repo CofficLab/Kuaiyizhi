@@ -1,26 +1,62 @@
 ---
 import { Image } from 'astro:assets';
-import bookCover from '../assets/book.png';
-import { Course } from '@/models/Course';
+import bookCover from '@assets/book.png';
+import { Course } from '@models/Course';
 interface Props {
   course: Course;
+  showDebugBorders?: boolean;
 }
 
-const { course } = Astro.props;
+const { course, showDebugBorders = false } = Astro.props;
 ---
 
-<div>
-  <a href={course.link} class="justify-center flex no-underline text-gray-100">
-    <div class="w-56 h-80">
+<div class:list={[{ 'border-2 border-purple-500': showDebugBorders }]}>
+  <a
+    href={course.link}
+    class:list={[
+      'justify-center flex no-underline text-gray-100',
+      { 'border-2 border-blue-500': showDebugBorders },
+    ]}>
+    <div
+      class:list={[
+        'w-56 h-80',
+        { 'border-2 border-green-500': showDebugBorders },
+      ]}>
       <div
-        class="bg-gradient-to-br w-full h-full from-green-900/90 to-cyan-900/40 rounded-3xl shadow-lg">
+        class:list={[
+          'bg-gradient-to-br w-full h-full from-green-900/90 to-cyan-900/40 rounded-3xl shadow-lg',
+          { 'border-2 border-yellow-500': showDebugBorders },
+        ]}>
         <div
-          class="bg-base-100/40 w-full h-full rounded-3xl border border-white/50
-    hover:scale-105 hover:shadow-2xl transform duration-200">
-          <div class="card-body p-1 h-full">
-            <Image src={bookCover} alt={course.title} class="h-3/5 w-full" />
-            <div class="">
-              <h2 class="text-lg text-center">{course.title}</h2>
+          class:list={[
+            'bg-base-100/40 w-full h-full rounded-3xl border border-white/50 hover:scale-105 hover:shadow-2xl transform duration-200',
+            { 'border-2 border-red-500': showDebugBorders },
+          ]}>
+          <div
+            class:list={[
+              'card-body p-1 h-full',
+              { 'border-2 border-orange-500': showDebugBorders },
+            ]}>
+            <Image
+              src={bookCover}
+              alt={course.title}
+              class:list={[
+                'h-3/5 w-full',
+                { 'border-2 border-pink-500': showDebugBorders },
+              ]}
+            />
+            <div
+              class:list={[
+                '',
+                { 'border-2 border-teal-500': showDebugBorders },
+              ]}>
+              <h2
+                class:list={[
+                  'text-lg text-center',
+                  { 'border border-indigo-500': showDebugBorders },
+                ]}>
+                {course.title}
+              </h2>
             </div>
           </div>
         </div>
