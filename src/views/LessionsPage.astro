@@ -1,11 +1,11 @@
 ---
-import AppLayout from '../layouts/AppLayout.astro';
-import LessionDB from '@/database/LessionDB';
-import CourseCard from './CourseCard.astro';
+import AppLayout from '@layouts/AppLayout.astro';
+import LessionCard from '@/components/lession/LessionCard.astro';
 import { getLangFromPathname } from '@/utils/lang';
+import LessionBook from '@/models/LessionBook';
 
 const lang = getLangFromPathname(Astro.url.pathname);
-const lessions = await LessionDB.getAllLessions();
+const lessions = await LessionBook.allByLang(lang);
 
 const title = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
 const description = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
@@ -22,6 +22,6 @@ const description = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
   }}>
   <div
     class="container max-w-screen-lg mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8">
-    {lessions.map((lession) => <CourseCard course={lession} />)}
+    {lessions.map((lession) => <LessionCard lession={lession} />)}
   </div>
 </AppLayout>

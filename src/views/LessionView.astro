@@ -1,0 +1,24 @@
+---
+import DocLayout from '@layouts/DocLayout.astro';
+import LessionNotFound from '@components/lession/LessionNotFound.astro';
+import LessionDoc from '@/models/LessionDoc';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const lession = await LessionDoc.find(id);
+const title = lession?.getTitle() || '没有找到课程';
+const description = lession?.getDescription() || '没有找到课程';
+const sidebarItem = (await (await lession?.getBook())?.toSidebarItem()) || null;
+const headings = lession?.getHeadings() || [];
+---
+
+<DocLayout
+  title={title}
+  description={description}
+  sidebarItem={sidebarItem}
+  headings={headings}>
+  {lession ? <div set:html={lession.getHTML()} /> : <LessionNotFound id={id} />}
+</DocLayout>

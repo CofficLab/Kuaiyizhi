@@ -6,6 +6,8 @@ import Languages from '@/components/Languages.vue';
 import Themes from './Themes.astro';
 import SearchForm from '@/components/SearchForm.astro';
 import SocialLinks from '@/components/SocialLinks.astro';
+import { isHome } from '@/utils/links';
+import { getLangFromPathname } from '@/utils/lang';
 ---
 
 <div
@@ -13,6 +15,7 @@ import SocialLinks from '@/components/SocialLinks.astro';
     from-emerald-900/80 to-indigo-900/70
     dark:from-emerald-900/95 dark:to-indigo-900/95
     flex flex-row justify-between
+    text-gray-300 dark:text-gray-300
     rounded-lg h-12 mt-1 mx-4 px-4 fixed top-0 left-0 right-0 z-50">
   <div class="flex flex-row justify-start">
     <a

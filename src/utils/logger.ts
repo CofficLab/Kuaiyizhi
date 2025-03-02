@@ -39,7 +39,7 @@ class Logger {
     }
 
     private formatArray(arr: any[]): string {
-        const MAX_LINES = 3;
+        const MAX_LINES = 30;
         const MAX_LENGTH = 100;
 
         const truncateString = (str: string): string => {
@@ -101,7 +101,7 @@ class Logger {
 
         const emoji = {
             debug: '🔍',
-            info: '💡',
+            info: '🐳',
             warn: '🚨',
             error: '❌'
         }[level];
@@ -109,8 +109,8 @@ class Logger {
         console.log(
             timestampPart +
             `${colors[level]}${emoji} ${level.toUpperCase()}${colors.reset} ` +
-            `${colors.gray}${caller}:${colors.reset} ` +
-            `${formattedMessage}`
+            `${colors.gray}:${colors.reset} ` +
+            `${colors[level]}${formattedMessage}${colors.reset}`
         );
     }
 

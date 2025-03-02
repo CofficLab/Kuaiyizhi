@@ -16,4 +16,8 @@ export default class Lang {
     isEnglish(): boolean {
         return this.code === 'en';
     }
+
+    static isCodeValid(code: string): boolean {
+        return code === 'zh-cn' || code === 'en';
+    }
 }

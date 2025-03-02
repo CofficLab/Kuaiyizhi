@@ -7,13 +7,15 @@ import TableOfContents from '../components/toc/TableOfContents.astro';
 interface Props {
   title: string;
   description: string;
-  sidebarItem: SidebarItem;
+  sidebarItem: SidebarItem | null;
   headings?: Array<{ depth: number; slug: string; text: string }>;
 }
 
 const { title, description, sidebarItem, headings = [] } = Astro.props;
 
-const shouldShowSidebar = sidebarItem.getItems().length > 0;
+const shouldShowSidebar = sidebarItem
+  ? sidebarItem.getItems().length > 0
+  : false;
 const hasTableOfContents = headings.length > 0;
 ---
 
@@ -30,7 +32,7 @@ const hasTableOfContents = headings.length > 0;
   <div class="flex relative overflow-hidden">
     {/* 侧边栏 */}
     {
-      shouldShowSidebar && (
+      shouldShowSidebar && sidebarItem && (
         <aside class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
           <div class="h-full px-4 py-6">
             <Sidebar item={sidebarItem} />

@@ -14,7 +14,7 @@ export class Tag {
     toSidebarItem(): SidebarItem {
         return new SidebarItem({
             label: this.name,
-        }).setTagId(`${this.name}`);
+        }).setLink(`/zh-cn/lessions/tags/${this.name}`);
     }
 
     toTagPath(): TagStaticPath {

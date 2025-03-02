@@ -3,8 +3,6 @@ import { makeLink, makeTagLink } from "@/utils/links";
 export class SidebarItem {
     private label: string;
     private link?: string;
-    private docId?: string;
-    private tagId?: string;
     private items?: SidebarItem[];
 
     constructor(config: {
@@ -15,13 +13,8 @@ export class SidebarItem {
         this.items = config.items;
     }
 
-    setDocId(docId: string): this {
-        this.docId = docId;
-        return this;
-    }
-
-    setTagId(tagId: string): this {
-        this.tagId = tagId;
+    setLink(link: string): this {
+        this.link = link;
         return this;
     }
 
@@ -34,39 +27,16 @@ export class SidebarItem {
         return !this.isGroup();
     }
 
-    // 判断是否是链接
-    isLink(): boolean {
-        return !!this.link;
-    }
-
-    // 判断是否是标签
-    isTag(): boolean {
-        return !!this.tagId;
-    }
-
-    // 判断是否是文档
-    isDoc(): boolean {
-        return !!this.docId;
-    }
-
     getLabel(): string {
         return this.label;
     }
 
-    getDocId(): string {
-        return this.docId || '';
-    }
-
     getLink(): string {
-        if (this.isTag() && this.tagId) {
-            return makeTagLink('zh-cn', this.tagId);
+        if (this.link) {
+            return this.link;
         }
 
-        if (this.isDoc() && this.docId) {
-            return makeLink(this.docId);
-        }
-
-        return this.link || '/';
+        return '/';
     }
 
     getItems(): SidebarItem[] {
@@ -81,6 +51,6 @@ export class SidebarItem {
     toLinkItem(): SidebarItem {
         return new SidebarItem({
             label: this.label,
-        }).setDocId(this.getDocId());
+        }).setLink(this.getLink());
     }
 } 
