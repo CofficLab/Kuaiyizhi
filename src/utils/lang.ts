@@ -37,5 +37,5 @@ export const getLang = (...args: string[]) => {
             return normalizedLang;
         }
     }
-    return 'en';
+    return 'zh-cn';
 }

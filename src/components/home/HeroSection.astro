@@ -8,23 +8,28 @@ export interface Props {
 
 const { lang } = Astro.props;
 const courses = await CourseDB.getFamousCourses(lang.code);
-const heroText: Record<string, string> = {
-  'zh-cn': '追寻知识的纯粹之光',
-  en: 'Pursuing the Pure Light of Knowledge',
+
+const name: Record<string, string> = {
+  'zh-cn': '快易知',
+  en: 'Kuai Yi Zhi',
 };
 
-const ctaText: Record<string, string> = {
-  'zh-cn': '一起搭建工具箱网页',
-  en: 'Build Your Web Toolbox Together',
+const heroText: Record<string, string> = {
+  'zh-cn': '沉浸式学习平台，帮您构建完整的知识网络',
+  en: 'Immersive Learning Platform, Help You Build a Complete Knowledge Network',
 };
 ---
 
 <div class="hero min-h-[70vh] bg-base-200/0">
   <div class="hero-content flex-col flex gap-8">
     <div class="text-center lg:text-left flex flex-col gap-4 items-center">
-      <h1 class="text-3xl text-base-content/70 pb-6">
+      <h1 class="text-7xl text-base-content/70 pb-6">{name[lang.code]}</h1>
+    </div>
+
+    <div class="text-center lg:text-left flex flex-col gap-4 items-center">
+      <h2 class="text-3xl text-base-content/70 pb-6">
         {heroText[lang.code]}
-      </h1>
+      </h2>
     </div>
 
     <div class="max-w-none">
