@@ -1,5 +1,5 @@
 ---
-import LessionsPage from '@views/LessionsPage.astro';
+import LessonsView from '@/components/views/LessonsView.astro';
 
 // 这里定义了每个语言的课程列表页，并将其作为静态页面预渲染。
 
@@ -19,6 +19,8 @@ export async function getStaticPaths() {
     },
   ];
 }
+
+const { lang } = Astro.params;
 ---
 
-<LessionsPage />
+<LessonsView lang={lang} />

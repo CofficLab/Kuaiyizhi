@@ -1,7 +1,7 @@
 ---
 import type { SidebarItem } from '@/models/SidebarItem';
-import SidebarLink from './SidebarLink.astro';
-import SidebarGroup from './SidebarGroup.astro';
+import SidebarLink from '@components/sidebar/SidebarLink.astro';
+import SidebarGroup from '@components/sidebar/SidebarGroup.astro';
 
 interface Props {
   item: SidebarItem;
@@ -16,10 +16,7 @@ const { item } = Astro.props;
       (item.isNotGroup() ? (
         <SidebarLink label={item.getLabel()} link={item.getLink()} />
       ) : (
-        <SidebarGroup
-          label={item.getLabel()}
-          items={item.getItemsIncludingSelf()}
-        />
+        <SidebarGroup label={item.getLabel()} items={item.getItems()} />
       ))
   }
 </ul>

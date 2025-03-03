@@ -24,23 +24,4 @@ export class Blog {
         let content = dataEntry.body ?? '';
         return new Blog(link, title, date, tags, content);
     }
-
-    getDateForDisplay() {
-        try {
-            const dateObj = new Date(this.date);
-            // Check if date is valid
-            if (isNaN(dateObj.getTime())) {
-                console.warn(`Invalid date format: ${this.date}`);
-                return 'Date unavailable: ' + this.title + ' ' + this.link;
-            }
-            return dateObj.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            });
-        } catch (error) {
-            console.error(`Error formatting date: ${this.date}`, error);
-            return 'Date unavailable';
-        }
-    }
 }

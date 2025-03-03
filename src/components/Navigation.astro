@@ -1,4 +1,5 @@
 ---
+import LinkDB from '@/database/LinkDB';
 import { getLangFromPathname } from '@/utils/lang';
 
 const currentPath = Astro.url.pathname;
@@ -6,25 +7,24 @@ const normalizedLocale = getLangFromPathname(Astro.url.pathname);
 
 const navItems = [
   {
-    href: `/${normalizedLocale}`,
+    href: LinkDB.getHomeLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? '首页' : 'Home',
-    match: (path: string) =>
-      path === `/${normalizedLocale}` || path === `/${normalizedLocale}/`,
+    match: (path: string) => LinkDB.isHomeLink(path, normalizedLocale),
   },
   {
-    href: `/${normalizedLocale}/courses`,
+    href: LinkDB.getCoursesLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? '课程' : 'Courses',
-    match: (path: string) => path.startsWith(`/${normalizedLocale}/courses`),
+    match: (path: string) => LinkDB.isCoursesLink(path, normalizedLocale),
   },
   {
-    href: `/${normalizedLocale}/lessions`,
+    href: LinkDB.getLessonsLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? 'Build Your Own' : 'Build Your Own',
-    match: (path: string) => path.startsWith(`/${normalizedLocale}/lessions`),
+    match: (path: string) => LinkDB.isLessonsLink(path, normalizedLocale),
   },
   {
-    href: `/${normalizedLocale}/blogs`,
+    href: LinkDB.getBlogsLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? '博客' : 'Blogs',
-    match: (path: string) => path.startsWith(`/${normalizedLocale}/blogs`),
+    match: (path: string) => LinkDB.isBlogsLink(path, normalizedLocale),
   },
 ];
 ---

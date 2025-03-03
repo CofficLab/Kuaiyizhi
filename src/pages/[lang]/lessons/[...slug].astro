@@ -1,10 +1,10 @@
 ---
-import LessionDoc from '@/models/LessionDoc';
-import LessionView from '@views/LessionView.astro';
+import LessonDoc from '@/models/LessonDoc';
+import LessonView from '@/components/views/LessonView.astro';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  return LessionDoc.getStaticPaths();
+  return LessonDoc.getStaticPaths();
 }
 
 /**
@@ -26,4 +26,4 @@ if (slug.split('/').length === 1) {
 }
 ---
 
-<LessionView id={id} />
+<LessonView id={id} />

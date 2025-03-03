@@ -1,5 +1,5 @@
 ---
-import BlogsPage from '@/components/BlogsPage.astro';
+import BlogsView from '@/components/views/BlogsView.astro';
 
 // 这里定义了每个语言的博客列表页，并将其作为静态页面预渲染。
 
@@ -23,4 +23,4 @@ export async function getStaticPaths() {
 const { lang } = Astro.params;
 ---
 
-<BlogsPage lang={lang} />
+<BlogsView lang={lang} />

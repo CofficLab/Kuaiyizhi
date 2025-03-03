@@ -3,7 +3,7 @@
  * 
  * 课程集合的目录结构：
  * 
- * - lessions/
+ * - lessons/
  *   - build_your_own_web_toolbox/
  *     - images
  *     - components
@@ -35,21 +35,21 @@
 import { getCollection, type CollectionEntry, getEntry } from 'astro:content';
 import { logger } from '@/utils/logger';
 
-export type LessionEntry = CollectionEntry<'lession'>;
+export type LessonEntry = CollectionEntry<'lessons'>;
 
-const collectionName = 'lession';
+const collectionName = 'lessons';
 
-export default class LessionDB {
+export default class LessonDB {
     /**
-     * 获取文档集合，即lessions目录下的所有文件
+     * 获取文档集合，即lessons目录下的所有文件
      * 
-     * @returns {Promise<LessionEntry[]>} 返回文档集合
+     * @returns {Promise<LessonEntry[]>} 返回文档集合
      */
-    static async getEntries(): Promise<LessionEntry[]> {
+    static async getEntries(): Promise<LessonEntry[]> {
         return await getCollection(collectionName);
     }
 
-    static async getEntry(id: string): Promise<LessionEntry | null> {
+    static async getEntry(id: string): Promise<LessonEntry | null> {
         const entry = await getEntry(collectionName, id);
         return entry || null;
     }
@@ -58,9 +58,9 @@ export default class LessionDB {
      * 获取指定文档的子文档, 不包括孙子文档
      * 
      * @param {string} parentId - 父文档ID
-     * @returns {Promise<LessionEntry[]>} 返回子文档集合
+     * @returns {Promise<LessonEntry[]>} 返回子文档集合
      */
-    static async getChildrenEntries(parentId: string): Promise<LessionEntry[]> {
+    static async getChildrenEntries(parentId: string): Promise<LessonEntry[]> {
         const parentLevel = parentId.split('/').length;
         const childrenLevel = parentLevel + 1;
 
@@ -72,9 +72,9 @@ export default class LessionDB {
      * 获取指定文档的所有后代文档
      * 
      * @param {string} parentId - 父文档ID
-     * @returns {Promise<LessionEntry[]>} 返回后代文档集合
+     * @returns {Promise<LessonEntry[]>} 返回后代文档集合
      */
-    static async getDescendantEntries(parentId: string): Promise<LessionEntry[]> {
+    static async getDescendantEntries(parentId: string): Promise<LessonEntry[]> {
         return await getCollection(collectionName, ({ id }) => id.startsWith(parentId));
     }
 
@@ -82,9 +82,9 @@ export default class LessionDB {
      * 获取指定深度的文档
      * 
      * @param {number} depth - 深度
-     * @returns {Promise<LessionEntry[]>} 返回文档集合
+     * @returns {Promise<LessonEntry[]>} 返回文档集合
      */
-    static async getEntriesByDepth(depth: number): Promise<LessionEntry[]> {
+    static async getEntriesByDepth(depth: number): Promise<LessonEntry[]> {
         return await getCollection(collectionName, ({ id }) => id.split('/').length === depth);
     }
 
@@ -93,9 +93,9 @@ export default class LessionDB {
      * 
      * @param {number} depth - 深度
      * @param {string} lang - 语言
-     * @returns {Promise<LessionEntry[]>} 返回文档集合
+     * @returns {Promise<LessonEntry[]>} 返回文档集合
      */
-    static async getEntriesByDepthAndLang(depth: number, lang: string): Promise<LessionEntry[]> {
+    static async getEntriesByDepthAndLang(depth: number, lang: string): Promise<LessonEntry[]> {
         return await getCollection(collectionName, ({ id }) => id.split('/').length === depth && id.endsWith(lang));
     }
 
@@ -104,9 +104,9 @@ export default class LessionDB {
      * 
      * @param {string} parentId - 父文档ID
      * @param {number} depth - 深度
-     * @returns {Promise<LessionEntry[]>} 返回后代文档集合
+     * @returns {Promise<LessonEntry[]>} 返回后代文档集合
      */
-    static async getDescendantEntriesByDepth(parentId: string, depth: number): Promise<LessionEntry[]> {
+    static async getDescendantEntriesByDepth(parentId: string, depth: number): Promise<LessonEntry[]> {
         return await getCollection(collectionName, ({ id }) => id.startsWith(parentId) && id.split('/').length === depth);
     }
 
@@ -115,7 +115,7 @@ export default class LessionDB {
      * 
      * 例如：
      * 
-     * - lessions/
+     * - lessons/
      *   - build_your_own_web_toolbox/
      *   - learn_astro/
      * 
@@ -125,10 +125,10 @@ export default class LessionDB {
      * 
      * @returns {Promise<string[]>} 返回一级文件夹名称数组
      */
-    static async getLessionIds(): Promise<string[]> {
-        const debug = true;
+    static async getLessonIds(): Promise<string[]> {
+        const debug = false;
         if (debug) {
-            logger.info(`getLessionIds`);
+            logger.info(`getLessonIds`);
         }
 
         // 不必遍历所有文档，只需获取部分较浅的文档
@@ -155,7 +155,7 @@ export default class LessionDB {
         });
 
         if (debug) {
-            logger.array('LessionDB.getLessionIds', Array.from(ids));
+            logger.array('LessonDB.getLessonIds', Array.from(ids));
         }
 
         // 将集合转换为数组并返回

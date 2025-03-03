@@ -1,12 +1,14 @@
 ---
-import AppLayout from '../layouts/AppLayout.astro';
+import AppLayout from '@layouts/AppLayout.astro';
+import CourseCard from '@components/courses/CourseCard.astro';
 import CourseDB from '@/database/CourseDB';
-import CourseCard from './CourseCard.astro';
-import { getLangFromPathname } from '@/utils/lang';
 
-const lang = getLangFromPathname(Astro.url.pathname);
-const courses = await CourseDB.getCourses(lang);
+interface Props {
+  lang: string;
+}
 
+const { lang } = Astro.props;
+const courses = await CourseDB.allTopLevelDocsByLang(lang);
 const title = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 ---

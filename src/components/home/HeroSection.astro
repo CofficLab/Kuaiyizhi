@@ -1,14 +1,13 @@
 ---
 import Lang from '@/models/Lang';
+import CourseCard from '@components/courses/CourseCard.astro';
 import CourseDB from '@/database/CourseDB';
-import CourseCard from '../CourseCard.astro';
-
 export interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-const courses = (await CourseDB.getCourses(lang.code)).slice(0, 4);
+const courses = await CourseDB.getFamousCourses(lang.code);
 const heroText: Record<string, string> = {
   'zh-cn': '追寻知识的纯粹之光',
   en: 'Pursuing the Pure Light of Knowledge',

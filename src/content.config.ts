@@ -2,10 +2,10 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 export const collections = {
-	content: defineCollection({
+	blogs: defineCollection({
 		loader: glob({
 			pattern: '**/*.{md,mdx}',
-			base: './content',
+			base: './content/blogs',
 		}),
 		schema: z.object({
 			title: z.string().optional(),
@@ -20,10 +20,26 @@ export const collections = {
 		}),
 	}),
 
-	lession: defineCollection({
+	meta: defineCollection({
 		loader: glob({
 			pattern: '**/*.{md,mdx}',
-			base: './content/lessions',
+			base: './content/meta',
+		}),
+
+	}),
+
+	courses: defineCollection({
+		loader: glob({
+			pattern: '**/*.{md,mdx}',
+			base: './content/courses',
+		}),
+
+	}),
+
+	lessons: defineCollection({
+		loader: glob({
+			pattern: '**/*.{md,mdx}',
+			base: './content/lessons',
 		}),
 		schema: z.object({
 			title: z.string(),

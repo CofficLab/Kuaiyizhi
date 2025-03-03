@@ -1,39 +1,49 @@
-import type { LessionEntry } from "@/database/LessionDB";
-import LessionDB from "@/database/LessionDB";
+import type { LessonEntry } from "@/database/LessonDB";
+import LessonDB from "@/database/LessonDB";
 import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { Heading } from "./Heading";
 import { render, type RenderResult } from "astro:content";
-export default class LessionDoc {
-    entry: LessionEntry;
+import LinkDB from "@/database/LinkDB";
 
-    constructor(entry: LessionEntry) {
+export default class LessonDoc {
+    entry: LessonEntry;
+
+    constructor(entry: LessonEntry) {
         this.entry = entry;
     }
 
-    static async all(): Promise<LessionDoc[]> {
-        return (await LessionDB.getEntries())
-            .map(entry => new LessionDoc(entry));
+    static async allTopDocs(): Promise<LessonDoc[]> {
+        return (await LessonDoc.allByDepth(2)) as LessonDoc[];
     }
 
-    static async allByDepth(depth: number): Promise<LessionDoc[]> {
-        return (await LessionDB.getEntriesByDepth(depth))
-            .map(entry => new LessionDoc(entry));
+    static async allTopDocsByLang(lang: string): Promise<LessonDoc[]> {
+        return (await LessonDoc.allByDepthAndLang(2, lang)) as LessonDoc[];
     }
 
-    static async allByDepthAndLang(depth: number, lang: string): Promise<LessionDoc[]> {
-        return (await LessionDB.getEntriesByDepthAndLang(depth, lang))
-            .map(entry => new LessionDoc(entry));
+    static async all(): Promise<LessonDoc[]> {
+        return (await LessonDB.getEntries())
+            .map(entry => new LessonDoc(entry));
     }
 
-    static async find(id: string): Promise<LessionDoc | null> {
-        const entry = await LessionDB.getEntry(id);
-        return entry ? new LessionDoc(entry) : null;
+    static async allByDepth(depth: number): Promise<LessonDoc[]> {
+        return (await LessonDB.getEntriesByDepth(depth))
+            .map(entry => new LessonDoc(entry));
+    }
+
+    static async allByDepthAndLang(depth: number, lang: string): Promise<LessonDoc[]> {
+        return (await LessonDB.getEntriesByDepthAndLang(depth, lang))
+            .map(entry => new LessonDoc(entry));
+    }
+
+    static async find(id: string): Promise<LessonDoc | null> {
+        const entry = await LessonDB.getEntry(id);
+        return entry ? new LessonDoc(entry) : null;
     }
 
     static async getStaticPaths() {
         const debug = false;
-        const entries = await LessionDB.getEntries();
+        const entries = await LessonDB.getEntries();
 
         if (debug) {
             logger.array('所有文档', entries);
@@ -95,9 +105,9 @@ export default class LessionDoc {
         return parts[0] + '/' + parts[1];
     }
 
-    async getBook(): Promise<LessionDoc | null> {
+    async getBook(): Promise<LessonDoc | null> {
         const bookId = this.getBookId();
-        return await LessionDoc.find(bookId);
+        return await LessonDoc.find(bookId);
     }
 
     getLevel(): number {
@@ -107,14 +117,7 @@ export default class LessionDoc {
     getLink(): string {
         const debug = false;
         const lang = this.getLang();
-        let link = '';
-
-        if (this.getId().endsWith(lang)) {
-            link = `/${lang}/lessions/${this.getId().replace(`${lang}`, '')}`;
-        } else {
-            const idWithoutLang = this.getId().replace(`${lang}/`, '');
-            link = `/${lang}/lessions/${idWithoutLang}`;
-        }
+        let link = LinkDB.getLessonLink(lang, this.getId());
 
         if (debug) {
             logger.info(`获取 ${this.entry.id} 的链接: ${link}`);
@@ -144,7 +147,7 @@ export default class LessionDoc {
     }
 
     getHTML(): string {
-        const debug = true;
+        const debug = false;
 
         if (debug) {
             logger.info(`获取 ${this.entry.id} 的 HTML`);
@@ -158,7 +161,7 @@ export default class LessionDoc {
     }
 
     getHeadings(): Heading[] {
-        const debug = true;
+        const debug = false;
 
         if (debug) {
             logger.info(`获取 ${this.entry.id} 的 headings`);
@@ -167,21 +170,30 @@ export default class LessionDoc {
         return this.entry.rendered?.metadata?.headings as Heading[] || [];
     }
 
-    async getChildren(): Promise<LessionDoc[]> {
-        return (await LessionDB.getChildrenEntries(this.entry.id))
-            .map(entry => new LessionDoc(entry));
+    async getChildren(): Promise<LessonDoc[]> {
+        return (await LessonDB.getChildrenEntries(this.entry.id))
+            .map(entry => new LessonDoc(entry));
     }
 
-    async getDescendants(): Promise<LessionDoc[]> {
-        return (await LessionDB.getDescendantEntries(this.entry.id))
-            .map(entry => new LessionDoc(entry));
+    async getDescendants(): Promise<LessonDoc[]> {
+        return (await LessonDB.getDescendantEntries(this.entry.id))
+            .map(entry => new LessonDoc(entry));
     }
 
     async toSidebarItem(): Promise<SidebarItem> {
         const debug = false;
 
+        const selfItem = new SidebarItem({
+            label: this.getTitle(),
+            link: this.getLink(),
+        });
+
         const children = await this.getChildren();
-        const childItems = await Promise.all(children.map(child => child.toSidebarItem()));
+        let childItems = await Promise.all(children.map(child => child.toSidebarItem()));
+
+        if (this.isBook()) {
+            childItems = [...childItems, selfItem];
+        }
 
         if (debug) {
             logger.info(`${this.entry.id} 的侧边栏项目`);
@@ -190,7 +202,8 @@ export default class LessionDoc {
 
         return new SidebarItem({
             label: this.getTitle(),
-            items: childItems
-        }).setLink(this.getLink());
+            items: childItems,
+            link: this.getLink(),
+        });
     }
 }

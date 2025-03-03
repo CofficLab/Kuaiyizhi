@@ -1,11 +1,11 @@
 <template>
     <div class="p-4">
         <ul v-if="blogs.length > 0" class="list-none pl-5">
-            <li v-for="blog in blogs" :key="blog.link" class="mb-2 flex items-center gap-3">
+            <li v-for="blog in blogs" :key="blog.getId()" class="mb-2 flex items-center gap-3">
                 <span class="badge badge-ghost font-mono text-sm">{{ blog.getDateForDisplay() }}</span>
-                <a :href="blog.link" class="text-blue-500 no-underline hover:no-underline">{{
-                    blog.title
-                    }}</a>
+                <a :href="blog.getLink()" class="text-blue-500 no-underline hover:no-underline">{{
+                    blog.getTitle()
+                }}</a>
             </li>
         </ul>
         <div v-else class="text-center py-8">
@@ -19,11 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import { Blog } from '@/models/Blog';
+import type BlogDoc from '@/models/BlogDoc';
 import { RiInboxArchiveLine } from '@remixicon/vue';
 
 defineProps<{
-    blogs: Blog[];
+    blogs: BlogDoc[];
     lang: string;
 }>();
 </script>

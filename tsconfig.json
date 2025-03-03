@@ -33,12 +33,6 @@
       ],
       "@database/*": [
         "src/database/*"
-      ],
-      "@router/*": [
-        "src/router/*"
-      ],
-      "@views/*": [
-        "src/views/*"
       ]
     },
     "jsx": "preserve"

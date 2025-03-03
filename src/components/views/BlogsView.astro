@@ -1,6 +1,6 @@
 ---
 import BlogDB from '@/database/BlogDB';
-import BlogList from '@/components/BlogList.vue';
+import BlogList from '@/components/blogs/BlogList.vue';
 import DocLayout from '@/layouts/DocLayout.astro';
 import { Tag } from '@/models/Tag';
 
@@ -10,7 +10,7 @@ interface Props {
 
 const { lang } = Astro.props;
 
-const blogs = await BlogDB.getAllBlogs(lang);
+const blogs = await BlogDB.allTopLevelDocsByLang(lang);
 const sidebarItem = await Tag.makeRootSidebarItem(lang);
 ---
 

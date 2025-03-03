@@ -1,21 +1,16 @@
-import { makeLink, makeTagLink } from "@/utils/links";
-
 export class SidebarItem {
     private label: string;
-    private link?: string;
+    private link: string;
     private items?: SidebarItem[];
 
     constructor(config: {
         label: string;
+        link: string;
         items?: SidebarItem[];
     }) {
         this.label = config.label;
         this.items = config.items;
-    }
-
-    setLink(link: string): this {
-        this.link = link;
-        return this;
+        this.link = config.link;
     }
 
     // 判断是否是分组（有子项目）
@@ -32,11 +27,7 @@ export class SidebarItem {
     }
 
     getLink(): string {
-        if (this.link) {
-            return this.link;
-        }
-
-        return '/';
+        return this.link;
     }
 
     getItems(): SidebarItem[] {
@@ -51,6 +42,7 @@ export class SidebarItem {
     toLinkItem(): SidebarItem {
         return new SidebarItem({
             label: this.label,
-        }).setLink(this.getLink());
+            link: this.getLink(),
+        });
     }
 } 

@@ -1,6 +1,6 @@
 ---
-import HomePage from "@/components/HomePage.astro";
-import Lang from "@/models/Lang";
+import HomePage from '@/components/views/HomeView.astro';
+import Lang from '@/models/Lang';
 
 // 这里定义了每个语言的首页，并将其作为静态页面预渲染。
 
@@ -8,17 +8,17 @@ export const prerender = true;
 
 export async function getStaticPaths() {
   return [
-        {
-            params: {
-                lang: '/zh-cn',
-            },
-        },
-        {
-            params: {
-                lang: '/en',
-            },
-        },
-    ]
+    {
+      params: {
+        lang: '/zh-cn',
+      },
+    },
+    {
+      params: {
+        lang: '/en',
+      },
+    },
+  ];
 }
 
 const { lang } = Astro.params;
