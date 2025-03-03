@@ -2,6 +2,8 @@
 title: Privacy
 ---
 
+# Privacy Policy
+
 We respect your privacy and make our best efforts to protect it.
 
 To facilitate your login, use of related services, and to provide you with a more personalized user experience and service, we may collect and use your relevant information when you use our services. We will take security protection measures in accordance with legal requirements to ensure your user information remains secure and controlled. Through this privacy statement, we would like to explain how we collect, use, store and disclose your information when using QuickEasy (collectively referred to as "the Service"), as well as how we provide you with access, updates, control and protection of this information.

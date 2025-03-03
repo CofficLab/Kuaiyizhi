@@ -30,10 +30,14 @@ To get the best experience when accessing this website, please use popular moder
 ## Join Us
 
 We always welcome talented technical professionals to join our team. If you:
+
 - Are passionate about technology and software development
 - Have solid professional knowledge and practical experience
 - Are willing to share knowledge and help others grow
-Please contact us at: contact@example.com
+
+Please visit our GitHub Group for more information:
+
+<https://github.com/CofficLab>
 
 ## More Information
 
