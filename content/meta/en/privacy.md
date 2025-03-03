@@ -84,7 +84,7 @@ We may revise the terms of this privacy statement from time to time, and such re
 
 ## X. Contact Us
 
-If you have any questions or suggestions about these terms, please contact us as instructed on this page: <a href="{{ route('advice') }}" target="_blank">Submit Feedback</a>. We will promptly review the issues involved and respond within thirty days after verifying your user identity.
+If you have any questions or suggestions about these terms, please contact us as instructed on this page: <a href="/en/meta/advice" target="_blank">Submit Feedback</a>. We will promptly review the issues involved and respond within thirty days after verifying your user identity.
 
 ## XI. Glossary
 

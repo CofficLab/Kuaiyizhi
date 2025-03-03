@@ -11,6 +11,8 @@ tags:
   - Starlight
 ---
 
+# Getting Post List in Astro + Starlight
+
 When building documentation or blog websites with Astro + Starlight, retrieving and displaying post lists is a common requirement. This article will explain in detail how to implement this functionality.
 
 ## Using the getCollection API

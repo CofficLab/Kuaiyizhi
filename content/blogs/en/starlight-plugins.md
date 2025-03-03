@@ -10,6 +10,8 @@ tags:
   - Starlight
 ---
 
+# Starlight Plugin Extension Guide
+
 ## Plugin System Overview
 
 Starlight's plugin system is built on Astro integration, allowing modular extension of documentation site functionality. All plugins are distributed through npm packages, supporting both official and community plugins.

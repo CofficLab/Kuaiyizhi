@@ -2,18 +2,10 @@
 interface Props {
   items?: string[]; // 使其可选
 }
-
-const { items } = Astro.props;
-
-// 从插槽内容中获取标签
-const slots = await Astro.slots.render('default');
-const tabLabels = Array.from(slots.matchAll(/data-tab="([^"]+)"/g)).map(
-  (match) => match[1]
-);
 ---
 
 <div class="tabs-container">
-  <div role="tablist" class="tabs tabs-boxed bg-base-200 p-1 mb-4">
+  <div role="tablist" class="tabs tabs-box bg-base-200 p-1 mb-4">
     <slot name="tab-buttons" />
   </div>
   <div class="tab-contents">

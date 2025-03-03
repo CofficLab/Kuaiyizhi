@@ -10,6 +10,8 @@ tags:
   - Starlight
 ---
 
+# Building Documentation Sites with Starlight
+
 Starlight is a documentation theme tool in the Astro ecosystem, designed specifically for building modern, high-performance documentation websites. Built on Astro, it inherits its fast and flexible features while providing out-of-the-box documentation functionality. Here's an introduction to Starlight's core features:
 
 ## Starlight Features

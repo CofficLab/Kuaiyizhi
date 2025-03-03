@@ -75,6 +75,10 @@ export default class BlogDoc {
         return this.entry.data.description as string;
     }
 
+    getDate(): Date {
+        return new Date(this.entry.data.date as Date);
+    }
+
     getDateForDisplay() {
         try {
             const dateObj = new Date(this.entry.data.date as Date);

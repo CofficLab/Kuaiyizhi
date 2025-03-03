@@ -43,10 +43,10 @@ title: 关于我们
 
 关于本站的更多内容，可以在以下链接中查看：
 
-- <a href="/privacy" target="_blank">隐私政策</a></li>
-- <a href="/terms" target="_blank">服务条款</a></li>
-- <a href="/faq" target="_blank">常见问题</a></li>
-- <a href="/contact" target="_blank">联系我们</a></li>
+- <a href="/zh-cn/meta/privacy" target="_blank">隐私政策</a></li>
+- <a href="/zh-cn/meta/terms" target="_blank">服务条款</a></li>
+- <a href="/zh-cn/meta/faq" target="_blank">常见问题</a></li>
+- <a href="/zh-cn/meta/contact" target="_blank">联系我们</a></li>
 
 ## 版权声明
 

@@ -12,6 +12,8 @@ tags:
   - Frontend Development
 ---
 
+# Fire Frontend Engineers
+
 ![cursor-5](./images/cursor-5.png)
 
 Recently, our product manager proposed a requirement: add IP location display functionality to the system.

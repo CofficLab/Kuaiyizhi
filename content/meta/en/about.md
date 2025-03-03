@@ -43,10 +43,10 @@ Please visit our GitHub Group for more information:
 
 More content about this website can be found in the following links:
 
-- <a href="/privacy" target="_blank">Privacy Policy</a></li>
-- <a href="/terms" target="_blank">Terms of Service</a></li>
-- <a href="/faq" target="_blank">FAQ</a></li>
-- <a href="/contact" target="_blank">Contact Us</a></li>
+- <a href="/en/meta/privacy" target="_blank">Privacy Policy</a></li>
+- <a href="/en/meta/terms" target="_blank">Terms of Service</a></li>
+- <a href="/en/meta/faq" target="_blank">FAQ</a></li>
+- <a href="/en/meta/contact" target="_blank">Contact Us</a></li>
 
 ## Copyright Notice
 

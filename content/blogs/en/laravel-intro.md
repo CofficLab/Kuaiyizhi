@@ -10,6 +10,8 @@ tags:
   - Laravel
 ---
 
+# Complete Guide to Laravel for Beginners
+
 ## What is Laravel?
 
 Laravel is currently the most popular PHP full-stack development framework, with the following core features:

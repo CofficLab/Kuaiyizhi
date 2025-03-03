@@ -10,6 +10,8 @@ tags:
   - Open Source
 ---
 
+# GitHub Getting Started Guide
+
 ## What is GitHub?
 
 GitHub is the world's largest code hosting platform, serving not only as a version control system but also as an open-source community and collaborative development platform. Through GitHub, developers can:
