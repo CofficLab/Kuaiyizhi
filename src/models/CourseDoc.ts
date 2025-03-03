@@ -93,23 +93,26 @@ export default class CourseDoc {
     async toSidebarItem(): Promise<SidebarItem> {
         const debug = false;
 
+        let selfItem = new SidebarItem({
+            label: this.getTitle(),
+            items: [],
+            link: this.getLink(),
+        });
         const children = await this.getChildren();
-        const childItems = await Promise.all(children.map(child => child.toSidebarItem()));
+        let childItems = await Promise.all(children.map(child => child.toSidebarItem()));
+
+        if (this.isBook()) {
+            childItems = [selfItem, ...childItems]
+        }
 
         if (debug) {
             logger.info(`${this.entry.id} 的侧边栏项目`);
             console.log(childItems);
         }
 
-        let selfItem = new SidebarItem({
-            label: this.getTitle(),
-            items: [],
-            link: this.getLink(),
-        });
-
         return new SidebarItem({
             label: this.getTitle(),
-            items: [...childItems, selfItem],
+            items: childItems,
             link: this.getLink(),
         });
     }
@@ -126,5 +129,9 @@ export default class CourseDoc {
             items: [],
             link: this.getLink(),
         });
+    }
+
+    isBook(): boolean {
+        return this.entry.id.split('/').length === 2;
     }
 }
