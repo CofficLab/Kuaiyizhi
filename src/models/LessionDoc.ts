@@ -3,6 +3,7 @@ import LessionDB from "@/database/LessionDB";
 import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { Heading } from "./Heading";
+import { render, type RenderResult } from "astro:content";
 export default class LessionDoc {
     entry: LessionEntry;
 
@@ -150,6 +151,10 @@ export default class LessionDoc {
         }
 
         return this.entry.rendered?.html || '';
+    }
+
+    async render(): Promise<RenderResult> {
+        return await render(this.entry);
     }
 
     getHeadings(): Heading[] {

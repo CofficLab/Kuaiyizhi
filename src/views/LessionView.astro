@@ -2,6 +2,8 @@
 import DocLayout from '@layouts/DocLayout.astro';
 import LessionNotFound from '@components/lession/LessionNotFound.astro';
 import LessionDoc from '@/models/LessionDoc';
+import { type RenderResult } from 'astro:content';
+import type { Heading } from '@/models/Heading';
 
 export interface Props {
   id: string;
@@ -12,7 +14,15 @@ const lession = await LessionDoc.find(id);
 const title = lession?.getTitle() || '没有找到课程';
 const description = lession?.getDescription() || '没有找到课程';
 const sidebarItem = (await (await lession?.getBook())?.toSidebarItem()) || null;
-const headings = lession?.getHeadings() || [];
+
+let headings: Heading[] = [];
+let Content: RenderResult['Content'] | null = null;
+
+if (lession) {
+  const renderResult = await lession.render();
+  headings = renderResult.headings;
+  Content = renderResult.Content;
+}
 ---
 
 <DocLayout
@@ -20,5 +30,5 @@ const headings = lession?.getHeadings() || [];
   description={description}
   sidebarItem={sidebarItem}
   headings={headings}>
-  {lession ? <div set:html={lession.getHTML()} /> : <LessionNotFound id={id} />}
+  {Content ? <Content /> : <LessionNotFound id={id} />}
 </DocLayout>
