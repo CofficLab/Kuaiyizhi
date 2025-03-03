@@ -1,51 +1,126 @@
 ---
-interface Props {
-  items?: string[]; // 使其可选
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string;
 }
+
+const { class: className, ...attrs } = Astro.props;
 ---
 
-<div class="tabs-container">
-  <div role="tablist" class="tabs tabs-box bg-base-200 p-1 mb-4">
-    <slot name="tab-buttons" />
+<div class:list={['tabs-container', className]} {...attrs}>
+  <div class="tabs tabs-box" role="tablist" data-tabs-header>
+    <!-- 标签按钮将通过 JavaScript 动态生成 -->
   </div>
-  <div class="tab-contents">
+  <div class="tabs-content tabs-box">
     <slot />
   </div>
 </div>
 
 <script>
-  function setupTabs() {
+  function initTabs() {
     const containers = document.querySelectorAll('.tabs-container');
 
     containers.forEach((container) => {
-      const tabs = container.querySelectorAll('[data-tab-button]');
+      // 获取所有标签页内容
       const contents = container.querySelectorAll('[data-tab-content]');
+      const header = container.querySelector('[data-tabs-header]');
 
-      // 初始化：显示第一个内容
-      tabs[0]?.classList.add('tab-active');
-      contents[0]?.classList.remove('hidden');
+      if (!header || !contents.length) return;
 
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const targetLabel = tab.getAttribute('data-tab-button');
+      // 创建标签按钮
+      const labels = Array.from(contents)
+        .map((content) => {
+          if (content instanceof HTMLElement) {
+            return content.dataset.tabLabel || '';
+          }
+          return '';
+        })
+        .filter(Boolean);
 
-          // 移除所有活动状态
-          tabs.forEach((t) => t.classList.remove('tab-active'));
-          contents.forEach((c) => c.classList.add('hidden'));
+      // 生成标签按钮HTML
+      const tabsHtml = labels
+        .map(
+          (label) => `
+          <a
+            role="tab"
+            class="tab no-underline"
+            data-tab-button
+            data-tab-label="${label}"
+          >${label}</a>
+        `
+        )
+        .join('');
 
-          // 激活当前标签
-          tab.classList.add('tab-active');
-          container
-            .querySelector(`[data-tab-content="${targetLabel}"]`)
-            ?.classList.remove('hidden');
+      header.innerHTML = tabsHtml;
+
+      // 为按钮添加点击事件
+      const buttons = container.querySelectorAll('[data-tab-button]');
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          if (button instanceof HTMLElement) {
+            const label = button.dataset.tabLabel;
+
+            // 更新按钮状态
+            buttons.forEach((btn) => btn.classList.remove('tab-active'));
+            button.classList.add('tab-active');
+
+            // 触发自定义事件来切换内容
+            container.dispatchEvent(
+              new CustomEvent('tab-change', {
+                detail: { label },
+                bubbles: true,
+              })
+            );
+          }
         });
       });
+
+      // 默认选中第一个标签
+      const selectFirstTab = () => {
+        console.log('默认选中第一个标签');
+        const firstButton = buttons[0];
+        if (firstButton instanceof HTMLElement) {
+          console.log('点击第一个标签');
+          firstButton.click();
+        }
+      };
+
+      // 使用 MutationObserver 来确保内容变化后再选择第一个标签
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === 'attributes' &&
+            mutation.attributeName === 'class'
+          ) {
+            observer.disconnect();
+            selectFirstTab();
+          }
+        });
+      });
+
+      // 观察第一个内容面板的类变化
+      const firstContent = contents[0];
+      if (firstContent instanceof HTMLElement) {
+        observer.observe(firstContent, { attributes: true });
+      }
+
+      // 延迟一小段时间后触发第一个标签
+      setTimeout(selectFirstTab, 50);
     });
   }
 
-  // 页面加载时设置标签
-  setupTabs();
-
-  // 处理客户端导航
-  document.addEventListener('astro:page-load', setupTabs);
+  // 页面加载完成后初始化
+  document.addEventListener('astro:page-load', () => {
+    console.log('页面加载完成');
+    requestAnimationFrame(() => {
+      initTabs();
+    });
+  });
 </script>
+
+<style>
+  .tabs-container {
+    @apply w-full;
+  }
+</style>
