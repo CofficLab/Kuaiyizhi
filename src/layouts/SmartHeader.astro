@@ -1,0 +1,41 @@
+---
+import Navigation from '@/components/Navigation.astro';
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo.png';
+import Languages from '@/components/Languages.vue';
+import Themes from './Themes.astro';
+import SearchForm from '@/components/SearchForm.astro';
+import SocialLinks from '@/components/SocialLinks.astro';
+import { isHome } from '@/utils/links';
+import { getLangFromPathname } from '@/utils/lang';
+---
+
+<div
+  class="bg-gradient-to-r
+    from-emerald-900/80 to-indigo-900/70
+    dark:from-emerald-900/95 dark:to-indigo-900/95
+    flex flex-row justify-between
+    text-gray-300 dark:text-gray-300
+    rounded-lg h-12 mt-1 mx-4 px-4 fixed top-0 left-0 right-0 z-50">
+  <div class="flex flex-row justify-start">
+    <a
+      class="h-12 w-12 flex flex-row items-center justify-center"
+      href="/"
+      transition:persist>
+      <Image src={logo} alt="" class="sm:w-8 sm:h-8 mt-1 fill-current" />
+    </a>
+
+    <Navigation transition:animate="slide" />
+  </div>
+
+  <div class="h-12 flex flex-row justify-end gap-2">
+    <div class="m-auto">
+      <Languages client:load />
+    </div>
+    <div class="m-auto">
+      <SearchForm />
+    </div>
+    <SocialLinks />
+    <!-- <div class="m-auto"><Themes /></div> -->
+  </div>
+</div>

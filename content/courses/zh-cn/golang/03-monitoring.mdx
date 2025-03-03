@@ -1,0 +1,318 @@
+---
+title: Go 系统监控开发实战
+---
+
+## 为什么使用 Go 开发系统监控？
+
+Go 语言在系统监控领域有着独特的优势：
+
+1. **高效的系统调用**：Go 提供了方便的系统调用接口
+2. **出色的并发性能**：可以同时监控多个指标
+3. **丰富的监控库**：如 gopsutil、prometheus 等
+4. **低资源占用**：运行时消耗的系统资源少
+
+## 实战示例：系统资源监控工具
+
+让我们开发一个系统资源监控工具，它可以实时监控 CPU、内存、磁盘和网络使用情况。
+
+### 1. 项目结构
+
+```
+sys-monitor/
+  ├── collector/
+  │   ├── cpu.go
+  │   ├── memory.go
+  │   ├── disk.go
+  │   └── network.go
+  ├── api/
+  │   └── metrics.go
+  ├── go.mod
+  └── main.go
+```
+
+### 2. 收集 CPU 信息
+
+```go
+// collector/cpu.go
+package collector
+
+import (
+    "github.com/shirou/gopsutil/cpu"
+    "time"
+)
+
+type CPUStats struct {
+    Usage     float64
+    LoadAvg   float64
+    Processes int
+}
+
+func GetCPUStats() (*CPUStats, error) {
+    // 获取 CPU 使用率
+    percent, err := cpu.Percent(time.Second, false)
+    if err != nil {
+        return nil, err
+    }
+
+    // 获取负载信息
+    loadavg, err := cpu.LoadAvg()
+    if err != nil {
+        return nil, err
+    }
+
+    return &CPUStats{
+        Usage:     percent[0],
+        LoadAvg:   loadavg.Load1,
+        Processes: 0, // 需要实现进程计数
+    }, nil
+}
+```
+
+### 3. 收集内存信息
+
+```go
+// collector/memory.go
+package collector
+
+import "github.com/shirou/gopsutil/mem"
+
+type MemoryStats struct {
+    Total     uint64
+    Used      uint64
+    Free      uint64
+    UsedPerc  float64
+    SwapUsage float64
+}
+
+func GetMemoryStats() (*MemoryStats, error) {
+    vm, err := mem.VirtualMemory()
+    if err != nil {
+        return nil, err
+    }
+
+    swap, err := mem.SwapMemory()
+    if err != nil {
+        return nil, err
+    }
+
+    return &MemoryStats{
+        Total:     vm.Total,
+        Used:      vm.Used,
+        Free:      vm.Free,
+        UsedPerc:  vm.UsedPercent,
+        SwapUsage: swap.UsedPercent,
+    }, nil
+}
+```
+
+### 4. 实现 HTTP API
+
+```go
+// api/metrics.go
+package api
+
+import (
+    "encoding/json"
+    "net/http"
+    "sys-monitor/collector"
+)
+
+type MetricsResponse struct {
+    CPU    *collector.CPUStats    `json:"cpu"`
+    Memory *collector.MemoryStats `json:"memory"`
+}
+
+func MetricsHandler(w http.ResponseWriter, r *http.Request) {
+    cpu, err := collector.GetCPUStats()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    memory, err := collector.GetMemoryStats()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    response := MetricsResponse{
+        CPU:    cpu,
+        Memory: memory,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+```
+
+### 5. 主程序
+
+```go
+// main.go
+package main
+
+import (
+    "log"
+    "net/http"
+    "sys-monitor/api"
+)
+
+func main() {
+    // 设置路由
+    http.HandleFunc("/metrics", api.MetricsHandler)
+
+    // 启动服务器
+    log.Println("Server starting on :8080")
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+## 数据可视化
+
+可以使用 Grafana 等工具来可视化监控数据：
+
+```go
+// 添加 Prometheus 支持
+func setupPrometheus() {
+    cpu := promauto.NewGaugeVec(
+        prometheus.GaugeOpts{
+            Name: "cpu_usage_percent",
+            Help: "Current CPU usage in percent",
+        },
+        []string{"core"},
+    )
+
+    memory := promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "memory_usage_percent",
+        Help: "Current memory usage in percent",
+    })
+
+    go func() {
+        for {
+            stats, _ := GetCPUStats()
+            cpu.WithLabelValues("total").Set(stats.Usage)
+            
+            memStats, _ := GetMemoryStats()
+            memory.Set(memStats.UsedPerc)
+            
+            time.Sleep(time.Second * 5)
+        }
+    }()
+}
+```
+
+## 告警功能
+
+实现一个简单的告警系统：
+
+```go
+type Alert struct {
+    Metric    string
+    Threshold float64
+    Current   float64
+    Message   string
+}
+
+func checkAlerts(stats *MetricsResponse) []Alert {
+    alerts := []Alert{}
+
+    // CPU 使用率告警
+    if stats.CPU.Usage > 90 {
+        alerts = append(alerts, Alert{
+            Metric:    "CPU",
+            Threshold: 90,
+            Current:   stats.CPU.Usage,
+            Message:   "CPU 使用率过高",
+        })
+    }
+
+    // 内存使用率告警
+    if stats.Memory.UsedPerc > 85 {
+        alerts = append(alerts, Alert{
+            Metric:    "Memory",
+            Threshold: 85,
+            Current:   stats.Memory.UsedPerc,
+            Message:   "内存使用率过高",
+        })
+    }
+
+    return alerts
+}
+```
+
+## 最佳实践
+
+开发系统监控工具时，应注意以下几点：
+
+1. **性能优化**
+   - 合理的采集间隔
+   - 数据缓存机制
+   - 异步处理
+
+2. **可扩展性**
+   - 插件化架构
+   - 配置驱动
+   - 模块化设计
+
+3. **可靠性**
+   - 错误处理
+   - 日志记录
+   - 自我监控
+
+4. **安全性**
+   - 访问控制
+   - 数据加密
+   - 安全传输
+
+## 进阶功能
+
+1. **分布式监控**
+```go
+type Node struct {
+    ID       string
+    Address  string
+    Status   string
+    LastSeen time.Time
+}
+
+func setupCluster() {
+    // 使用 etcd 进行服务发现
+    cli, _ := clientv3.New(clientv3.Config{
+        Endpoints: []string{"localhost:2379"},
+    })
+    defer cli.Close()
+
+    // 注册节点
+    node := Node{
+        ID:      uuid.New().String(),
+        Address: "localhost:8080",
+    }
+    registerNode(cli, node)
+}
+```
+
+2. **历史数据存储**
+```go
+func storeMetrics(stats *MetricsResponse) {
+    // 使用 InfluxDB 存储时序数据
+    writeAPI := client.WriteAPIBlocking("org", "bucket")
+    
+    p := influxdb2.NewPoint(
+        "system_metrics",
+        map[string]string{"host": "local"},
+        map[string]interface{}{
+            "cpu_usage": stats.CPU.Usage,
+            "mem_usage": stats.Memory.UsedPerc,
+        },
+        time.Now(),
+    )
+    
+    writeAPI.WritePoint(context.Background(), p)
+}
+```
+
+## 总结
+
+Go 语言强大的系统编程能力和优秀的性能特性，使其成为开发系统监控工具的理想选择。通过本文的实战示例，我们学习了如何使用 Go 开发一个基础的系统监控工具，包括资源监控、数据收集、可视化和告警等功能。在实际应用中，可以根据具体需求扩展更多功能，如分布式监控、历史数据分析等。建议在此基础上继续探索和实践，开发出更加强大和实用的监控系统。

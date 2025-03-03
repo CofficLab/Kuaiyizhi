@@ -1,0 +1,172 @@
+---
+title: PHP 函数编程
+---
+
+# PHP 函数基础
+
+函数是 PHP 中重要的代码组织单元，它可以将一段代码封装起来，方便重复使用和维护。本章将介绍 PHP 函数的基本概念和使用方法。
+
+## 函数定义
+
+### 基本语法
+
+```php
+function 函数名(参数列表) {
+    // 函数体
+    return 返回值;
+}
+```
+
+### 简单示例
+
+```php
+function sayHello($name) {
+    return "你好，$name！";
+}
+
+// 调用函数
+echo sayHello("张三"); // 输出：你好，张三！
+```
+
+## 参数传递
+
+### 按值传递
+
+```php
+function addOne($number) {
+    $number += 1;
+    return $number;
+}
+
+$x = 5;
+echo addOne($x); // 输出：6
+echo $x;         // 输出：5（原值不变）
+```
+
+### 按引用传递
+
+```php
+function addOneByRef(&$number) {
+    $number += 1;
+}
+
+$x = 5;
+addOneByRef($x);
+echo $x; // 输出：6（原值改变）
+```
+
+### 默认参数值
+
+```php
+function greet($name = "访客") {
+    echo "欢迎，$name！";
+}
+
+greet();        // 输出：欢迎，访客！
+greet("张三"); // 输出：欢迎，张三！
+```
+
+## 返回值
+
+### 单一返回值
+
+```php
+function multiply($a, $b) {
+    return $a * $b;
+}
+
+$result = multiply(3, 4); // 返回：12
+```
+
+### 多个返回值
+
+```php
+function getCoordinates() {
+    return [10, 20]; // 使用数组返回多个值
+}
+
+[$x, $y] = getCoordinates(); // 数组解构
+echo "x: $x, y: $y";        // 输出：x: 10, y: 20
+```
+
+## 变量作用域
+
+### 局部变量
+
+```php
+function test() {
+    $local = "我是局部变量";
+    echo $local;
+}
+
+test();
+// echo $local; // 错误：无法访问局部变量
+```
+
+### 全局变量
+
+```php
+$global = "我是全局变量";
+
+function useGlobal() {
+    global $global; // 声明使用全局变量
+    echo $global;
+}
+
+useGlobal(); // 输出：我是全局变量
+```
+
+## 匿名函数
+
+### 基本用法
+
+```php
+$greet = function($name) {
+    return "你好，$name！";
+};
+
+echo $greet("李四"); // 输出：你好，李四！
+```
+
+### 闭包
+
+```php
+function createCounter() {
+    $count = 0;
+    return function() use (&$count) {
+        return ++$count;
+    };
+}
+
+$counter = createCounter();
+echo $counter(); // 输出：1
+echo $counter(); // 输出：2
+```
+
+## 内置函数
+
+### 字符串函数
+
+```php
+$str = "Hello World";
+echo strlen($str);     // 字符串长度
+echo strtoupper($str); // 转大写
+echo substr($str, 0, 5); // 截取子串
+```
+
+### 数学函数
+
+```php
+echo abs(-5);     // 绝对值
+echo round(3.6);  // 四舍五入
+echo rand(1, 10); // 随机数
+```
+
+## 实践练习
+
+1. 创建一个函数，计算给定数组中所有数字的平均值。
+2. 实现一个函数，可以接收任意数量的参数并返回它们的和。
+3. 编写一个函数，检查给定的字符串是否是回文（正读反读都一样）。
+4. 创建一个闭包函数，实现一个简单的计数器。
+
+通过这些练习，你将加深对 PHP 函数的理解，掌握函数编程的核心概念和技巧。函数是构建可维护代码的基础，在实际开发中有着广泛的应用。

@@ -1,0 +1,248 @@
+---
+title: Caddy API 使用指南
+---
+
+本文将介绍如何使用 Caddy 的 Admin API 进行配置管理和监控。
+
+## API 基础
+
+### 启用 Admin API
+
+默认情况下，Admin API 监听在 `localhost:2019`。可以通过以下配置修改：
+
+```caddyfile
+{
+    admin localhost:2019
+    # 或完全禁用
+    # admin off
+}
+```
+
+### 基本认证
+
+为 Admin API 添加认证：
+
+```caddyfile
+{
+    admin localhost:2019 {
+        credentials admin:$2a$14$jH.EG0EG2GL6GG7HXXUOCeLUPYvBKX.EG2GL6GG7HXXUOCe
+    }
+}
+```
+
+## 配置管理
+
+### 获取当前配置
+
+```bash
+# 获取完整配置
+curl localhost:2019/config/
+
+# 获取特定路径的配置
+curl localhost:2019/config/apps/http/servers/myserver
+```
+
+### 更新配置
+
+```bash
+# 更新完整配置
+curl localhost:2019/config/ \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d @config.json
+
+# 更新部分配置
+curl localhost:2019/config/apps/http/servers/myserver \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '{
+        "listen": [":443"],
+        "routes": [{
+            "handle": [{
+                "handler": "file_server",
+                "root": "/var/www/html"
+            }]
+        }]
+    }'
+```
+
+### 加载新的 Caddyfile
+
+```bash
+# 从文件加载
+curl localhost:2019/load \
+    -X POST \
+    -H "Content-Type: text/caddyfile" \
+    --data-binary @Caddyfile
+
+# 直接提交配置
+curl localhost:2019/load \
+    -X POST \
+    -H "Content-Type: text/caddyfile" \
+    --data-binary '
+    example.com {
+        root * /var/www/html
+        file_server
+    }
+    '
+```
+
+## 服务管理
+
+### 启动和停止
+
+```bash
+# 停止服务器
+curl -X POST localhost:2019/stop
+
+# 启动服务器
+curl -X POST localhost:2019/start
+```
+
+### 重新加载配置
+
+```bash
+# 重新加载配置
+curl -X POST localhost:2019/reload
+```
+
+## 证书管理
+
+### 查看证书
+
+```bash
+# 列出所有证书
+curl localhost:2019/certificates
+
+# 查看特定证书
+curl localhost:2019/certificates/example.com
+```
+
+### 管理证书
+
+```bash
+# 手动获取证书
+curl localhost:2019/certificates \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '{
+        "domains": ["example.com"],
+        "email": "admin@example.com"
+    }'
+
+# 撤销证书
+curl localhost:2019/certificates/example.com \
+    -X DELETE
+```
+
+## 监控和调试
+
+### 获取指标
+
+```bash
+# 获取 Prometheus 格式的指标
+curl localhost:2019/metrics
+```
+
+### 查看日志
+
+```bash
+# 获取最近的日志
+curl localhost:2019/debug/logging/logs
+
+# 修改日志级别
+curl localhost:2019/debug/logging/level \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"level": "DEBUG"}'
+```
+
+## 实用示例
+
+### 动态更新反向代理
+
+```bash
+# 添加新的反向代理目标
+curl localhost:2019/config/apps/http/servers/myserver/routes/0/handle/0/upstreams \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '[
+        {"dial": "localhost:8081"},
+        {"dial": "localhost:8082"}
+    ]'
+```
+
+### 管理重定向
+
+```bash
+# 添加重定向规则
+curl localhost:2019/config/apps/http/servers/myserver/routes \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '{
+        "match": [{
+            "path": ["/old/*"]
+        }],
+        "handle": [{
+            "handler": "rewrite",
+            "uri": "/new/{http.request.uri.path.1}"
+        }]
+    }'
+```
+
+## 错误处理
+
+### 常见错误码
+
+- `400 Bad Request`: 请求格式错误
+- `401 Unauthorized`: 认证失败
+- `404 Not Found`: 请求的资源不存在
+- `500 Internal Server Error`: 服务器内部错误
+
+### 错误响应示例
+
+```json
+{
+    "error": "configuration error",
+    "cause": "invalid port number",
+    "stack": "..."
+}
+```
+
+## 安全建议
+
+1. **限制访问**
+   ```caddyfile
+   {
+       admin 127.0.0.1:2019 {
+           origins 192.168.1.0/24 10.0.0.0/8
+       }
+   }
+   ```
+
+2. **使用 HTTPS**
+   ```caddyfile
+   {
+       admin {
+           listen localhost:2019
+           enforce_origin
+           origins https://admin.example.com
+       }
+   }
+   ```
+
+3. **审计日志**
+   ```bash
+   # 启用 API 访问日志
+   curl localhost:2019/config/ \
+       -X POST \
+       -H "Content-Type: application/json" \
+       -d '{
+           "admin": {
+               "log": {
+                   "output": "file",
+                   "filename": "/var/log/caddy/admin.log"
+               }
+           }
+       }'
+   ```

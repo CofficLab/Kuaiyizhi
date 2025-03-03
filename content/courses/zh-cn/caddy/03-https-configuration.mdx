@@ -1,0 +1,176 @@
+---
+title: Caddy HTTPS 配置详解
+---
+
+Caddy 的一大特色是自动 HTTPS 配置。本文将详细介绍 Caddy 的 HTTPS 相关配置。
+
+## 自动 HTTPS
+
+默认情况下，Caddy 会自动为所有合格的域名申请和管理 HTTPS 证书：
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server
+}
+```
+
+以上配置会自动：
+1. 为 example.com 申请 Let's Encrypt 证书
+2. 配置 HTTPS 重定向
+3. 管理证书续期
+
+## 手动 TLS 配置
+
+### 使用自定义证书
+
+```caddyfile
+example.com {
+    tls /path/to/cert.pem /path/to/key.pem
+}
+```
+
+### 使用内部自签名证书
+
+```caddyfile
+example.com {
+    tls internal
+}
+```
+
+### 禁用自动 HTTPS
+
+```caddyfile
+{
+    auto_https off
+}
+```
+
+## 高级 TLS 配置
+
+### 配置 TLS 版本和加密套件
+
+```caddyfile
+example.com {
+    tls {
+        protocols tls1.2 tls1.3
+        ciphers TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        curves x25519 secp521r1 secp384r1 secp256r1
+    }
+}
+```
+
+### OCSP Stapling
+
+```caddyfile
+example.com {
+    tls {
+        must_staple
+    }
+}
+```
+
+## 证书管理
+
+### 指定证书颁发机构
+
+```caddyfile
+example.com {
+    tls {
+        issuer acme {
+            email admin@example.com
+            preferred_chains "ISRG Root X1"
+        }
+    }
+}
+```
+
+### 使用 ZeroSSL
+
+```caddyfile
+example.com {
+    tls {
+        issuer zerossl {
+            email admin@example.com
+        }
+    }
+}
+```
+
+## 开发环境配置
+
+### 本地开发使用自签名证书
+
+```caddyfile
+localhost {
+    tls internal
+    root * /path/to/site
+    file_server
+}
+```
+
+## 故障排查
+
+### 查看证书信息
+
+```bash
+# 查看当前证书状态
+caddy certificates
+
+# 查看详细证书信息
+openssl s_client -connect example.com:443 -servername example.com
+```
+
+### 常见问题解决
+
+1. **证书申请失败**
+   ```caddyfile
+   example.com {
+       tls {
+           issuer acme {
+               disable_http_challenge
+               disable_tlsalpn_challenge
+               dns cloudflare {env.CF_API_TOKEN}
+           }
+       }
+   }
+   ```
+
+2. **强制更新证书**
+   ```bash
+   caddy untrust && caddy reload
+   ```
+
+## 性能优化
+
+### 启用 Session Tickets
+
+```caddyfile
+example.com {
+    tls {
+        session_tickets
+    }
+}
+```
+
+### 配置 HSTS
+
+```caddyfile
+example.com {
+    header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+}
+```
+
+## 监控和日志
+
+### TLS 相关日志配置
+
+```caddyfile
+example.com {
+    log {
+        output file /var/log/caddy/tls.log
+        format json
+        level INFO
+    }
+}
+``` 

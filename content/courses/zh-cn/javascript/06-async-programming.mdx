@@ -1,0 +1,240 @@
+---
+title: JavaScript 异步编程
+description: 学习 JavaScript 中的回调函数、Promise、async/await 等异步编程概念
+---
+
+## 异步编程基础
+
+### 同步与异步
+```javascript
+// 同步代码
+console.log('开始');
+const result = doSomething();
+console.log('结果:', result);
+console.log('结束');
+
+// 异步代码
+console.log('开始');
+doSomethingAsync().then(result => {
+    console.log('结果:', result);
+});
+console.log('结束');
+```
+
+### 回调函数
+```javascript
+// 基本回调示例
+function fetchData(callback) {
+    setTimeout(() => {
+        const data = { id: 1, name: 'JavaScript' };
+        callback(data);
+    }, 1000);
+}
+
+fetchData(data => {
+    console.log('获取的数据:', data);
+});
+
+// 回调地狱示例
+getUser(userId, user => {
+    getOrders(user.id, orders => {
+        getOrderDetails(orders[0].id, details => {
+            console.log('订单详情:', details);
+        });
+    });
+});
+```
+
+## Promise
+
+### 创建 Promise
+```javascript
+const promise = new Promise((resolve, reject) => {
+    // 异步操作
+    setTimeout(() => {
+        const random = Math.random();
+        if (random > 0.5) {
+            resolve('成功');
+        } else {
+            reject('失败');
+        }
+    }, 1000);
+});
+
+promise
+    .then(result => console.log(result))
+    .catch(error => console.error(error));
+```
+
+### Promise 链式调用
+```javascript
+function fetchUser(id) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ id, name: 'Alice' });
+        }, 1000);
+    });
+}
+
+function fetchOrders(userId) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve([{ id: 1, userId, product: 'Book' }]);
+        }, 1000);
+    });
+}
+
+fetchUser(1)
+    .then(user => fetchOrders(user.id))
+    .then(orders => console.log('订单:', orders))
+    .catch(error => console.error('错误:', error));
+```
+
+### Promise.all 和 Promise.race
+```javascript
+const promise1 = new Promise(resolve => setTimeout(() => resolve(1), 1000));
+const promise2 = new Promise(resolve => setTimeout(() => resolve(2), 2000));
+const promise3 = new Promise(resolve => setTimeout(() => resolve(3), 3000));
+
+// 等待所有 Promise 完成
+Promise.all([promise1, promise2, promise3])
+    .then(results => console.log('全部完成:', results))
+    .catch(error => console.error('有一个失败:', error));
+
+// 等待第一个完成的 Promise
+Promise.race([promise1, promise2, promise3])
+    .then(result => console.log('第一个完成:', result))
+    .catch(error => console.error('第一个失败:', error));
+```
+
+## async/await
+
+### 基本用法
+```javascript
+async function fetchUserData() {
+    try {
+        const user = await fetchUser(1);
+        const orders = await fetchOrders(user.id);
+        console.log('用户订单:', orders);
+    } catch (error) {
+        console.error('错误:', error);
+    }
+}
+
+fetchUserData();
+```
+
+### 并行执行
+```javascript
+async function fetchAllData() {
+    try {
+        const [users, products] = await Promise.all([
+            fetchUsers(),
+            fetchProducts()
+        ]);
+        console.log('用户:', users);
+        console.log('产品:', products);
+    } catch (error) {
+        console.error('错误:', error);
+    }
+}
+```
+
+### 实际应用示例
+```javascript
+class DataService {
+    async fetchUserProfile(userId) {
+        try {
+            const user = await this.fetchUser(userId);
+            const orders = await this.fetchOrders(user.id);
+            const preferences = await this.fetchPreferences(user.id);
+
+            return {
+                user,
+                orders,
+                preferences
+            };
+        } catch (error) {
+            console.error('获取用户资料失败:', error);
+            throw error;
+        }
+    }
+
+    async fetchUser(id) {
+        // 模拟 API 调用
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({ id, name: 'Alice' });
+            }, 1000);
+        });
+    }
+
+    async fetchOrders(userId) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve([{ id: 1, userId, product: 'Book' }]);
+            }, 1000);
+        });
+    }
+
+    async fetchPreferences(userId) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({ theme: 'dark', language: 'zh' });
+            }, 1000);
+        });
+    }
+}
+
+// 使用示例
+const service = new DataService();
+service.fetchUserProfile(1)
+    .then(profile => console.log('用户资料:', profile))
+    .catch(error => console.error('错误:', error));
+```
+
+## 错误处理
+
+### Promise 错误处理
+```javascript
+fetchData()
+    .then(data => processData(data))
+    .then(result => saveData(result))
+    .catch(error => {
+        console.error('发生错误:', error);
+        // 错误恢复逻辑
+        return fallbackData;
+    })
+    .finally(() => {
+        // 清理工作
+        console.log('处理完成');
+    });
+```
+
+### async/await 错误处理
+```javascript
+async function processUserData() {
+    try {
+        const data = await fetchData();
+        const result = await processData(data);
+        await saveData(result);
+    } catch (error) {
+        console.error('处理用户数据时出错:', error);
+        // 错误处理逻辑
+    } finally {
+        // 清理工作
+    }
+}
+```
+
+## 练习
+1. 实现一个简单的异步数据加载器
+2. 使用 Promise.all 同时获取多个 API 的数据
+3. 将回调式 API 转换为 Promise 式 API
+
+## 小结
+- 理解同步和异步编程的区别
+- 掌握回调函数的使用和缺点
+- 熟练使用 Promise 处理异步操作
+- 掌握 async/await 的语法和应用
+- 学会处理异步操作中的错误

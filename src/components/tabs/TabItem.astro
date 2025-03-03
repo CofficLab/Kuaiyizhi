@@ -1,0 +1,15 @@
+---
+export interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<a role="tab" class="tab" data-tab-button={label} slot="tab-buttons">
+  {label}
+</a>
+
+<div class="tab-content hidden" data-tab-content={label}>
+  <slot />
+</div>

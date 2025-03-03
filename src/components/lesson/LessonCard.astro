@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import bookCover from '@assets/book.png';
+import LessonBook from '@/models/LessonBook';
+
+interface Props {
+  lesson: LessonBook;
+}
+
+const { lesson } = Astro.props;
+const lessonTitle = lesson.getTitle();
+const lessonLink = lesson.getLink();
+const lessonLang = lesson.getLang();
+---
+
+<div>
+  <a href={lessonLink} class="justify-center flex no-underline text-gray-100">
+    <div class="w-56 h-80">
+      <div
+        class="bg-gradient-to-br w-full h-full from-green-900/90 to-cyan-900/40 rounded-3xl shadow-lg">
+        <div
+          class="bg-base-100/40 w-full h-full rounded-3xl border border-white/50 hover:scale-105 hover:shadow-2xl transform duration-200">
+          <div class="card-body p-1 h-full">
+            <Image src={bookCover} alt={lessonTitle} class="h-3/5 w-full" />
+            <div class="flex flex-col gap-2">
+              <h2 class="text-lg text-center">
+                {lessonTitle}
+              </h2>
+
+              <div class="flex flex-wrap gap-2 justify-center">
+                <span class="text-sm text-gray-400">{lessonLang}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>

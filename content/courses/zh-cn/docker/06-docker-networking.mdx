@@ -1,0 +1,121 @@
+---
+title: 06 - Docker 网络
+description: 学习Docker的网络模型和容器间通信
+excerpt: 本文详细介绍Docker的网络模型、网络类型和容器间通信方式，帮助你理解和配置Docker容器的网络连接，实现多容器应用的部署。
+---
+
+# Docker 网络
+
+在前面的教程中，我们学习了Docker的基本概念、命令、镜像构建和数据管理。本文将介绍Docker的网络功能，这对于构建多容器应用和微服务架构至关重要。
+
+## Docker网络模型
+
+Docker使用了一种插件化的网络架构，称为Container Network Model (CNM)。这种架构允许开发者选择或实现不同的网络驱动，以满足各种网络需求。
+
+## Docker默认网络类型
+
+当你安装Docker时，它会自动创建三种网络：
+
+```bash
+docker network ls
+```
+
+你会看到类似以下输出：
+
+```
+NETWORK ID     NAME      DRIVER    SCOPE
+9f6f3a1e85ff   bridge    bridge    local
+95d96da43c2e   host      host      local
+0ba0e9dcacf5   none      null      local
+```
+
+### 1. 桥接网络（Bridge Network）
+
+桥接网络是Docker的默认网络模式。当你创建一个容器而不指定网络时，它会自动连接到桥接网络。
+
+特点：
+- 同一桥接网络中的容器可以通过IP地址相互通信
+- 容器可以通过端口映射与外部网络通信
+- 每个容器都有自己的IP地址
+
+```bash
+# 创建并运行连接到默认桥接网络的容器
+docker run -d --name web nginx
+```
+
+### 2. 主机网络（Host Network）
+
+使用主机网络的容器与主机共享网络命名空间，直接使用主机的网络接口。
+
+特点：
+- 容器直接使用主机的网络，没有网络隔离
+- 性能更好，没有网络地址转换（NAT）开销
+- 容器中的服务直接绑定到主机端口，可能导致端口冲突
+
+```bash
+# 创建并运行连接到主机网络的容器
+docker run -d --network host --name web nginx
+```
+
+### 3. 空网络（None Network）
+
+连接到空网络的容器没有网络接口（除了loopback接口）。
+
+特点：
+- 容器完全隔离，没有外部网络连接
+- 适用于不需要网络的批处理任务
+
+```bash
+# 创建并运行连接到空网络的容器
+docker run -d --network none --name batch-job alpine sleep 1000
+```
+
+## 自定义网络
+
+Docker允许创建自定义网络，这对于隔离容器组和实现更复杂的网络拓扑非常有用。
+
+### 创建自定义网络
+
+```bash
+# 创建自定义桥接网络
+docker network create --driver bridge my-network
+
+# 创建具有特定子网和网关的网络
+docker network create --driver bridge --subnet 172.18.0.0/16 --gateway 172.18.0.1 my-network
+```
+
+### 将容器连接到自定义网络
+
+```bash
+# 创建容器并连接到自定义网络
+docker run -d --network my-network --name web nginx
+
+# 将现有容器连接到网络
+docker network connect my-network existing-container
+
+# 断开容器与网络的连接
+docker network disconnect my-network existing-container
+```
+
+## 容器间通信
+
+### 1. IP地址通信
+
+同一网络中的容器可以通过IP地址相互通信。
+
+```bash
+# 查看容器IP地址
+docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' web
+```
+
+### 2. DNS解析和服务发现
+
+Docker内置了DNS服务器，允许容器通过容器名称相互访问（在自定义网络中）。
+
+```bash
+# 创建两个容器在同一自定义网络中
+docker network create app-network
+docker run -d --network app-network --name web nginx
+docker run -d --network app-network --name db postgres
+
+# 现在web容器可以通过名称"db

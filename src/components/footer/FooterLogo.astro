@@ -1,0 +1,23 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@assets/logo.png';
+import { makeHomeLink } from '@utils/links';
+import { getLangFromPathname } from '@/utils/lang';
+
+const lang = getLangFromPathname(Astro.url.pathname);
+
+const siteName = lang === 'zh-cn' ? '快易知' : 'Quick Knowledge';
+---
+
+<a
+  href={makeHomeLink(lang)}
+  class="flex items-center self-center w-auto text-lg font-bold px-4 py-2 rounded-xl ring-white/50 no-underline
+  hover:ring-1 hover:shadow-2xl hover:bg-green-600/10 hover:backdrop-blur transform duration-100
+  text-gray-700">
+  <div class="flex flex-row items-center w-full">
+    <Image src={logo} alt="" class="h-6 w-6 sm:w-8 sm:h-8 mt-1 fill-current" />
+    <span class="w-full ml-2 sm:ml-4 text-lg sm:text-xl font-bold">
+      {siteName}
+    </span>
+  </div>
+</a>

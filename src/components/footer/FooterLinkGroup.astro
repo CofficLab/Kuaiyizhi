@@ -1,0 +1,28 @@
+---
+import FooterLink from './FooterLink.astro';
+
+interface LinkItem {
+  key: string;
+  href: string;
+  external: boolean;
+}
+
+interface Props {
+  links: LinkItem[];
+  getLabel: (key: string) => string;
+}
+
+const { links, getLabel } = Astro.props;
+---
+
+<ul class="flex flex-col gap-4 md:gap-8 items-center md:items-start list-none">
+  {
+    links.map((link) => (
+      <li>
+        <FooterLink href={link.href} external={link.external}>
+          {getLabel(link.key)}
+        </FooterLink>
+      </li>
+    ))
+  }
+</ul>

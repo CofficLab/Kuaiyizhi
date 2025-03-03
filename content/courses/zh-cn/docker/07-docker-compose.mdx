@@ -1,0 +1,357 @@
+---
+title: 07 - Docker Compose
+description: 学习使用Docker Compose管理多容器应用
+excerpt: 本文详细介绍Docker Compose的使用方法，帮助你轻松定义、配置和运行由多个Docker容器组成的应用程序，简化开发和部署流程。
+---
+
+# Docker Compose
+
+在前面的教程中，我们学习了如何使用Docker创建和管理单个容器。但在实际应用中，我们通常需要运行多个相互关联的容器来构建一个完整的应用。例如，一个Web应用可能包含Web服务器、数据库、缓存服务器等多个组件。手动管理这些容器既繁琐又容易出错，这时就需要用到Docker Compose。
+
+## 什么是Docker Compose？
+
+Docker Compose是一个用于定义和运行多容器Docker应用的工具。使用Compose，你可以通过一个YAML文件配置应用的服务，然后使用一个命令创建并启动所有服务。
+
+## 安装Docker Compose
+
+### 在Windows和macOS上
+
+如果你安装了Docker Desktop（适用于Windows或macOS），那么Docker Compose已经包含在其中，无需额外安装。
+
+### 在Linux上
+
+```bash
+# 下载Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# 添加可执行权限
+sudo chmod +x /usr/local/bin/docker-compose
+
+# 验证安装
+docker-compose --version
+```
+
+## Docker Compose基本概念
+
+### docker-compose.yml文件
+
+Docker Compose使用YAML文件（通常命名为`docker-compose.yml`）来定义应用的服务、网络和卷。一个简单的`docker-compose.yml`文件示例：
+
+```yaml
+version: '3'
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+      
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: myapp
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+```
+
+### 服务（Services）
+
+服务是应用的组成部分，在Docker中通常是一个容器。每个服务可以从镜像创建，也可以通过Dockerfile构建。
+
+### 网络（Networks）
+
+Compose会为你的应用创建一个默认网络，使得服务之间可以通过服务名相互访问。你也可以自定义网络配置。
+
+### 卷（Volumes）
+
+卷用于持久化数据或在服务之间共享数据。
+
+## Docker Compose常用命令
+
+### 启动服务
+
+```bash
+# 在docker-compose.yml所在目录执行
+docker-compose up
+
+# 在后台运行
+docker-compose up -d
+```
+
+### 停止服务
+
+```bash
+docker-compose down
+
+# 同时删除卷
+docker-compose down -v
+```
+
+### 查看服务状态
+
+```bash
+docker-compose ps
+```
+
+### 查看服务日志
+
+```bash
+docker-compose logs
+
+# 查看特定服务的日志
+docker-compose logs web
+
+# 实时查看日志
+docker-compose logs -f
+```
+
+### 执行命令
+
+```bash
+# 在服务容器中执行命令
+docker-compose exec web bash
+```
+
+### 构建服务
+
+```bash
+# 构建或重新构建服务
+docker-compose build
+
+# 构建并启动服务
+docker-compose up --build
+```
+
+## docker-compose.yml详解
+
+### version
+
+指定Compose文件格式的版本。
+
+```yaml
+version: '3'
+```
+
+### services
+
+定义应用包含的服务。
+
+```yaml
+services:
+  web:
+    image: nginx:latest
+    # 更多配置...
+  db:
+    image: postgres:13
+    # 更多配置...
+```
+
+### 常用服务配置选项
+
+#### image
+
+指定要使用的镜像。
+
+```yaml
+image: redis:6
+```
+
+#### build
+
+从Dockerfile构建镜像。
+
+```yaml
+build:
+  context: ./dir  # 构建上下文路径
+  dockerfile: Dockerfile.dev  # 可选，指定Dockerfile
+```
+
+#### ports
+
+暴露端口。
+
+```yaml
+ports:
+  - "3000:3000"  # 主机端口:容器端口
+```
+
+#### volumes
+
+挂载卷或绑定挂载。
+
+```yaml
+volumes:
+  - ./data:/app/data  # 绑定挂载
+  - logs:/app/logs    # 卷挂载
+```
+
+#### environment
+
+设置环境变量。
+
+```yaml
+environment:
+  NODE_ENV: production
+  API_KEY: secret
+```
+
+#### depends_on
+
+指定服务依赖关系。
+
+```yaml
+depends_on:
+  - db
+  - redis
+```
+
+#### networks
+
+指定服务连接的网络。
+
+```yaml
+networks:
+  - frontend
+  - backend
+```
+
+#### restart
+
+定义容器的重启策略。
+
+```yaml
+restart: always  # 可选值：no, always, on-failure, unless-stopped
+```
+
+### networks
+
+定义应用使用的网络。
+
+```yaml
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+```
+
+### volumes
+
+定义应用使用的卷。
+
+```yaml
+volumes:
+  db-data:
+  logs:
+```
+
+## 实际应用示例
+
+### Web应用 + 数据库 + Redis缓存
+
+```yaml
+version: '3'
+
+services:
+  web:
+    build: ./app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - REDIS_HOST=redis
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=myapp
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:6
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+```
+
+### WordPress + MySQL
+
+```yaml
+version: '3'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  wordpress:
+  db:
+```
+
+## Docker Compose的最佳实践
+
+1. **使用环境变量**：将敏感信息和环境特定配置放在`.env`文件中，而不是硬编码在`docker-compose.yml`中。
+
+2. **合理组织服务**：将相关服务组织在一起，使用适当的依赖关系。
+
+3. **使用版本控制**：将`docker-compose.yml`文件纳入版本控制，但排除`.env`文件。
+
+4. **使用健康检查**：为服务添加健康检查，确保它们正常运行。
+
+```yaml
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost"]
+  interval: 1m
+  timeout: 10s
+  retries: 3
+```
+
+5. **使用命名卷**：为持久数据使用命名卷，而不是匿名卷。
+
+## 总结
+
+Docker Compose极大地简化了多容器应用的管理。通过一个YAML文件，我们可以定义整个应用的架构，包括服务、网络和卷，然后使用简单的命令启动和管理整个应用。这不仅提高了开发效率，还确保了开发、测试和生产环境的一致性。在下一篇教程中，我们将学习Docker的生产环境最佳实践，包括安全性、监控和性能优化等方面的内容。

@@ -1,0 +1,185 @@
+---
+title: Building a Tag-Supported Blog System with Astro
+date: 2025-02-04
+excerpt: This article will guide you through creating a simple blog system using Astro, with support for tag categorization, including article creation, display, and tag filtering.
+authors:
+  - name: Nookery
+    picture: https://avatars.githubusercontent.com/u/5194193?s=200
+    url: https://github.com/nookery
+tags:
+  - Astro
+  - Blog
+  - Tags
+---
+
+In this tutorial, we'll create a simple blog system using Astro with support for tag categorization. We'll cover the following topics:
+
+1. Creating the project
+2. Configuring article structure
+3. Implementing tag categorization
+4. Displaying article lists
+5. Adding tag filtering functionality
+
+## 1. Creating the Project
+
+First, ensure you have Node.js and npm installed. Then create a new Astro project using the following command:
+
+```bash
+npm create astro@latest
+```
+
+Follow the prompts to select a template and configuration options to complete the project initialization.
+
+## 2. Configuring Article Structure
+
+Create a `docs` folder in the `src/content` directory to store blog posts. Each article should use Markdown format with frontmatter information in the header, including title, date, tags, etc.
+
+For example, create an article named `my-first-post.md`:
+
+```md
+---
+title: My First Post
+date: 2025-02-01
+tags: [getting-started, personal]
+---
+
+Welcome to my blog! This is my first post.
+```
+
+You can create more articles and add appropriate tags to each one as needed.
+
+## 3. Implementing Tag Categorization
+
+Next, we need to implement the tag categorization functionality. First, create a function to get all tags:
+
+```javascript
+// src/utils/getTags.js
+export function getTags(posts) {
+  const tags = new Set();
+  posts.forEach(post => {
+    post.data.tags?.forEach(tag => tags.add(tag));
+  });
+  return Array.from(tags);
+}
+```
+
+## 4. Displaying Article Lists
+
+Create a new page `index.astro` in the `src/pages` directory to display all articles and tags:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+import { getTags } from '../utils/getTags';
+
+const posts = await getCollection('docs');
+const tags = getTags(posts);
+---
+
+<h1>My Blog</h1>
+
+<h2>Tags</h2>
+<ul>
+  {tags.map(tag => (
+    <li>
+      <a href={`#${tag}`}>{tag}</a>
+    </li>
+  ))}
+</ul>
+
+<h2>Article List</h2>
+<ul>
+  {posts.map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>Tags: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+## 5. Adding Tag Filtering
+
+To implement tag filtering, we can add simple JavaScript logic to filter articles based on the user's selected tag.
+
+First, modify the `index.astro` file to add a state for tracking the currently selected tag:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+import { getTags } from '../utils/getTags';
+
+const posts = await getCollection('docs');
+const tags = getTags(posts);
+const selectedTag = Astro.url.searchParams.get('tag') || '';
+---
+
+<h1>My Blog</h1>
+
+<h2>Tags</h2>
+<ul>
+  {tags.map(tag => (
+    <li>
+      <a href={`?tag=${tag}`}>{tag}</a>
+    </li>
+  ))}
+</ul>
+
+<h2>Article List</h2>
+<ul>
+  {posts.filter(post => 
+    selectedTag ? post.data.tags.includes(selectedTag) : true
+  ).map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>Tags: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+## 6. Displaying Articles by Tag
+
+To implement displaying articles by tag, we can create a new page that dynamically filters and displays articles based on the tag in the URL.
+
+First, create a new file `tags.astro` in the `src/pages/blogs` directory to display articles by tag:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+const { params } = Astro.url;
+const tag = params.tag;
+const posts = await getCollection('docs');
+const filteredPosts = posts.filter(post => post.data.tags.includes(tag));
+---
+
+<h1>Tag: {tag}</h1>
+
+<h2>Article List</h2>
+<ul>
+  {filteredPosts.map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>Tags: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+This way, users can visit URLs like `/blogs/tags/golang` to view all articles tagged with "golang".
+
+## Conclusion
+
+Through this tutorial, you've learned how to create a blog system with tag categorization using Astro. You can further expand and optimize this system based on your needs to build a more powerful and flexible blogging platform.
+
+We hope you've enjoyed this process and will apply this knowledge in your future projects! 

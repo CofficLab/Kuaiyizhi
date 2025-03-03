@@ -1,0 +1,206 @@
+---
+title: Caddy 反向代理进阶
+---
+
+本文详细介绍 Caddy 的反向代理功能及高级配置。
+
+## 基础代理配置
+
+### 简单代理
+
+```caddyfile
+example.com {
+    reverse_proxy localhost:8080
+}
+```
+
+### 多后端服务器
+
+```caddyfile
+example.com {
+    reverse_proxy backend1:8080 backend2:8080 backend3:8080 {
+        lb_policy round_robin
+    }
+}
+```
+
+## 负载均衡策略
+
+### 轮询（Round Robin）
+
+```caddyfile
+reverse_proxy {
+    to backend1:8080 backend2:8080
+    lb_policy round_robin
+}
+```
+
+### 最少连接
+
+```caddyfile
+reverse_proxy {
+    to backend1:8080 backend2:8080
+    lb_policy least_conn
+}
+```
+
+### IP Hash
+
+```caddyfile
+reverse_proxy {
+    to backend1:8080 backend2:8080
+    lb_policy ip_hash
+}
+```
+
+## 健康检查
+
+### 基础健康检查
+
+```caddyfile
+reverse_proxy backend:8080 {
+    health_uri /health
+    health_interval 10s
+    health_timeout 5s
+    health_status 200
+}
+```
+
+### 高级健康检查
+
+```caddyfile
+reverse_proxy backend:8080 {
+    health_uri /health
+    health_interval 5s
+    health_timeout 2s
+    health_status 2xx
+    health_body "healthy"
+}
+```
+
+## 请求头处理
+
+### 修改请求头
+
+```caddyfile
+reverse_proxy backend:8080 {
+    header_up Host {upstream_hostport}
+    header_up X-Real-IP {remote_host}
+    header_up X-Forwarded-For {remote_host}
+    header_up X-Forwarded-Proto {scheme}
+}
+```
+
+### 响应头处理
+
+```caddyfile
+reverse_proxy backend:8080 {
+    header_down Access-Control-Allow-Origin *
+    header_down X-Frame-Options DENY
+}
+```
+
+## 高级特性
+
+### 故障转移
+
+```caddyfile
+reverse_proxy {
+    to primary:8080
+    to backup:8080 backup
+}
+```
+
+### 重试策略
+
+```caddyfile
+reverse_proxy backend:8080 {
+    try_duration 5s
+    try_interval 250ms
+}
+```
+
+### 缓冲设置
+
+```caddyfile
+reverse_proxy backend:8080 {
+    buffer_requests
+    buffer_responses
+    max_buffer_size 100MB
+}
+```
+
+## 性能优化
+
+### 连接池配置
+
+```caddyfile
+reverse_proxy backend:8080 {
+    transport http {
+        dial_timeout 2s
+        keepalive 30s
+        keepalive_idle_conns 100
+    }
+}
+```
+
+### WebSocket 支持
+
+```caddyfile
+example.com {
+    reverse_proxy /ws backend:8080 {
+        transport http {
+            websocket
+        }
+    }
+}
+```
+
+## 高级路由
+
+### 基于路径的路由
+
+```caddyfile
+example.com {
+    reverse_proxy /api/* backend-api:8080
+    reverse_proxy /admin/* backend-admin:8080
+    reverse_proxy /* backend-main:8080
+}
+```
+
+### 条件路由
+
+```caddyfile
+example.com {
+    @api {
+        path /api/*
+        header Content-Type application/json
+    }
+    reverse_proxy @api backend-api:8080
+}
+```
+
+## 监控和调试
+
+### 访问日志
+
+```caddyfile
+reverse_proxy backend:8080 {
+    log {
+        output file /var/log/caddy/proxy.log
+        format json
+        level INFO
+    }
+}
+```
+
+### 错误处理
+
+```caddyfile
+reverse_proxy backend:8080 {
+    handle_response {
+        status 500 {
+            respond "Server Error" 500
+        }
+    }
+} 

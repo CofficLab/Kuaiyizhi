@@ -1,0 +1,110 @@
+---
+title: Caddy 安装指南
+---
+
+本文将详细介绍如何在不同的操作系统上安装 Caddy。
+
+## Linux 安装
+
+### Ubuntu/Debian
+
+```bash
+# 安装依赖
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+
+# 添加 Caddy 官方源
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+
+# 更新包列表并安装
+sudo apt update
+sudo apt install caddy
+```
+
+### CentOS/RHEL
+
+```bash
+# 添加 Caddy 官方源
+dnf install 'dnf-command(copr)'
+dnf copr enable @caddy/caddy
+dnf install caddy
+```
+
+## macOS 安装
+
+使用 Homebrew 包管理器安装：
+
+```bash
+brew install caddy
+```
+
+## Windows 安装
+
+### 使用 Chocolatey
+
+```powershell
+choco install caddy
+```
+
+### 手动安装
+
+1. 访问 [Caddy 官方下载页面](https://github.com/caddyserver/caddy/releases)
+2. 下载适用于 Windows 的最新版本
+3. 将可执行文件添加到系统环境变量
+
+## Docker 安装
+
+```bash
+# 拉取官方镜像
+docker pull caddy
+
+# 运行 Caddy 容器
+docker run -d \
+    --name caddy \
+    -p 80:80 \
+    -p 443:443 \
+    -v caddy_data:/data \
+    -v caddy_config:/config \
+    -v $PWD/Caddyfile:/etc/caddy/Caddyfile \
+    -v $PWD/site:/srv \
+    caddy
+```
+
+## 验证安装
+
+安装完成后，可以通过以下命令验证：
+
+```bash
+caddy version
+```
+
+## 服务管理
+
+### systemd (Linux)
+
+```bash
+# 启动 Caddy
+sudo systemctl start caddy
+
+# 设置开机自启
+sudo systemctl enable caddy
+
+# 查看状态
+sudo systemctl status caddy
+
+# 重启服务
+sudo systemctl restart caddy
+```
+
+### Homebrew (macOS)
+
+```bash
+# 启动服务
+brew services start caddy
+
+# 停止服务
+brew services stop caddy
+
+# 重启服务
+brew services restart caddy
+``` 

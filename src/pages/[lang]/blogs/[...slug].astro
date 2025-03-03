@@ -1,0 +1,14 @@
+---
+import BlogView from '@/components/views/BlogView.astro';
+import BlogDB from '@/database/BlogDB';
+
+export const prerender = true;
+export async function getStaticPaths() {
+  return await BlogDB.getStaticPaths();
+}
+
+let { lang, slug } = Astro.params;
+let id = `${lang}/${slug}`;
+---
+
+<BlogView id={id} />

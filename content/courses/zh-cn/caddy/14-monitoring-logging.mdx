@@ -1,0 +1,328 @@
+---
+title: Caddy 监控和日志管理指南
+---
+
+本文详细介绍 Caddy 的监控和日志管理，包括日志配置、监控指标、告警设置等内容。
+
+## 日志配置
+
+### 基础日志设置
+
+```caddyfile
+{
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb    # 日志文件大小限制
+            roll_keep 10       # 保留文件数量
+            roll_keep_for 168h # 保留时间（7天）
+        }
+        format json           # 日志格式
+        level INFO           # 日志级别
+    }
+}
+```
+
+### 自定义日志格式
+
+```caddyfile
+{
+    log {
+        output file /var/log/caddy/access.log
+        format json {
+            time_format "2006-01-02 15:04:05"
+            time_local         # 使用本地时间
+            message_key msg    # 自定义消息键名
+            level_key level    # 自定义级别键名
+            
+            # 自定义字段
+            fields {
+                request>remote_ip remote_ip
+                request>method method
+                request>uri uri
+                request>proto proto
+                response>status status_code
+                response>size size
+                duration latency
+                upstream_latency upstream_latency
+            }
+        }
+    }
+}
+```
+
+## 监控集成
+
+### Prometheus 集成
+
+```caddyfile
+example.com {
+    # 启用 Prometheus 指标
+    metrics /metrics {
+        disable_openmetrics
+    }
+    
+    # 限制访问
+    @metrics_auth {
+        remote_ip private_ranges
+    }
+    handle /metrics {
+        not @metrics_auth {
+            respond 403
+        }
+    }
+}
+```
+
+### Grafana 仪表板
+
+```yaml
+# docker-compose.yml
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+      
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  grafana_data:
+```
+
+prometheus.yml 配置：
+```yaml
+scrape_configs:
+  - job_name: 'caddy'
+    static_configs:
+      - targets: ['caddy:2019']
+    metrics_path: /metrics
+```
+
+## 日志分析
+
+### 使用 GoAccess 分析
+
+```bash
+# 安装 GoAccess
+apt install goaccess
+
+# 实时分析日志
+goaccess /var/log/caddy/access.log -c \
+    --log-format=COMBINED \
+    --real-time-html \
+    --output=/var/www/html/report.html
+```
+
+### ELK 集成
+
+```yaml
+# docker-compose.yml
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:7.9.3
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      
+  logstash:
+    image: logstash:7.9.3
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+      
+  kibana:
+    image: kibana:7.9.3
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+```
+
+logstash.conf 配置：
+```conf
+input {
+  file {
+    path => "/var/log/caddy/access.log"
+    codec => json
+  }
+}
+
+filter {
+  date {
+    match => [ "timestamp", "ISO8601" ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+    index => "caddy-logs-%{+YYYY.MM.dd}"
+  }
+}
+```
+
+## 告警配置
+
+### 使用 Alertmanager
+
+```yaml
+# alertmanager.yml
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'web.hook'
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+```
+
+### 告警规则
+
+```yaml
+# prometheus-rules.yml
+groups:
+- name: caddy
+  rules:
+  - alert: CaddyHighErrorRate
+    expr: rate(caddy_http_requests_total{status=~"5.."}[5m]) > 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: High error rate detected
+      description: "Error rate is {{ $value }} per second"
+```
+
+## 性能监控
+
+### 系统指标
+
+```caddyfile
+example.com {
+    # 系统资源监控
+    metrics {
+        disable_openmetrics
+        
+        # 自定义标签
+        label instance {env.HOSTNAME}
+        label environment production
+    }
+}
+```
+
+### JVM 性能分析
+
+```bash
+# 使用 pprof 进行性能分析
+go tool pprof -http=:8080 http://localhost:2019/debug/pprof/heap
+
+# 生成火焰图
+go tool pprof -http=:8080 -seconds=30 http://localhost:2019/debug/pprof/profile
+```
+
+## 日志轮转
+
+### logrotate 配置
+
+```conf
+# /etc/logrotate.d/caddy
+/var/log/caddy/*.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifempty
+    create 0640 caddy caddy
+    sharedscripts
+    postrotate
+        kill -USR1 $(cat /var/run/caddy/caddy.pid)
+    endscript
+}
+```
+
+### 自动清理
+
+```bash
+#!/bin/bash
+# /etc/cron.daily/clean-caddy-logs
+
+# 删除 30 天前的日志
+find /var/log/caddy -name "*.log.*" -mtime +30 -delete
+
+# 压缩 7 天前的日志
+find /var/log/caddy -name "*.log.*" -mtime +7 -exec gzip {} \;
+```
+
+## 监控最佳实践
+
+### 1. 监控检查清单
+
+- [ ] 请求响应时间
+- [ ] 错误率
+- [ ] SSL 证书过期时间
+- [ ] 系统资源使用率
+- [ ] 并发连接数
+- [ ] 上游服务健康状态
+
+### 2. 告警阈值设置
+
+```yaml
+# prometheus-rules.yml
+groups:
+- name: caddy-alerts
+  rules:
+  - alert: HighLatency
+    expr: histogram_quantile(0.95, rate(caddy_http_request_duration_seconds_bucket[5m])) > 1
+    for: 5m
+    
+  - alert: HighErrorRate
+    expr: rate(caddy_http_requests_total{status=~"5.."}[5m]) / rate(caddy_http_requests_total[5m]) > 0.05
+    for: 5m
+    
+  - alert: CertificateExpiry
+    expr: caddy_certificates_expiry < 604800  # 7 days
+    for: 1h
+```
+
+### 3. 监控面板布局
+
+```json
+{
+  "dashboard": {
+    "panels": [
+      {
+        "title": "Request Rate",
+        "type": "graph",
+        "query": "rate(caddy_http_requests_total[5m])"
+      },
+      {
+        "title": "Error Rate",
+        "type": "graph",
+        "query": "rate(caddy_http_requests_total{status=~\"5..\"}[5m])"
+      },
+      {
+        "title": "Response Time",
+        "type": "heatmap",
+        "query": "rate(caddy_http_request_duration_seconds_bucket[5m])"
+      }
+    ]
+  }
+}
+``` 

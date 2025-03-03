@@ -1,0 +1,32 @@
+---
+import DocLayout from '@layouts/DocLayout.astro';
+import { render } from 'astro:content';
+import BlogDB from '@/database/BlogDB';
+import Tag from '@/models/Tag';
+import { getLangFromPathname } from '@/utils/lang';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+const doc = await BlogDB.find(id);
+const lang = getLangFromPathname(Astro.url.pathname);
+
+if (!doc) {
+  return Astro.redirect(404);
+}
+
+const { Content, headings } = await doc.render();
+
+const sidebarItem = await Tag.makeRootSidebarItem(lang);
+---
+
+<DocLayout
+  title={doc.getTitle()}
+  description={doc.getDescription()}
+  sidebarItem={sidebarItem}
+  headings={headings}>
+  <Content />
+</DocLayout>

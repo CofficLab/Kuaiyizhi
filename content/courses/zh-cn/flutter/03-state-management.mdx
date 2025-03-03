@@ -1,0 +1,276 @@
+---
+title: Flutter 状态管理
+description: 深入理解 Flutter 的状态管理机制，掌握 setState、Provider、Riverpod 等不同的状态管理方案
+---
+
+## 什么是状态管理？
+
+在 Flutter 应用中，状态（State）指的是可能在应用生命周期内发生变化的数据。状态管理就是对这些数据的管理方式，包括如何存储、更新和在不同组件间共享这些数据。
+
+## 常见的状态管理方案
+
+### 1. setState
+
+最基础的状态管理方式，适用于简单的、局部的状态管理。
+
+```dart
+class CounterWidget extends StatefulWidget {
+  const CounterWidget({Key? key}) : super(key: key);
+
+  @override
+  _CounterWidgetState createState() => _CounterWidgetState();
+}
+
+class _CounterWidgetState extends State<CounterWidget> {
+  int _counter = 0;
+
+  void _increment() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('Count: $_counter'),
+        ElevatedButton(
+          onPressed: _increment,
+          child: const Text('Increment'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+### 2. Provider
+
+Provider 是 Flutter 官方推荐的状态管理方案，适用于中小型应用。
+
+```dart
+// 1. 定义数据模型
+class Counter with ChangeNotifier {
+  int _count = 0;
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+}
+
+// 2. 在应用顶层提供数据
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => Counter(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+// 3. 在需要的地方使用数据
+class CounterWidget extends StatelessWidget {
+  const CounterWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // 读取数据
+        Consumer<Counter>(
+          builder: (context, counter, child) {
+            return Text('Count: ${counter.count}');
+          },
+        ),
+        // 更新数据
+        ElevatedButton(
+          onPressed: () {
+            context.read<Counter>().increment();
+          },
+          child: const Text('Increment'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+### 3. Riverpod
+
+Riverpod 是 Provider 的升级版，提供了更好的类型安全和依赖管理。
+
+```dart
+// 1. 定义 Provider
+final counterProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
+  return CounterNotifier();
+});
+
+class CounterNotifier extends StateNotifier<int> {
+  CounterNotifier() : super(0);
+
+  void increment() {
+    state++;
+  }
+}
+
+// 2. 在应用中使用
+class MyApp extends ConsumerWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Count: $count'),
+              ElevatedButton(
+                onPressed: () {
+                  ref.read(counterProvider.notifier).increment();
+                },
+                child: const Text('Increment'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+## 状态管理的最佳实践
+
+### 1. 选择合适的状态管理方案
+
+- **setState**：适用于简单的、局部的状态管理
+- **Provider**：适用于中小型应用，需要在组件树中共享状态
+- **Riverpod**：适用于大型应用，需要更好的类型安全和依赖管理
+- **Bloc/Cubit**：适用于复杂的业务逻辑和状态管理
+
+### 2. 状态管理的原则
+
+1. **单一数据源**：避免在多个地方存储和修改相同的状态
+2. **状态不可变**：不直接修改状态，而是创建新的状态
+3. **分离关注点**：将业务逻辑与 UI 代码分离
+
+## 实践：使用 Provider 实现购物车功能
+
+```dart
+// 1. 定义商品模型
+class Product {
+  final String id;
+  final String name;
+  final double price;
+
+  Product({required this.id, required this.name, required this.price});
+}
+
+// 2. 定义购物车状态
+class CartState with ChangeNotifier {
+  final Map<String, int> _items = {};
+  final List<Product> _products = [
+    Product(id: '1', name: 'iPhone', price: 999.99),
+    Product(id: '2', name: 'iPad', price: 799.99),
+    Product(id: '3', name: 'MacBook', price: 1299.99),
+  ];
+
+  List<Product> get products => _products;
+  Map<String, int> get items => _items;
+
+  double get total {
+    double sum = 0;
+    _items.forEach((productId, quantity) {
+      final product = _products.firstWhere((p) => p.id == productId);
+      sum += product.price * quantity;
+    });
+    return sum;
+  }
+
+  void addItem(String productId) {
+    _items[productId] = (_items[productId] ?? 0) + 1;
+    notifyListeners();
+  }
+
+  void removeItem(String productId) {
+    if (_items.containsKey(productId)) {
+      if (_items[productId] == 1) {
+        _items.remove(productId);
+      } else {
+        _items[productId] = _items[productId]! - 1;
+      }
+      notifyListeners();
+    }
+  }
+}
+
+// 3. 实现购物车界面
+class ShoppingCartScreen extends StatelessWidget {
+  const ShoppingCartScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Shopping Cart')),
+      body: Consumer<CartState>(
+        builder: (context, cart, child) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cart.products.length,
+                  itemBuilder: (context, index) {
+                    final product = cart.products[index];
+                    final quantity = cart.items[product.id] ?? 0;
+
+                    return ListTile(
+                      title: Text(product.name),
+                      subtitle: Text('\$${product.price}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove),
+                            onPressed: () {
+                              cart.removeItem(product.id);
+                            },
+                          ),
+                          Text('$quantity'),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              cart.addItem(product.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Total: \$${cart.total.toStringAsFixed(2)}',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+## 下一步
+
+掌握了状态管理的基础知识后，我们将在下一章学习 Flutter 的路由和导航系统，了解如何在不同页面间进行跳转和传递数据。

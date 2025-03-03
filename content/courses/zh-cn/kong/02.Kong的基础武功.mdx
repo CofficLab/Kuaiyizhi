@@ -1,0 +1,312 @@
+---
+title: "Kong的基础武功"
+---
+
+# 第二章：Kong的基础武功 🥋
+
+## Kong的核心概念：Service、Route、Consumer傻傻分不清？
+
+要掌握Kong，首先需要理解它的几个核心概念。别担心，它们很简单！
+
+### Service（服务）
+
+Service代表的是你的上游服务（或API），是Kong代理的目标。可以是RESTful API、SOAP服务、gRPC服务等任何有效的网络服务。
+
+```json
+{
+  "name": "user-service",
+  "url": "http://user-api.internal:8000/v1/users"
+}
+```
+
+或者通过分开设置host、端口和路径：
+
+```json
+{
+  "name": "user-service",
+  "protocol": "http",
+  "host": "user-api.internal",
+  "port": 8000,
+  "path": "/v1/users"
+}
+```
+
+### Route（路由）
+
+Route定义了如何将外部请求映射到特定的Service。一个Service可以有多个Route，但一个Route只能关联一个Service。
+
+Route主要通过以下方式匹配请求：
+- 路径（paths）
+- 主机（hosts）
+- 方法（methods）
+- 头部（headers）
+
+例如：
+
+```json
+{
+  "name": "user-api-route",
+  "paths": ["/api/users"],
+  "methods": ["GET", "POST"],
+  "hosts": ["example.com"],
+  "service": { "id": "7fca61eb-2d6b-4ef6-90d9-ce8e0a94f4c2" }
+}
+```
+
+### Consumer（消费者）
+
+Consumer代表API的用户（可能是人、服务或应用）。通过Consumer，你可以：
+- 跟踪谁在使用你的API
+- 针对特定用户设置限制
+- 为不同用户自定义插件行为
+
+```json
+{
+  "username": "mobile-app",
+  "custom_id": "mobile-app-v1"
+}
+```
+
+### Plugin（插件）
+
+Plugin是Kong的强大之处，它们可以扩展Kong的功能，如认证、限流、日志等。插件可以应用在不同级别：
+- 全局（所有请求）
+- 服务级（特定服务的所有请求）
+- 路由级（特定路由的所有请求）
+- 消费者级（特定消费者的所有请求）
+- 特定消费者和路由/服务的组合
+
+```json
+{
+  "name": "rate-limiting",
+  "service": { "id": "7fca61eb-2d6b-4ef6-90d9-ce8e0a94f4c2" },
+  "config": {
+    "second": 5,
+    "hour": 1000
+  }
+}
+```
+
+### 它们如何共同工作？
+
+想象一个简单的流程：
+1. 外部请求到达Kong
+2. Kong根据请求信息匹配Route
+3. 如果找到匹配的Route，Kong识别关联的Service
+4. Kong应用相关的Plugin（全局、服务级、路由级、消费者级）
+5. 请求被转发到上游Service
+6. 上游Service的响应经过Kong返回给客户端
+
+## 插件系统：Kong的"独门绝技"
+
+Kong的插件系统是它最强大的特性之一，让我们看看为什么：
+
+### 插件分类
+
+Kong的插件可以分为几个主要类别：
+
+1. **认证和安全**
+   - Basic Auth
+   - Key Auth
+   - OAuth 2.0
+   - JWT
+   - LDAP
+   - ACL（访问控制列表）
+
+2. **流量控制**
+   - Rate Limiting（限流）
+   - Request Termination（请求终止）
+   - Request Transformer（请求转换）
+   - Response Transformer（响应转换）
+   - Proxy Cache（代理缓存）
+
+3. **日志和监控**
+   - File Log
+   - HTTP Log
+   - UDP Log
+   - Syslog
+   - StatsD
+   - Datadog
+   - Prometheus
+
+4. **转换和集成**
+   - Correlation ID
+   - CORS
+   - IP Restriction
+   - Request Size Limiting
+
+### 插件工作原理
+
+Kong插件基于OpenResty的"阶段"概念，可以在请求处理的不同阶段执行：
+
+1. **access**：在向上游服务转发请求之前
+2. **header_filter**：在从上游服务接收到头部后，发送给客户端之前
+3. **body_filter**：在从上游服务接收到响应体后，发送给客户端之前
+4. **log**：在完成请求处理后
+
+### 插件配置示例
+
+```bash
+# 在服务级别启用rate-limiting插件
+curl -X POST http://localhost:8001/services/user-service/plugins \
+  --data "name=rate-limiting" \
+  --data "config.second=5" \
+  --data "config.hour=1000"
+
+# 在路由级别启用key-auth插件
+curl -X POST http://localhost:8001/routes/user-api-route/plugins \
+  --data "name=key-auth"
+```
+
+## 最简单的例子：代理你的第一个API
+
+让我们通过一个简单的例子来实践Kong的基本功能：
+
+### 1. 创建一个Service
+
+```bash
+curl -i -X POST http://localhost:8001/services \
+  --data "name=example-service" \
+  --data "url=http://httpbin.org"
+```
+
+### 2. 为Service创建一个Route
+
+```bash
+curl -i -X POST http://localhost:8001/services/example-service/routes \
+  --data "name=example-route" \
+  --data "paths[]=/example"
+```
+
+### 3. 测试代理
+
+```bash
+curl -i http://localhost:8000/example/get
+```
+
+这个请求会被Kong代理到`http://httpbin.org/get`。
+
+### 4. 添加一个插件
+
+让我们添加一个key-auth插件来保护这个API：
+
+```bash
+# 添加key-auth插件
+curl -i -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=key-auth"
+
+# 创建一个Consumer
+curl -i -X POST http://localhost:8001/consumers \
+  --data "username=example-user"
+
+# 为Consumer创建一个key
+curl -i -X POST http://localhost:8001/consumers/example-user/key-auth \
+  --data "key=my-secret-key"
+```
+
+### 5. 使用认证访问API
+
+```bash
+# 未认证（会返回401错误）
+curl -i http://localhost:8000/example/get
+
+# 使用apikey认证
+curl -i http://localhost:8000/example/get \
+  -H "apikey: my-secret-key"
+```
+
+## 常用插件初体验：认证、限流、日志，一个都不能少
+
+让我们看看几个最常用的Kong插件的实际应用：
+
+### 认证插件：JWT
+
+JSON Web Token (JWT) 是一种流行的API认证方法：
+
+```bash
+# 启用JWT插件
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=jwt"
+
+# 为消费者创建JWT凭证
+curl -X POST http://localhost:8001/consumers/example-user/jwt \
+  --data "algorithm=HS256" \
+  --data "secret=your-secret-key"
+```
+
+### 限流插件：Rate Limiting
+
+防止API被滥用的重要工具：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=rate-limiting" \
+  --data "config.minute=100" \
+  --data "config.hour=1000" \
+  --data "config.policy=local"
+```
+
+这会限制API的访问速率为每分钟100次，每小时1000次。
+
+### 日志插件：HTTP Log
+
+记录API调用到HTTP端点：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=http-log" \
+  --data "config.http_endpoint=http://log-server.example.com/logs" \
+  --data "config.method=POST" \
+  --data "config.timeout=10000" \
+  --data "config.keepalive=60000"
+```
+
+### 请求转换插件：Request Transformer
+
+修改传入请求：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=request-transformer" \
+  --data "config.add.headers=x-api-version:v1" \
+  --data "config.add.querystring=api_version:v1" \
+  --data "config.remove.headers=x-credential" \
+  --data "config.replace.headers=host:api.example.com"
+```
+
+### CORS插件：跨域资源共享
+
+为Web前端应用启用CORS：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=cors" \
+  --data "config.origins=*" \
+  --data "config.methods=GET,POST,PUT,DELETE" \
+  --data "config.headers=Content-Type,Authorization" \
+  --data "config.exposed_headers=X-Auth-Token" \
+  --data "config.credentials=true" \
+  --data "config.max_age=3600"
+```
+
+## 小结与练习
+
+在本章中，我们学习了：
+- Kong的核心概念（Service、Route、Consumer、Plugin）
+- 插件系统的工作原理
+- 如何创建基本的API代理
+- 几个常用插件的配置和使用
+
+### 练习
+
+1. 创建一个新的Service，指向`http://jsonplaceholder.typicode.com`
+2. 为这个Service创建两个Route，分别映射到`/users`和`/posts`路径
+3. 为`/users`路由添加key-auth插件进行认证
+4. 为`/posts`路由添加rate-limiting插件限制每分钟请求数为10
+5. 为整个Service添加http-log插件，将日志发送到一个测试端点
+
+这些练习将帮助你巩固本章所学的概念和技能。在下一章中，我们将深入探讨Kong的进阶配置和高可用部署。
+
+---
+
+> 温馨提示：本教程是系列内容的一部分，请继续阅读下一章节，逐步掌握Kong的各项功能。 

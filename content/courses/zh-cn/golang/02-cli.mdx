@@ -1,0 +1,227 @@
+---
+title: Go 命令行工具开发实战
+---
+
+## 为什么选择 Go 开发命令行工具？
+
+Go 语言是开发命令行工具的理想选择，原因如下：
+
+1. **跨平台支持**：Go 可以轻松编译出各个操作系统的可执行文件
+2. **丰富的标准库**：内置了命令行参数解析、文件操作等常用功能
+3. **优秀的性能**：编译型语言保证了工具的执行效率
+4. **完善的生态**：有 cobra、urfave/cli 等成熟的命令行框架
+
+## 实战示例：文件处理工具
+
+让我们开发一个简单的文件处理工具，它可以统计文件行数、字符数，并支持多种文件格式。
+
+### 1. 项目结构
+
+```
+file-tool/
+  ├── cmd/
+  │   └── root.go
+  ├── internal/
+  │   └── counter/
+  │       └── counter.go
+  ├── go.mod
+  └── main.go
+```
+
+### 2. 使用 Cobra 框架
+
+```go
+// cmd/root.go
+package cmd
+
+import (
+    "github.com/spf13/cobra"
+    "file-tool/internal/counter"
+)
+
+var rootCmd = &cobra.Command{
+    Use:   "filetool",
+    Short: "A simple file processing tool",
+    Long:  `A file processing tool that can count lines and characters in files.`,
+}
+
+var countCmd = &cobra.Command{
+    Use:   "count [file]",
+    Short: "Count lines and characters in a file",
+    Args:  cobra.ExactArgs(1),
+    RunE: func(cmd *cobra.Command, args []string) error {
+        return counter.ProcessFile(args[0])
+    },
+}
+
+func Execute() error {
+    rootCmd.AddCommand(countCmd)
+    return rootCmd.Execute()
+}
+```
+
+### 3. 实现核心功能
+
+```go
+// internal/counter/counter.go
+package counter
+
+import (
+    "bufio"
+    "fmt"
+    "os"
+)
+
+type FileStats struct {
+    LineCount     int
+    CharCount     int
+    WordCount     int
+    ByteCount     int
+}
+
+func ProcessFile(filepath string) error {
+    file, err := os.Open(filepath)
+    if err != nil {
+        return fmt.Errorf("无法打开文件: %v", err)
+    }
+    defer file.Close()
+
+    stats := FileStats{}
+    scanner := bufio.NewScanner(file)
+
+    for scanner.Scan() {
+        line := scanner.Text()
+        stats.LineCount++
+        stats.CharCount += len([]rune(line))
+        stats.ByteCount += len(line)
+        stats.WordCount += len(splitWords(line))
+    }
+
+    if err := scanner.Err(); err != nil {
+        return fmt.Errorf("读取文件时出错: %v", err)
+    }
+
+    printStats(filepath, stats)
+    return nil
+}
+
+func splitWords(s string) []string {
+    // 简单的单词分割实现
+    // 实际项目中可能需要更复杂的分词逻辑
+    words := []string{}
+    word := ""
+    for _, r := range s {
+        if r == ' ' || r == '\t' || r == '\n' {
+            if word != "" {
+                words = append(words, word)
+                word = ""
+            }
+        } else {
+            word += string(r)
+        }
+    }
+    if word != "" {
+        words = append(words, word)
+    }
+    return words
+}
+
+func printStats(filepath string, stats FileStats) {
+    fmt.Printf("文件统计信息: %s\n", filepath)
+    fmt.Printf("行数: %d\n", stats.LineCount)
+    fmt.Printf("字符数: %d\n", stats.CharCount)
+    fmt.Printf("单词数: %d\n", stats.WordCount)
+    fmt.Printf("字节数: %d\n", stats.ByteCount)
+}
+```
+
+### 4. 主程序入口
+
+```go
+// main.go
+package main
+
+import (
+    "log"
+    "file-tool/cmd"
+)
+
+func main() {
+    if err := cmd.Execute(); err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+## 最佳实践
+
+开发命令行工具时，应遵循以下最佳实践：
+
+1. **友好的用户界面**
+   - 提供清晰的帮助信息
+   - 支持多种参数格式
+   - 给出有意义的错误提示
+
+2. **合理的项目结构**
+   - 分离命令行逻辑和业务逻辑
+   - 使用接口实现松耦合
+   - 保持代码的可测试性
+
+3. **错误处理**
+   - 提供详细的错误信息
+   - 使用适当的退出码
+   - 实现优雅的错误恢复
+
+4. **性能优化**
+   - 合理使用内存
+   - 支持并发处理
+   - 优化 I/O 操作
+
+## 进阶功能
+
+可以为工具添加以下进阶功能：
+
+1. **支持通配符**：允许处理多个文件
+2. **并发处理**：使用 goroutine 提高处理速度
+3. **进度显示**：添加进度条显示处理进度
+4. **自定义输出**：支持多种输出格式（如 JSON、CSV）
+
+## 示例：添加进度条
+
+```go
+func ProcessFiles(files []string) error {
+    bar := progressbar.Default(int64(len(files)))
+    for _, file := range files {
+        if err := ProcessFile(file); err != nil {
+            return err
+        }
+        bar.Add(1)
+    }
+    return nil
+}
+```
+
+## 发布和分发
+
+1. **编译**
+```bash
+# 编译多平台版本
+GOOS=windows GOARCH=amd64 go build
+GOOS=linux GOARCH=amd64 go build
+GOOS=darwin GOARCH=amd64 go build
+```
+
+2. **打包**
+```bash
+# 创建发布包
+tar -czf filetool-v1.0.0.tar.gz filetool
+```
+
+3. **发布**
+- 使用 GitHub Releases
+- 提供预编译的二进制文件
+- 编写详细的安装说明
+
+## 总结
+
+Go 语言提供了开发命令行工具所需的所有要素，包括强大的标准库、优秀的性能和跨平台支持。通过本文的实战示例，我们学习了如何使用 Go 开发一个实用的命令行工具。在实际开发中，可以根据需求添加更多功能，如配置文件支持、日志记录、交互式界面等。建议在此基础上继续探索和实践，开发出更多实用的工具。

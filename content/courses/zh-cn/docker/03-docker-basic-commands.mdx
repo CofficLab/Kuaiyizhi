@@ -1,0 +1,194 @@
+---
+title: 03 - Docker 基本命令
+description: 学习Docker的基本命令和容器管理操作
+excerpt: 本文介绍Docker的基本命令，包括容器的创建、启动、停止和删除，以及如何查看容器和镜像信息，帮助你掌握Docker的日常操作。
+---
+
+# Docker 基本命令
+
+在安装完Docker后，我们需要学习一些基本命令来管理Docker容器和镜像。本文将介绍最常用的Docker命令，帮助你开始使用Docker。
+
+## Docker 信息和帮助命令
+
+### 查看Docker版本
+
+```bash
+docker --version
+```
+
+### 查看详细的Docker系统信息
+
+```bash
+docker info
+```
+
+### 获取命令帮助
+
+```bash
+docker help
+# 或者获取特定命令的帮助
+docker run --help
+```
+
+## 镜像管理命令
+
+### 搜索镜像
+
+在Docker Hub上搜索可用的镜像：
+
+```bash
+docker search nginx
+```
+
+### 拉取镜像
+
+从Docker Hub下载镜像：
+
+```bash
+docker pull nginx:latest
+```
+
+这里`nginx`是镜像名称，`latest`是标签（通常表示版本）。如果不指定标签，默认拉取`latest`。
+
+### 列出本地镜像
+
+```bash
+docker images
+# 或
+docker image ls
+```
+
+### 删除镜像
+
+```bash
+docker rmi nginx:latest
+# 或
+docker image rm nginx:latest
+```
+
+## 容器管理命令
+
+### 创建并启动容器
+
+```bash
+docker run -d --name my-nginx -p 8080:80 nginx
+```
+
+参数说明：
+- `-d`：在后台运行容器
+- `--name my-nginx`：为容器指定一个名称
+- `-p 8080:80`：将容器的80端口映射到主机的8080端口
+- `nginx`：使用的镜像名称
+
+### 列出运行中的容器
+
+```bash
+docker ps
+```
+
+### 列出所有容器（包括已停止的）
+
+```bash
+docker ps -a
+```
+
+### 启动、停止、重启容器
+
+```bash
+# 启动已停止的容器
+docker start my-nginx
+
+# 停止运行中的容器
+docker stop my-nginx
+
+# 重启容器
+docker restart my-nginx
+```
+
+### 进入容器内部
+
+```bash
+docker exec -it my-nginx bash
+```
+
+参数说明：
+- `-i`：保持STDIN打开
+- `-t`：分配一个伪终端
+- `bash`：在容器中执行的命令（这里是启动bash shell）
+
+### 查看容器日志
+
+```bash
+docker logs my-nginx
+
+# 实时查看日志
+docker logs -f my-nginx
+```
+
+### 查看容器详细信息
+
+```bash
+docker inspect my-nginx
+```
+
+### 删除容器
+
+```bash
+# 删除已停止的容器
+docker rm my-nginx
+
+# 强制删除运行中的容器
+docker rm -f my-nginx
+```
+
+## 实用示例
+
+### 运行一个Web服务器
+
+```bash
+docker run -d --name webserver -p 8080:80 nginx
+```
+
+现在你可以在浏览器中访问`http://localhost:8080`来查看Nginx的欢迎页面。
+
+### 运行一个数据库服务
+
+```bash
+docker run -d --name mysql-db \
+  -e MYSQL_ROOT_PASSWORD=my-secret-pw \
+  -v mysql-data:/var/lib/mysql \
+  mysql:5.7
+```
+
+参数说明：
+- `-e MYSQL_ROOT_PASSWORD=my-secret-pw`：设置环境变量
+- `-v mysql-data:/var/lib/mysql`：将名为mysql-data的卷挂载到容器的/var/lib/mysql目录
+
+### 查看容器资源使用情况
+
+```bash
+docker stats
+```
+
+## Docker命令速查表
+
+| 命令 | 描述 |
+|------|------|
+| `docker pull` | 拉取镜像 |
+| `docker run` | 创建并启动容器 |
+| `docker ps` | 列出运行中的容器 |
+| `docker images` | 列出本地镜像 |
+| `docker start` | 启动已停止的容器 |
+| `docker stop` | 停止运行中的容器 |
+| `docker restart` | 重启容器 |
+| `docker exec` | 在运行中的容器中执行命令 |
+| `docker logs` | 查看容器日志 |
+| `docker rm` | 删除容器 |
+| `docker rmi` | 删除镜像 |
+| `docker build` | 从Dockerfile构建镜像 |
+| `docker volume` | 管理卷 |
+| `docker network` | 管理网络 |
+
+## 总结
+
+本文介绍了Docker的基本命令，包括镜像管理和容器管理。掌握这些命令后，你就可以开始使用Docker来运行各种应用程序了。在下一篇教程中，我们将学习如何使用Dockerfile创建自定义镜像。

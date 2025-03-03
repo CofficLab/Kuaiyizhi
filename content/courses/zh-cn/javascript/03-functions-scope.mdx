@@ -1,0 +1,174 @@
+---
+title: JavaScript 函数和作用域
+description: 学习 JavaScript 中的函数定义、调用方式、作用域规则和闭包概念
+---
+
+## 函数基础
+
+### 函数声明
+最基本的函数定义方式：
+```javascript
+function sayHello(name) {
+    return `Hello, ${name}!`;
+}
+
+console.log(sayHello('Alice')); // "Hello, Alice!"
+```
+
+### 函数表达式
+将函数赋值给变量：
+```javascript
+const greet = function(name) {
+    return `Hi, ${name}!`;
+};
+
+console.log(greet('Bob')); // "Hi, Bob!"
+```
+
+### 箭头函数（ES6）
+更简洁的函数写法：
+```javascript
+const add = (a, b) => a + b;
+const square = x => x * x;
+const sayHi = () => 'Hi!';
+
+console.log(add(2, 3));    // 5
+console.log(square(4));    // 16
+console.log(sayHi());      // "Hi!"
+```
+
+## 函数参数
+
+### 默认参数
+```javascript
+function multiply(a, b = 1) {
+    return a * b;
+}
+
+console.log(multiply(5));    // 5
+console.log(multiply(5, 2)); // 10
+```
+
+### 剩余参数
+```javascript
+function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3, 4)); // 10
+```
+
+### 参数解构
+```javascript
+function printUserInfo({ name, age }) {
+    console.log(`${name} is ${age} years old`);
+}
+
+const user = { name: 'Alice', age: 25 };
+printUserInfo(user); // "Alice is 25 years old"
+```
+
+## 作用域
+
+### 全局作用域
+在函数外部声明的变量：
+```javascript
+const globalVar = 'I am global';
+
+function testScope() {
+    console.log(globalVar); // 可以访问全局变量
+}
+```
+
+### 函数作用域
+在函数内部声明的变量：
+```javascript
+function testLocalScope() {
+    const localVar = 'I am local';
+    console.log(localVar); // 可以访问
+}
+
+// console.log(localVar); // 错误：localVar 未定义
+```
+
+### 块级作用域
+在代码块（如 if、for 等）内使用 let/const 声明的变量：
+```javascript
+if (true) {
+    let blockVar = 'I am in a block';
+    console.log(blockVar); // 可以访问
+}
+
+// console.log(blockVar); // 错误：blockVar 未定义
+```
+
+## 闭包
+函数可以访问其定义时的作用域：
+```javascript
+function createCounter() {
+    let count = 0;
+    return function() {
+        return ++count;
+    };
+}
+
+const counter = createCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2
+console.log(counter()); // 3
+```
+
+### 实际应用
+```javascript
+function createGreeting(greeting) {
+    return function(name) {
+        return `${greeting}, ${name}!`;
+    };
+}
+
+const sayHello = createGreeting('Hello');
+const sayHi = createGreeting('Hi');
+
+console.log(sayHello('Alice')); // "Hello, Alice!"
+console.log(sayHi('Bob'));      // "Hi, Bob!"
+```
+
+## this 关键字
+
+### 普通函数中的 this
+```javascript
+const person = {
+    name: 'Alice',
+    sayName: function() {
+        console.log(this.name);
+    }
+};
+
+person.sayName(); // "Alice"
+```
+
+### 箭头函数中的 this
+```javascript
+const person = {
+    name: 'Alice',
+    sayNameDelayed: function() {
+        setTimeout(() => {
+            console.log(this.name);
+        }, 100);
+    }
+};
+
+person.sayNameDelayed(); // "Alice"
+```
+
+## 练习
+1. 创建一个计算器对象，包含加减乘除方法
+2. 实现一个函数，可以限制另一个函数的调用次数
+3. 使用闭包实现私有变量
+
+## 小结
+- 掌握不同的函数定义方式
+- 理解函数参数的灵活使用
+- 深入理解作用域规则
+- 学会运用闭包解决实际问题
+- 正确处理 this 关键字

@@ -1,0 +1,314 @@
+---
+title: Go 语言数据处理实践
+---
+
+## JSON 处理
+
+### 基本操作
+
+在 Go 中处理 JSON 数据：
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type Person struct {
+    Name string `json:"name"`
+    Age  int    `json:"age"`
+}
+
+func main() {
+    // 编码 JSON
+    person := Person{Name: "张三", Age: 25}
+    jsonData, err := json.Marshal(person)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(jsonData))
+
+    // 解码 JSON
+    var decodedPerson Person
+    err = json.Unmarshal(jsonData, &decodedPerson)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("%+v\n", decodedPerson)
+}
+```
+
+## CSV 处理
+
+### 读写 CSV
+
+使用标准库处理 CSV 文件：
+
+```go
+package main
+
+import (
+    "encoding/csv"
+    "os"
+)
+
+func main() {
+    // 写入 CSV
+    file, err := os.Create("data.csv")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+    writer := csv.NewWriter(file)
+    defer writer.Flush()
+
+    data := [][]string{
+        {"姓名", "年龄", "城市"},
+        {"张三", "25", "北京"},
+        {"李四", "30", "上海"},
+    }
+
+    for _, row := range data {
+        err := writer.Write(row)
+        if err != nil {
+            panic(err)
+        }
+    }
+
+    // 读取 CSV
+    file, err = os.Open("data.csv")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+    reader := csv.NewReader(file)
+    records, err := reader.ReadAll()
+    if err != nil {
+        panic(err)
+    }
+
+    for _, record := range records {
+        // 处理每一行数据
+        fmt.Println(record)
+    }
+}
+```
+
+## XML 处理
+
+### XML 编解码
+
+处理 XML 数据：
+
+```go
+package main
+
+import (
+    "encoding/xml"
+    "fmt"
+)
+
+type Book struct {
+    XMLName xml.Name `xml:"book"`
+    Title   string   `xml:"title"`
+    Author  string   `xml:"author"`
+    Year    int      `xml:"year"`
+}
+
+func main() {
+    book := Book{Title: "Go 编程", Author: "张三", Year: 2023}
+    
+    // 编码 XML
+    xmlData, err := xml.MarshalIndent(book, "", "    ")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(xmlData))
+
+    // 解码 XML
+    var decodedBook Book
+    err = xml.Unmarshal(xmlData, &decodedBook)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("%+v\n", decodedBook)
+}
+```
+
+## 大数据处理
+
+### 流式处理
+
+处理大型文件时使用流式处理：
+
+```go
+package main
+
+import (
+    "bufio"
+    "fmt"
+    "os"
+)
+
+func main() {
+    file, err := os.Open("large_file.txt")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        // 逐行处理数据
+        line := scanner.Text()
+        processLine(line)
+    }
+
+    if err := scanner.Err(); err != nil {
+        panic(err)
+    }
+}
+
+func processLine(line string) {
+    // 处理单行数据
+    fmt.Println("Processing:", line)
+}
+```
+
+## 数据验证
+
+### 使用 validator
+
+使用 validator 包进行数据验证：
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/go-playground/validator/v10"
+)
+
+type User struct {
+    Username string `validate:"required,min=4,max=20"`
+    Email    string `validate:"required,email"`
+    Age      int    `validate:"gte=0,lte=130"`
+}
+
+func main() {
+    validate := validator.New()
+
+    user := User{
+        Username: "zh",
+        Email: "invalid-email",
+        Age: 150,
+    }
+
+    err := validate.Struct(user)
+    if err != nil {
+        validationErrors := err.(validator.ValidationErrors)
+        for _, e := range validationErrors {
+            fmt.Println("字段:", e.Field(), "错误:", e.Tag())
+        }
+    }
+}
+```
+
+## 数据转换
+
+### 类型转换
+
+安全的数据类型转换：
+
+```go
+package main
+
+import (
+    "fmt"
+    "strconv"
+)
+
+func main() {
+    // 字符串转数字
+    str := "123"
+    num, err := strconv.Atoi(str)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("字符串 '%s' 转换为数字: %d\n", str, num)
+
+    // 数字转字符串
+    num = 456
+    str = strconv.Itoa(num)
+    fmt.Printf("数字 %d 转换为字符串: '%s'\n", num, str)
+
+    // 浮点数转换
+    floatStr := "3.14"
+    float, err := strconv.ParseFloat(floatStr, 64)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("字符串 '%s' 转换为浮点数: %f\n", floatStr, float)
+}
+```
+
+## 数据压缩
+
+### 使用 gzip
+
+数据压缩和解压：
+
+```go
+package main
+
+import (
+    "compress/gzip"
+    "io"
+    "os"
+)
+
+func main() {
+    // 压缩数据
+    file, err := os.Create("data.gz")
+    if err != nil {
+        panic(err)
+    }
+    
+    gzWriter := gzip.NewWriter(file)
+    _, err = gzWriter.Write([]byte("这是要压缩的数据"))
+    if err != nil {
+        panic(err)
+    }
+    
+    gzWriter.Close()
+    file.Close()
+
+    // 解压数据
+    file, err = os.Open("data.gz")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+    gzReader, err := gzip.NewReader(file)
+    if err != nil {
+        panic(err)
+    }
+    defer gzReader.Close()
+
+    data, err := io.ReadAll(gzReader)
+    if err != nil {
+        panic(err)
+    }
+    
+    fmt.Println(string(data))
+}
+```
+
+## 总结
+
+Go 语言提供了丰富的数据处理功能，从基本的 JSON、CSV、XML 处理到大数据流式处理，再到数据验证、转换和压缩，都有完善的支持。在实际开发中，选择合适的数据处理方式对于提高程序的性能和可维护性至关重要。建议开发者根据具体场景选择最适合的数据处理方案，并注意处理过程中的错误处理和性能优化。

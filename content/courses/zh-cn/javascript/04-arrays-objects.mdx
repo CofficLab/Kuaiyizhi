@@ -1,0 +1,191 @@
+---
+title: JavaScript 数组和对象
+description: 学习 JavaScript 中的数组操作、对象属性和解构赋值
+---
+
+## 数组基础
+
+### 创建数组
+```javascript
+// 字面量语法
+const fruits = ['apple', 'banana', 'orange'];
+
+// Array 构造函数
+const numbers = new Array(1, 2, 3, 4, 5);
+
+// Array.from() 方法
+const characters = Array.from('Hello'); // ['H', 'e', 'l', 'l', 'o']
+```
+
+### 数组访问和修改
+```javascript
+const colors = ['red', 'green', 'blue'];
+
+// 访问元素
+console.log(colors[0]);     // 'red'
+console.log(colors.length); // 3
+
+// 修改元素
+colors[1] = 'yellow';
+console.log(colors); // ['red', 'yellow', 'blue']
+```
+
+### 常用数组方法
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// 添加和删除元素
+numbers.push(6);         // 末尾添加
+numbers.unshift(0);      // 开头添加
+numbers.pop();           // 删除末尾元素
+numbers.shift();         // 删除开头元素
+
+// 查找元素
+const index = numbers.indexOf(3);     // 返回元素索引
+const found = numbers.includes(4);    // 检查元素是否存在
+
+// 数组转换
+const joined = numbers.join(', ');    // 转换为字符串
+const sliced = numbers.slice(1, 4);   // 截取部分数组
+const reversed = numbers.reverse();    // 反转数组
+```
+
+### 数组遍历
+```javascript
+const fruits = ['apple', 'banana', 'orange'];
+
+// forEach 方法
+fruits.forEach((fruit, index) => {
+    console.log(`${index}: ${fruit}`);
+});
+
+// map 方法
+const upperFruits = fruits.map(fruit => fruit.toUpperCase());
+
+// filter 方法
+const longFruits = fruits.filter(fruit => fruit.length > 5);
+
+// reduce 方法
+const letters = fruits.reduce((total, fruit) => total + fruit.length, 0);
+```
+
+## 对象基础
+
+### 创建对象
+```javascript
+// 字面量语法
+const person = {
+    name: 'Alice',
+    age: 25,
+    sayHello() {
+        console.log('Hello!');
+    }
+};
+
+// 构造函数
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+}
+const bob = new Person('Bob', 30);
+```
+
+### 访问和修改属性
+```javascript
+const user = {
+    name: 'Alice',
+    age: 25,
+    address: {
+        city: 'Beijing',
+        street: 'Main St'
+    }
+};
+
+// 点号访问
+console.log(user.name);           // 'Alice'
+console.log(user.address.city);   // 'Beijing'
+
+// 方括号访问
+console.log(user['age']);         // 25
+
+// 添加新属性
+user.email = 'alice@example.com';
+
+// 删除属性
+delete user.age;
+```
+
+### 对象方法
+```javascript
+const book = {
+    title: 'JavaScript Guide',
+    price: 29.99
+};
+
+// 获取所有键
+console.log(Object.keys(book));     // ['title', 'price']
+
+// 获取所有值
+console.log(Object.values(book));   // ['JavaScript Guide', 29.99]
+
+// 获取所有键值对
+console.log(Object.entries(book));  // [['title', 'JavaScript Guide'], ['price', 29.99]]
+
+// 合并对象
+const details = { author: 'John Doe' };
+const fullBook = Object.assign({}, book, details);
+// 或使用展开运算符
+const newBook = { ...book, ...details };
+```
+
+## 解构赋值
+
+### 数组解构
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// 基本解构
+const [first, second] = numbers;
+console.log(first, second);  // 1, 2
+
+// 跳过元素
+const [, , third] = numbers;
+console.log(third);  // 3
+
+// 剩余元素
+const [head, ...tail] = numbers;
+console.log(head, tail);  // 1, [2, 3, 4, 5]
+```
+
+### 对象解构
+```javascript
+const person = {
+    name: 'Alice',
+    age: 25,
+    city: 'Beijing'
+};
+
+// 基本解构
+const { name, age } = person;
+console.log(name, age);  // 'Alice', 25
+
+// 重命名
+const { name: fullName, age: years } = person;
+console.log(fullName, years);  // 'Alice', 25
+
+// 默认值
+const { country = 'China' } = person;
+console.log(country);  // 'China'
+```
+
+## 练习
+1. 创建一个购物车数组，实现添加、删除、计算总价的功能
+2. 使用对象方法实现一个简单的学生管理系统
+3. 练习使用数组和对象的解构赋值
+
+## 小结
+- 掌握数组的创建和常用操作方法
+- 理解对象的基本概念和属性访问方式
+- 熟练使用数组和对象的解构赋值
+- 学会使用数组方法进行数据处理
+- 掌握对象的高级特性和方法

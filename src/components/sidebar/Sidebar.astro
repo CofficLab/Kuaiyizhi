@@ -1,0 +1,22 @@
+---
+import type { SidebarItem } from '@/models/SidebarItem';
+import SidebarLink from '@components/sidebar/SidebarLink.astro';
+import SidebarGroup from '@components/sidebar/SidebarGroup.astro';
+
+interface Props {
+  item: SidebarItem;
+}
+
+const { item } = Astro.props;
+---
+
+<ul class="menu menu-sm w-full space-y-1">
+  {
+    item &&
+      (item.isNotGroup() ? (
+        <SidebarLink label={item.getLabel()} link={item.getLink()} />
+      ) : (
+        <SidebarGroup label={item.getLabel()} items={item.getItems()} />
+      ))
+  }
+</ul>

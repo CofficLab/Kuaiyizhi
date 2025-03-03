@@ -1,0 +1,59 @@
+---
+interface Props {
+  items?: string[]; // 使其可选
+}
+
+const { items } = Astro.props;
+
+// 从插槽内容中获取标签
+const slots = await Astro.slots.render('default');
+const tabLabels = Array.from(slots.matchAll(/data-tab="([^"]+)"/g)).map(
+  (match) => match[1]
+);
+---
+
+<div class="tabs-container">
+  <div role="tablist" class="tabs tabs-boxed bg-base-200 p-1 mb-4">
+    <slot name="tab-buttons" />
+  </div>
+  <div class="tab-contents">
+    <slot />
+  </div>
+</div>
+
+<script>
+  function setupTabs() {
+    const containers = document.querySelectorAll('.tabs-container');
+
+    containers.forEach((container) => {
+      const tabs = container.querySelectorAll('[data-tab-button]');
+      const contents = container.querySelectorAll('[data-tab-content]');
+
+      // 初始化：显示第一个内容
+      tabs[0]?.classList.add('tab-active');
+      contents[0]?.classList.remove('hidden');
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const targetLabel = tab.getAttribute('data-tab-button');
+
+          // 移除所有活动状态
+          tabs.forEach((t) => t.classList.remove('tab-active'));
+          contents.forEach((c) => c.classList.add('hidden'));
+
+          // 激活当前标签
+          tab.classList.add('tab-active');
+          container
+            .querySelector(`[data-tab-content="${targetLabel}"]`)
+            ?.classList.remove('hidden');
+        });
+      });
+    });
+  }
+
+  // 页面加载时设置标签
+  setupTabs();
+
+  // 处理客户端导航
+  document.addEventListener('astro:page-load', setupTabs);
+</script>
