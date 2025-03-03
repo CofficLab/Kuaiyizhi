@@ -1,0 +1,152 @@
+---
+import { makeMetaLink } from '@utils/links';
+import Slogan from '@components/footer/Slogan.astro';
+import FooterLinkGroup from '@components/footer/FooterLinkGroup.astro';
+import FooterCopyright from '@components/footer/FooterCopyright.astro';
+import FooterLogo from '@components/footer/FooterLogo.astro';
+import { getLangFromPathname } from '@utils/lang';
+
+const lang = getLangFromPathname(Astro.url.pathname);
+
+const translations = {
+  github: {
+    'zh-cn': 'GitHub',
+    en: 'GitHub',
+  },
+  juiceeditor: {
+    'zh-cn': 'JuiceEditor',
+    en: 'JuiceEditor',
+  },
+  privacy: {
+    'zh-cn': '隐私条款',
+    en: 'Privacy Policy',
+  },
+  terms: {
+    'zh-cn': '服务条款',
+    en: 'Terms of Service',
+  },
+  about: {
+    'zh-cn': '关于我们',
+    en: 'About Us',
+  },
+  githubComments: {
+    'zh-cn': 'GitHub 留言',
+    en: 'GitHub Comments',
+  },
+  cisum: {
+    'zh-cn': 'Cisum',
+    en: 'Cisum',
+  },
+  kuaiyicha: {
+    'zh-cn': '快易查',
+    en: 'KuaiYiCha',
+  },
+  kuaiyizhi: {
+    'zh-cn': '快易知',
+    en: 'KuaiYiZhi',
+  },
+  apiProducts: {
+    'zh-cn': 'API 产品',
+    en: 'API Products',
+  },
+  tutorials: {
+    'zh-cn': '系列教程',
+    en: 'Tutorials',
+  },
+  cofficSeries: {
+    'zh-cn': 'Coffic 系列软件',
+    en: 'Coffic Software Series',
+  },
+  icp: {
+    'zh-cn': '鲁ICP备2022009149号-2',
+    en: 'ICP License: 2022009149-2',
+  },
+  company: {
+    'zh-cn': '青岛岳亿网络科技有限公司',
+    en: 'Qingdao Yueyi Network Technology Co., Ltd.',
+  },
+};
+
+const t = (key: keyof typeof translations) => {
+  return translations[key][lang.startsWith('zh') ? 'zh-cn' : 'en'];
+};
+
+// 定义链接组
+const metaLinks = [
+  { key: 'privacy', href: makeMetaLink(lang, 'privacy'), external: false },
+  { key: 'terms', href: makeMetaLink(lang, 'terms'), external: false },
+  { key: 'about', href: makeMetaLink(lang, 'about'), external: false },
+  {
+    key: 'githubComments',
+    href: 'https://github.com/CofficLab/FeedbackHub',
+    external: true,
+  },
+];
+
+const productLinks = [
+  { key: 'kuaiyicha', href: 'https://query.kuaiyizhi.cn', external: true },
+  {
+    key: 'apiProducts',
+    href: 'https://query.kuaiyizhi.cn/products',
+    external: true,
+  },
+  { key: 'tutorials', href: 'https://www.kuaiyizhi.cn/ideas', external: true },
+  { key: 'cofficSeries', href: 'https://cofficlab.github.io', external: true },
+];
+
+const githubLinks = [
+  { key: 'github', href: 'https://github.com/cofficlab', external: true },
+  {
+    key: 'juiceeditor',
+    href: 'https://github.com/CofficLab/JuiceEditor',
+    external: true,
+  },
+  {
+    key: 'kuaiyizhi',
+    href: 'https://apps.apple.com/cn/app/%E5%BF%AB%E6%98%93%E7%9F%A5/id6457892799',
+    external: true,
+  },
+  {
+    key: 'cisum',
+    href: 'https://apps.apple.com/cn/app/cisum/id6466401036',
+    external: true,
+  },
+];
+---
+
+<div class="bg-white/50 dark:bg-gray-900/50 z-50">
+  <div
+    class="z-50 flex flex-col justify-center gap-4 py-8 shadow-inner bg-gray-900/10 backdrop-blur-3xl">
+    <FooterLogo lang={lang} />
+
+    <div class="flex flex-col w-full">
+      <div
+        class="flex flex-col md:flex-row justify-center w-full gap-8 md:gap-16 p-4 md:p-8">
+        <FooterLinkGroup
+          links={metaLinks}
+          getLabel={(key) => t(key as keyof typeof translations)}
+        />
+
+        <FooterLinkGroup
+          links={productLinks}
+          getLabel={(key) => t(key as keyof typeof translations)}
+        />
+
+        <FooterLinkGroup
+          links={githubLinks}
+          getLabel={(key) => t(key as keyof typeof translations)}
+        />
+      </div>
+    </div>
+
+    <Slogan lang={lang} />
+
+    <FooterCopyright
+      label={t('icp')}
+      href="http://beian.miit.gov.cn"
+      id="beian"
+    />
+
+    <FooterCopyright label={`© 2025 ${t('company')}`} />
+  </div>
+</div>

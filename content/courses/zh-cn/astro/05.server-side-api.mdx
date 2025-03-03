@@ -1,0 +1,213 @@
+---
+title: Astro 中的服务端 API 调用
+description: 了解如何在 Astro 中优雅地处理远程 API 调用，以获取用户 IP 地址为例
+
+
+---
+
+import ApiFlowChart from './components/ApiFlowChart.vue';
+import IpInfoDemo from './components/IpInfoDemo.vue';
+import Tabs from '@components/tabs/Tabs.astro';
+import TabItem from '@components/tabs/TabItem.astro';
+
+## 传统前后端分离的痛点
+
+在传统的前后端分离架构中，当我们需要调用第三方 API 时，通常会遇到以下问题：
+
+1. **跨域限制**：浏览器的同源策略限制了直接调用第三方 API
+2. **安全隐患**：API 密钥等敏感信息可能会暴露在前端代码中
+3. **架构复杂**：需要搭建后端服务来中转 API 调用
+
+例如，使用 Laravel + Vue.js 的架构时，我们通常需要：
+
+<Tabs>
+  <TabItem label="Laravel 后端">
+  ```php
+  // Laravel 后端
+  public function getIpInfo(Request $request) {
+      $response = Http::get('http://ip-api.com/json/');
+      return response()->json($response->json());
+  }
+  ```
+  </TabItem>
+
+  <TabItem label="Vue.js 前端">
+  ```javascript
+  // Vue.js 前端
+  async function fetchIpInfo() {
+      const response = await fetch('/api/ip-info');
+      const data = await response.json();
+      this.ipInfo = data;
+  }
+  ```
+  </TabItem>
+</Tabs>
+
+<ApiFlowChart client:load />
+
+## Astro 的优雅解决方案
+
+Astro 提供了完整的全栈解决方案，可以同时处理前端界面和后端 API：
+
+<Tabs>
+  <TabItem label="后端 API">
+  ```typescript
+  // src/pages/api/ip-info.ts
+  import type { APIRoute } from 'astro';
+
+  interface IpInfo {
+      query: string;
+      country: string;
+      city: string;
+      isp: string;
+      regionName: string;
+  }
+
+  export const GET: APIRoute = async () => {
+      try {
+          const response = await fetch('http://ip-api.com/json/');
+          if (!response.ok) {
+              return new Response(
+                  JSON.stringify({ error: '获取 IP 信息失败' }),
+                  {
+                      status: 500,
+                      headers: { 'Content-Type': 'application/json' }
+                  }
+              );
+          }
+
+          const data: IpInfo = await response.json();
+          return new Response(
+              JSON.stringify(data),
+              {
+                  status: 200,
+                  headers: { 'Content-Type': 'application/json' }
+              }
+          );
+      } catch (e) {
+          return new Response(
+              JSON.stringify({ error: e instanceof Error ? e.message : '未知错误' }),
+              {
+                  status: 500,
+                  headers: { 'Content-Type': 'application/json' }
+              }
+          );
+      }
+  };
+  ```
+  </TabItem>
+
+  <TabItem label="前端组件">
+  ```vue
+  <!-- src/components/IpInfoDemo.vue -->
+  <script setup lang="ts">
+  import { ref, onMounted } from 'vue';
+
+  interface IpInfo {
+      query: string;
+      country: string;
+      city: string;
+      isp: string;
+      regionName: string;
+  }
+
+  const ipInfo = ref<IpInfo | null>(null);
+  const error = ref<string | null>(null);
+  const loading = ref(false);
+
+  const fetchIpInfo = async () => {
+      loading.value = true;
+      error.value = null;
+      try {
+          const response = await fetch('/api/ip-info');
+          if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || '获取 IP 信息失败');
+          }
+          ipInfo.value = await response.json();
+      } catch (e) {
+          error.value = e instanceof Error ? e.message : '未知错误';
+      } finally {
+          loading.value = false;
+      }
+  };
+
+  onMounted(fetchIpInfo);
+  </script>
+
+  <template>
+      <div class="not-content p-6 bg-white rounded-xl shadow-md">
+          <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-semibold">IP 信息展示</h3>
+              <button 
+                  @click="fetchIpInfo"
+                  :disabled="loading"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-md">
+                  {{ loading ? '加载中...' : '刷新' }}
+              </button>
+          </div>
+
+          <div v-if="ipInfo" class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-gray-50 rounded-lg">
+                  <div class="text-sm text-gray-500">IP 地址</div>
+                  <div class="text-lg">{{ ipInfo.query }}</div>
+              </div>
+              <!-- 其他信息项... -->
+          </div>
+      </div>
+  </template>
+  ```
+  </TabItem>
+</Tabs>
+
+让我们看一个实际的例子：
+
+<IpInfoDemo client:load />
+
+### 工作流程说明
+
+1. 前端组件通过 `fetch` 调用内部 API 端点 `/api/ip-info`
+2. Astro 的 API 路由处理请求，调用外部 IP 查询服务
+3. API 路由将结果返回给前端组件
+4. 前端组件更新 UI 显示数据
+
+这种方式的优势：
+- API 密钥和敏感操作都在服务器端处理，更安全
+- 无需额外的后端服务器，降低了部署复杂度
+- 完整的类型支持，提供更好的开发体验
+- 统一的错误处理和加载状态管理
+
+## 优势总结
+
+1. **代码简化**：无需编写额外的后端 API
+2. **开发效率**：一个文件就能完成全栈功能
+3. **安全性**：API 调用在服务器端完成，密钥不会暴露
+4. **性能优化**：支持静态生成和增量生成
+
+## 最佳实践
+
+1. **合理使用缓存**：对于不经常变化的数据，可以使用构建时获取
+2. **错误处理**：添加适当的错误处理和加载状态
+3. **类型安全**：使用 TypeScript 定义 API 响应类型
+
+```astro
+---
+interface IpInfo {
+  query: string;
+  country: string;
+  city: string;
+  isp: string;
+}
+
+try {
+  const response = await fetch('http://ip-api.com/json/');
+  const ipInfo: IpInfo = await response.json();
+} catch (error) {
+  console.error('Failed to fetch IP info:', error);
+}
+---
+```
+
+## 结论
+
+Astro 通过其创新的服务器端组件架构，优雅地解决了传统前后端分离架构中的 API 调用问题。开发者可以用更简洁的代码实现全栈功能，同时保证了安全性和性能。这种方式不仅提高了开发效率，也为用户提供了更好的体验。

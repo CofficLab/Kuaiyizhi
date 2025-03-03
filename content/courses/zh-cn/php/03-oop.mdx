@@ -1,0 +1,214 @@
+---
+title: PHP 面向对象编程
+---
+
+# PHP 面向对象编程
+
+面向对象编程（OOP）是一种程序设计范式，它使用对象来组织代码。PHP 从版本 5 开始提供了完整的面向对象编程支持。本章将介绍 PHP 面向对象编程的核心概念和使用方法。
+
+## 类与对象
+
+### 类的定义
+
+```php
+class Person {
+    // 属性
+    public $name;
+    private $age;
+    protected $gender;
+    
+    // 构造函数
+    public function __construct($name, $age, $gender) {
+        $this->name = $name;
+        $this->age = $age;
+        $this->gender = $gender;
+    }
+    
+    // 方法
+    public function sayHello() {
+        return "你好，我是{$this->name}，今年{$this->age}岁。";
+    }
+}
+```
+
+### 创建对象
+
+```php
+$person = new Person("张三", 25, "男");
+echo $person->sayHello(); // 输出：你好，我是张三，今年25岁。
+```
+
+## 访问控制
+
+### 访问修饰符
+
+- **public**: 可以从任何地方访问
+- **private**: 只能从类内部访问
+- **protected**: 只能从类内部和子类访问
+
+```php
+class Student {
+    public $name;     // 公开
+    private $score;   // 私有
+    protected $grade; // 受保护
+    
+    public function setScore($score) {
+        $this->score = $score; // 可以访问私有属性
+    }
+    
+    public function getScore() {
+        return $this->score;
+    }
+}
+```
+
+## 继承
+
+### 基本继承
+
+```php
+class Animal {
+    protected $name;
+    
+    public function __construct($name) {
+        $this->name = $name;
+    }
+    
+    public function makeSound() {
+        return "动物发出声音";
+    }
+}
+
+class Dog extends Animal {
+    public function makeSound() {
+        return "汪汪汪！";
+    }
+}
+
+$dog = new Dog("旺财");
+echo $dog->makeSound(); // 输出：汪汪汪！
+```
+
+## 接口
+
+### 定义和实现接口
+
+```php
+interface Movable {
+    public function move();
+    public function stop();
+}
+
+class Car implements Movable {
+    public function move() {
+        return "汽车开始行驶";
+    }
+    
+    public function stop() {
+        return "汽车停止";
+    }
+}
+```
+
+## 抽象类
+
+### 抽象类定义
+
+```php
+abstract class Shape {
+    protected $color;
+    
+    public function __construct($color) {
+        $this->color = $color;
+    }
+    
+    // 抽象方法
+    abstract public function getArea();
+}
+
+class Circle extends Shape {
+    private $radius;
+    
+    public function __construct($color, $radius) {
+        parent::__construct($color);
+        $this->radius = $radius;
+    }
+    
+    public function getArea() {
+        return pi() * $this->radius * $this->radius;
+    }
+}
+```
+
+## 静态成员
+
+### 静态属性和方法
+
+```php
+class MathHelper {
+    public static $pi = 3.14159;
+    
+    public static function square($number) {
+        return $number * $number;
+    }
+}
+
+// 使用静态成员
+echo MathHelper::$pi;           // 访问静态属性
+echo MathHelper::square(4);     // 调用静态方法
+```
+
+## 魔术方法
+
+### 常用魔术方法
+
+```php
+class Product {
+    private $data = [];
+    
+    // 设置属性
+    public function __set($name, $value) {
+        $this->data[$name] = $value;
+    }
+    
+    // 获取属性
+    public function __get($name) {
+        return $this->data[$name] ?? null;
+    }
+    
+    // 检查属性是否存在
+    public function __isset($name) {
+        return isset($this->data[$name]);
+    }
+    
+    // 删除属性
+    public function __unset($name) {
+        unset($this->data[$name]);
+    }
+}
+```
+
+## 命名空间
+
+### 定义和使用命名空间
+
+```php
+namespace App\Models;
+
+class User {
+    // 类定义
+}
+
+// 在其他文件中使用
+use App\Models\User;
+$user = new User();
+```
+
+## 实践练习
+
+1. 创建一个银行账户类，包含存款、取款和查询余额的方法。
+2. 实现一个简单的商品库存系统，使用继承来处理不同类型的商品。
+3. 设计一个图形类的继承体系，包括圆形、矩形和三角形。
+4. 使用接口实现一个简单的日志系统，支持文件日志和数据库日志。
+
+通过这些练习，你将加深对面向对象编程概念的理解，学会如何在实际项目中应用这些知识。面向对象编程是现代 PHP 开发的重要基础，掌握这些概念将帮助你编写更好的代码。

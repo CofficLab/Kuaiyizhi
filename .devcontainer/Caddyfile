@@ -1,6 +1,0 @@
-:80
-
-root * /workdir/public
-php_fastcgi localhost:9000
-
-file_server

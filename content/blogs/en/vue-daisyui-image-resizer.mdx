@@ -1,0 +1,251 @@
+---
+title: Building an Image Resizer Component with Vue and DaisyUI
+date: 2025-02-08
+excerpt: Learn how to create an image resizer component using Vue 3 and DaisyUI that supports converting user-uploaded images into multiple common sizes.
+authors:
+  - name: Nookery
+    picture: https://avatars.githubusercontent.com/u/5194193?s=200
+    url: https://github.com/nookery
+tags:
+  - Vue
+  - DaisyUI
+  - Image Processing
+  - Component Development
+---
+
+In this tutorial, we'll create a practical image resizer component using Vue 3 and DaisyUI. This component allows users to upload images and automatically convert them into various common sizes, perfect for scenarios where different image dimensions are needed.
+
+## Live Demo
+
+import ImageResizer from '../components/ImageResizer.vue'
+
+<div class="my-8 border rounded-lg p-4 bg-base-200">
+  <ImageResizer client:load presetSizes={[
+    { name: 'Social Media Cover', width: 1200, height: 630 },
+    { name: 'WeChat Avatar', width: 132, height: 132 },
+    { name: 'Instagram Square', width: 1080, height: 1080 },
+    { name: 'Mobile Wallpaper', width: 1080, height: 1920 },
+    { name: '6-inch Photo', width: 1800, height: 1200 },
+  ]} />
+</div>
+
+## Features
+
+- Drag and drop image upload
+- Original image preview
+- Convert to multiple preset sizes
+- Download converted images
+- Elegant user interface
+
+## Prerequisites
+
+First, ensure your project has the necessary dependencies installed:
+
+```bash
+npm install vue@3
+npm install daisyui
+npm install tailwindcss
+```
+
+## Component Code
+
+Create a new component file `ImageResizer.vue`:
+
+```vue
+<template>
+  <div class="container mx-auto p-4">
+    <!-- Upload Area -->
+    <div
+      class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
+      @drop.prevent="handleDrop"
+      @dragover.prevent
+      @click="triggerFileInput"
+    >
+      <input
+        type="file"
+        ref="fileInput"
+        class="hidden"
+        accept="image/*"
+        @change="handleFileSelect"
+      />
+      <div v-if="!selectedImage" class="text-gray-500">
+        <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
+        <p>Drag and drop an image here or click to upload</p>
+      </div>
+      <img
+        v-else
+        :src="selectedImage"
+        class="max-w-md mx-auto rounded-lg shadow"
+      />
+    </div>
+
+    <!-- Preset Size Options -->
+    <div v-if="selectedImage" class="mt-8">
+      <h3 class="text-lg font-semibold mb-4">Select Target Size:</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <button
+          v-for="size in presetSizes"
+          :key="size.name"
+          class="btn btn-primary"
+          @click="resizeImage(size.width, size.height)"
+        >
+          {{ size.name }} ({{ size.width }}x{{ size.height }})
+        </button>
+      </div>
+    </div>
+
+    <!-- Converted Images Display -->
+    <div v-if="resizedImages.length" class="mt-8">
+      <h3 class="text-lg font-semibold mb-4">Conversion Results:</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          v-for="(image, index) in resizedImages"
+          :key="index"
+          class="card bg-base-100 shadow-xl"
+        >
+          <figure class="px-4 pt-4">
+            <img :src="image.url" class="rounded-xl" />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title">
+              {{ image.width }}x{{ image.height }}
+            </h2>
+            <div class="card-actions justify-end">
+              <button
+                class="btn btn-primary"
+                @click="downloadImage(image.url, image.width, image.height)"
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const fileInput = ref(null)
+const selectedImage = ref(null)
+const resizedImages = ref([])
+
+// Preset sizes
+const presetSizes = [
+  { name: 'Social Media Cover', width: 1200, height: 630 },
+  { name: 'WeChat Avatar', width: 132, height: 132 },
+  { name: 'Instagram Square', width: 1080, height: 1080 },
+  { name: 'Mobile Wallpaper', width: 1080, height: 1920 },
+]
+
+// Trigger file selection
+const triggerFileInput = () => {
+  fileInput.value.click()
+}
+
+// Handle file selection
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    loadImage(file)
+  }
+}
+
+// Handle drag and drop
+const handleDrop = (event) => {
+  const file = event.dataTransfer.files[0]
+  if (file && file.type.startsWith('image/')) {
+    loadImage(file)
+  }
+}
+
+// Load image
+const loadImage = (file) => {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    selectedImage.value = e.target.result
+    resizedImages.value = [] // Clear previous results
+  }
+  reader.readAsDataURL(file)
+}
+
+// Resize image
+const resizeImage = (targetWidth, targetHeight) => {
+  const img = new Image()
+  img.src = selectedImage.value
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = targetWidth
+    canvas.height = targetHeight
+    const ctx = canvas.getContext('2d')
+    
+    // Use white background
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    
+    // Calculate scale and position to maintain aspect ratio
+    const scale = Math.min(
+      targetWidth / img.width,
+      targetHeight / img.height
+    )
+    const x = (targetWidth - img.width * scale) / 2
+    const y = (targetHeight - img.height * scale) / 2
+    
+    ctx.drawImage(
+      img,
+      x,
+      y,
+      img.width * scale,
+      img.height * scale
+    )
+    
+    const resizedUrl = canvas.toDataURL('image/jpeg', 0.9)
+    resizedImages.value.push({
+      url: resizedUrl,
+      width: targetWidth,
+      height: targetHeight
+    })
+  }
+}
+
+// Download image
+const downloadImage = (dataUrl, width, height) => {
+  const link = document.createElement('a')
+  link.download = `resized-${width}x${height}.jpg`
+  link.href = dataUrl
+  link.click()
+}
+</script>
+```
+
+## Usage Instructions
+
+1. **Upload Image**:
+   - Click the upload area to select an image file
+   - Or drag and drop an image directly into the upload area
+
+2. **Select Target Size**:
+   - After uploading an image, you'll see preset size options
+   - Click the desired size button to convert
+
+3. **View and Download**:
+   - Converted images will appear below
+   - Each conversion result has preview and download buttons
+
+## Key Implementation Details
+
+### 1. Image Upload Handling
+
+The component supports two upload methods: click-to-select and drag-and-drop. It uses the FileReader API to read image files:
+
+```javascript
+const loadImage = (file) => {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    selectedImage.value = e.target.result
+    resizedImages.value = []
+  }
+  reader.readAsDataURL(file)
+``` 

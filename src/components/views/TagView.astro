@@ -1,0 +1,22 @@
+---
+import BlogList from '@/components/blogs/BlogList.vue';
+import DocLayout from '@/layouts/DocLayout.astro';
+import BlogDB from '@/database/BlogDB';
+import Tag from '@/models/Tag';
+
+interface Props {
+  lang: string;
+  name: string;
+}
+
+const { lang, name } = Astro.props;
+const blogs = await BlogDB.getBlogsByTag(name, lang);
+const sidebarItem = await Tag.makeRootSidebarItem(lang);
+---
+
+<DocLayout
+  title={`标签: ${name}`}
+  description={`所有关于 ${name} 的文章`}
+  sidebarItem={sidebarItem}>
+  <BlogList blogs={blogs} lang={lang} />
+</DocLayout>

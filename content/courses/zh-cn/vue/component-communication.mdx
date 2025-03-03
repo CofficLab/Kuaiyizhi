@@ -1,0 +1,332 @@
+---
+title: Vue 组件通信：掌握组件间数据传递的艺术
+description: 深入理解 Vue 组件间的各种通信方式，包括 props、emit、provide/inject 等
+---
+
+import Tabs from '@components/tabs/Tabs.astro';
+import TabItem from '@components/tabs/TabItem.astro';
+
+## 组件通信概述
+
+在 Vue 应用中，组件是独立的代码单元，它们需要相互通信以构建完整的应用功能。Vue 提供了多种组件通信方式，每种方式都有其适用场景：
+
+1. **Props Down**：父组件向子组件传递数据
+2. **Events Up**：子组件向父组件发送消息
+3. **Provide/Inject**：跨层级组件通信
+4. **Event Bus**：任意组件间的通信
+5. **Vuex/Pinia**：全局状态管理
+
+## Props：父组件向子组件传递数据
+
+### 基础用法
+
+<Tabs>
+    <TabItem label="父组件">
+    ```vue
+    <template>
+      <div class="parent">
+        <child-component
+          :message="parentMessage"
+          :items="list"
+          required-prop="必传值"
+        />
+      </div>
+    </template>
+
+    <script setup>
+    import { ref } from 'vue'
+    import ChildComponent from './ChildComponent.vue'
+
+    const parentMessage = ref('来自父组件的消息')
+    const list = ref(['苹果', '香蕉', '橙子'])
+    </script>
+    ```
+    </TabItem>
+    <TabItem label="子组件">
+    ```vue
+    <template>
+      <div class="child">
+        <p>{{ message }}</p>
+        <ul>
+          <li v-for="item in items" :key="item">{{ item }}</li>
+        </ul>
+        <p>{{ requiredProp }}</p>
+      </div>
+    </template>
+
+    <script setup>
+    // 使用 defineProps 声明 props
+    const props = defineProps({
+      message: String,
+      items: Array,
+      requiredProp: {
+        type: String,
+        required: true
+      }
+    })
+    </script>
+    ```
+    </TabItem>
+</Tabs>
+
+### Props 验证
+
+Vue 提供了丰富的 props 验证选项：
+
+```js
+defineProps({
+  // 基础类型检查
+  propA: Number,
+  
+  // 多种类型
+  propB: [String, Number],
+  
+  // 必传
+  propC: {
+    type: String,
+    required: true
+  },
+  
+  // 带默认值
+  propD: {
+    type: Number,
+    default: 100
+  },
+  
+  // 对象默认值
+  propE: {
+    type: Object,
+    default: () => ({
+      message: 'hello'
+    })
+  },
+  
+  // 自定义验证
+  propF: {
+    validator(value) {
+      return ['success', 'warning', 'danger'].includes(value)
+    }
+  }
+})
+```
+
+## Emit：子组件向父组件发送消息
+
+### 基础用法
+
+<Tabs>
+    <TabItem label="子组件">
+    ```vue
+    <template>
+      <div>
+        <button @click="handleClick">点击发送消息</button>
+      </div>
+    </template>
+
+    <script setup>
+    const emit = defineEmits(['update', 'delete'])
+
+    function handleClick() {
+      emit('update', {
+        id: 1,
+        data: '更新的数据'
+      })
+    }
+    </script>
+    ```
+    </TabItem>
+    <TabItem label="父组件">
+    ```vue
+    <template>
+      <div>
+        <child-component
+          @update="handleUpdate"
+          @delete="handleDelete"
+        />
+      </div>
+    </template>
+
+    <script setup>
+    function handleUpdate(payload) {
+      console.log('收到更新事件：', payload)
+    }
+
+    function handleDelete(id) {
+      console.log('收到删除事件：', id)
+    }
+    </script>
+    ```
+    </TabItem>
+</Tabs>
+
+### v-model 的使用
+
+v-model 是 props 和 emit 的语法糖，用于实现双向绑定：
+
+```vue
+<!-- 父组件 -->
+<template>
+  <custom-input v-model="searchText" />
+</template>
+
+<!-- 子组件 -->
+<template>
+  <input
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
+  >
+</template>
+
+<script setup>
+defineProps(['modelValue'])
+defineEmits(['update:modelValue'])
+</script>
+```
+
+## Provide/Inject：跨层级组件通信
+
+当需要从父组件向深层子组件传递数据时，可以使用 provide/inject：
+
+<Tabs>
+    <TabItem label="父组件">
+    ```vue
+    <script setup>
+    import { provide, ref } from 'vue'
+
+    const theme = ref('dark')
+    const updateTheme = (newTheme) => {
+      theme.value = newTheme
+    }
+
+    // 提供数据和方法
+    provide('theme', {
+      theme,
+      updateTheme
+    })
+    </script>
+    ```
+    </TabItem>
+    <TabItem label="深层子组件">
+    ```vue
+    <template>
+      <div :class="theme.theme">
+        <button @click="toggleTheme">
+          切换主题
+        </button>
+      </div>
+    </template>
+
+    <script setup>
+    import { inject } from 'vue'
+
+    // 注入数据和方法
+    const theme = inject('theme')
+
+    function toggleTheme() {
+      theme.updateTheme(
+        theme.theme === 'dark' ? 'light' : 'dark'
+      )
+    }
+    </script>
+    ```
+    </TabItem>
+</Tabs>
+
+### 使用 Symbol 作为 Key
+
+为了避免命名冲突，可以使用 Symbol 作为 provide/inject 的 key：
+
+```js
+// keys.js
+export const themeSymbol = Symbol('theme')
+
+// 父组件
+provide(themeSymbol, theme)
+
+// 子组件
+const theme = inject(themeSymbol)
+```
+
+## 事件总线：任意组件间通信
+
+虽然 Vue 3 移除了内置的事件总线，但我们可以使用第三方库或自己实现一个简单的事件总线：
+
+```js
+// eventBus.js
+import { ref } from 'vue'
+
+class EventBus {
+  constructor() {
+    this.events = ref(new Map())
+  }
+
+  on(event, callback) {
+    if (!this.events.value.has(event)) {
+      this.events.value.set(event, [])
+    }
+    this.events.value.get(event).push(callback)
+  }
+
+  emit(event, data) {
+    if (this.events.value.has(event)) {
+      this.events.value.get(event).forEach(callback => callback(data))
+    }
+  }
+
+  off(event, callback) {
+    if (this.events.value.has(event)) {
+      const callbacks = this.events.value.get(event)
+      const index = callbacks.indexOf(callback)
+      if (index > -1) callbacks.splice(index, 1)
+    }
+  }
+}
+
+export default new EventBus()
+```
+
+使用事件总线：
+
+```js
+// 组件 A
+import eventBus from './eventBus'
+
+eventBus.emit('userLoggedIn', { id: 1, name: 'Alice' })
+
+// 组件 B
+import eventBus from './eventBus'
+
+eventBus.on('userLoggedIn', (user) => {
+  console.log('用户登录：', user)
+})
+```
+
+## 最佳实践
+
+1. **选择合适的通信方式**
+   - 父子组件：优先使用 props/emit
+   - 跨多层级：考虑 provide/inject
+   - 全局状态：使用 Vuex/Pinia
+   - 简单的全局通信：事件总线
+
+2. **Props 的设计原则**
+   - 明确的命名
+   - 适当的类型验证
+   - 合理的默认值
+   - 必要的文档注释
+
+3. **避免过度通信**
+   - 组件职责要单一
+   - 避免过深的组件层级
+   - 合理使用状态管理
+
+## 总结
+
+Vue 提供了丰富的组件通信方式，每种方式都有其适用场景：
+
+- Props/Emit：最基础、最常用的父子组件通信方式
+- Provide/Inject：适用于深层组件通信
+- 事件总线：适用于简单的全局通信
+- Vuex/Pinia：适用于复杂的状态管理
+
+选择合适的通信方式对于构建可维护的 Vue 应用至关重要。在实际开发中，应根据具体场景选择最合适的通信方式，并遵循最佳实践原则。

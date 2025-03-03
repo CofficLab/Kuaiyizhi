@@ -1,0 +1,332 @@
+---
+title: Caddy 配置示例集
+---
+
+本文提供了常见场景下的 Caddy 配置示例，帮助用户快速实现特定需求。
+
+## 静态网站
+
+### 1. 基础静态网站
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server
+    encode gzip
+    
+    # 添加安全头
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+    }
+}
+```
+
+### 2. 单页应用（SPA）
+
+```caddyfile
+example.com {
+    root * /var/www/spa
+    encode gzip
+    
+    # 所有请求转发到 index.html
+    try_files {path} /index.html
+    file_server
+    
+    # 静态资源缓存
+    @static {
+        path *.css *.js *.png *.jpg *.svg *.woff*
+    }
+    header @static Cache-Control "public, max-age=31536000"
+}
+```
+
+## PHP 应用
+
+### 1. WordPress 配置
+
+```caddyfile
+example.com {
+    root * /var/www/wordpress
+    php_fastcgi unix//run/php-fpm.sock
+    file_server
+    
+    # WordPress 固定链接支持
+    try_files {path} /index.php?{query}&p={path}
+    
+    # 禁止访问敏感文件
+    @forbidden {
+        path /wp-config.php /wp-admin/install.php
+    }
+    respond @forbidden 403
+}
+```
+
+### 2. Laravel 应用
+
+```caddyfile
+example.com {
+    root * /var/www/laravel/public
+    php_fastcgi unix//run/php-fpm.sock
+    file_server
+    
+    # Laravel 路由支持
+    try_files {path} /index.php?{query}
+    
+    # 缓存静态资源
+    @static {
+        path /css/* /js/* /images/*
+    }
+    header @static Cache-Control "public, max-age=31536000"
+}
+```
+
+## 代理配置
+
+### 1. Node.js 应用
+
+```caddyfile
+example.com {
+    reverse_proxy localhost:3000 {
+        # WebSocket 支持
+        transport http {
+            websocket
+        }
+        
+        # 健康检查
+        health_uri /health
+        health_interval 10s
+        
+        # 错误处理
+        handle_response {
+            status 502 503 504 {
+                respond "Service temporarily unavailable" 503
+            }
+        }
+    }
+}
+```
+
+### 2. 微服务架构
+
+```caddyfile
+example.com {
+    # API 服务
+    handle /api/* {
+        reverse_proxy api-service:8080 {
+            lb_policy round_robin
+            lb_retries 3
+        }
+    }
+    
+    # 认证服务
+    handle /auth/* {
+        reverse_proxy auth-service:8081
+    }
+    
+    # 前端应用
+    handle * {
+        root * /var/www/frontend
+        try_files {path} /index.html
+        file_server
+    }
+}
+```
+
+## 安全配置
+
+### 1. 基础认证
+
+```caddyfile
+example.com {
+    root * /var/www/protected
+    
+    basicauth {
+        admin JDJhJDE0JDFrMnN5dGdQVUxLOHBtRzlxQS5tci5XMUVzbjlzWG9wYkV4RzBaeTZYTEhtMmJwZlBGRTZp
+    }
+    
+    file_server
+}
+```
+
+### 2. IP 限制和速率限制
+
+```caddyfile
+example.com {
+    # IP 白名单
+    @allowed_ips {
+        remote_ip 192.168.1.0/24 10.0.0.0/8
+    }
+    
+    # 速率限制
+    rate_limit {
+        zone dynamic 10m
+        rate 10r/s
+    }
+    
+    # 管理接口限制
+    handle /admin/* {
+        not @allowed_ips {
+            respond 403
+        }
+    }
+    
+    file_server
+}
+```
+
+## 高级功能
+
+### 1. 多站点配置
+
+```caddyfile
+{
+    email admin@example.com
+}
+
+# 主站点
+example.com {
+    root * /var/www/main
+    file_server
+}
+
+# 博客站点
+blog.example.com {
+    root * /var/www/blog
+    file_server
+}
+
+# API 站点
+api.example.com {
+    reverse_proxy localhost:8080
+}
+```
+
+### 2. 动态后端
+
+```caddyfile
+example.com {
+    reverse_proxy {
+        dynamic a {
+            name backend.service.consul
+            refresh 30s
+            resolver 10.0.0.2
+        }
+        
+        lb_policy least_conn
+        health_uri /health
+    }
+}
+```
+
+## 开发环境
+
+### 1. 本地开发配置
+
+```caddyfile
+localhost {
+    tls internal
+    
+    # 前端开发服务器
+    handle /* {
+        reverse_proxy localhost:3000 {
+            header_up Host {upstream_hostport}
+        }
+    }
+    
+    # API 服务
+    handle /api/* {
+        reverse_proxy localhost:8080
+    }
+    
+    # 允许跨域
+    header {
+        Access-Control-Allow-Origin *
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers *
+        Access-Control-Allow-Credentials true
+    }
+}
+```
+
+### 2. 调试配置
+
+```caddyfile
+{
+    debug
+    local_certs
+    auto_https off
+}
+
+:80 {
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+    
+    root * /var/www/dev
+    file_server
+    php_fastcgi 127.0.0.1:9000
+    
+    # 开发时禁用缓存
+    header Cache-Control no-store
+}
+```
+
+## 性能优化
+
+### 1. 静态资源优化
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    
+    # 压缩
+    encode gzip zstd {
+        minimum_length 1000
+        match {
+            header Content-Type text/*
+            header Content-Type application/json*
+            header Content-Type application/javascript*
+        }
+    }
+    
+    # 缓存控制
+    @static {
+        path *.css *.js *.png *.jpg *.webp *.woff2
+        not path /admin/*
+    }
+    header @static {
+        Cache-Control "public, max-age=31536000"
+        Vary Accept-Encoding
+    }
+    
+    file_server
+}
+```
+
+### 2. 代理优化
+
+```caddyfile
+example.com {
+    reverse_proxy backend:8080 {
+        # 连接池
+        transport http {
+            dial_timeout 2s
+            keepalive 30s
+            keepalive_idle_conns 100
+        }
+        
+        # 缓冲设置
+        buffer_requests
+        buffer_responses
+        
+        # 重试策略
+        lb_retries 3
+        lb_try_duration 5s
+        lb_try_interval 250ms
+    }
+}
+``` 

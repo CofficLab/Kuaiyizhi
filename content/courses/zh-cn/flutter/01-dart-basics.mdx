@@ -1,0 +1,242 @@
+---
+title: Dart 语言基础
+description: 学习 Flutter 开发的第一步 - 掌握 Dart 编程语言的核心概念
+---
+
+## Dart 语言简介
+
+Dart 是 Google 开发的一种面向对象的编程语言，专为构建快速、优雅的多平台应用而设计。作为 Flutter 的官方语言，掌握 Dart 是学习 Flutter 的第一步。
+
+## 为什么要学习 Dart？
+
+- **专为 UI 设计**：Dart 针对创建用户界面进行了优化
+- **高性能**：支持 JIT（即时编译）和 AOT（提前编译）两种模式
+- **易学易用**：语法简洁，对 Java、JavaScript 开发者友好
+- **Flutter 的基础**：Flutter 框架完全基于 Dart 构建
+
+## Dart 开发环境搭建
+
+### 安装 Dart SDK
+
+```bash
+# macOS (使用 Homebrew)
+brew tap dart-lang/dart
+brew install dart
+
+# Windows (使用 Chocolatey)
+choco install dart-sdk
+
+# Linux (使用 apt)
+sudo apt-get update
+sudo apt-get install apt-transport-https
+sudo sh -c 'wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -'
+sudo sh -c 'wget -qO- https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list'
+sudo apt-get update
+sudo apt-get install dart
+```
+
+### 在线编辑器
+
+如果你不想安装 SDK，可以使用 [DartPad](https://dartpad.dev) 在线编写和运行 Dart 代码。
+
+## Dart 语言基础
+
+### 变量和数据类型
+
+#### 变量声明
+
+Dart 支持类型推断，可以使用 `var` 关键字声明变量：
+
+```dart
+var name = 'John'; // 自动推断为 String 类型
+var age = 30;      // 自动推断为 int 类型
+```
+
+也可以显式指定类型：
+
+```dart
+String name = 'John';
+int age = 30;
+```
+
+#### 常量声明
+
+使用 `final` 或 `const` 声明常量：
+
+```dart
+final String name = 'John'; // 运行时常量
+const double pi = 3.14159;  // 编译时常量
+```
+
+#### 基本数据类型
+
+Dart 中的基本数据类型包括：
+
+```dart
+// 数值类型
+int age = 30;           // 整数
+double price = 9.99;    // 浮点数
+num value = 42;         // 可以是整数或浮点数
+
+// 字符串
+String name = 'Flutter';
+
+// 布尔值
+bool isActive = true;
+
+// 列表（数组）
+List<String> fruits = ['apple', 'banana', 'orange'];
+
+// 映射（键值对）
+Map<String, int> scores = {
+  'math': 90,
+  'science': 85,
+  'history': 95
+};
+
+// 集合（无序、无重复元素）
+Set<int> numbers = {1, 2, 3, 4, 5};
+```
+
+### 函数
+
+#### 函数声明
+
+```dart
+// 基本函数
+int add(int a, int b) {
+  return a + b;
+}
+
+// 箭头函数（单行函数的简写）
+int multiply(int a, int b) => a * b;
+
+// 可选参数
+String greet(String name, [String? title]) {
+  if (title != null) {
+    return 'Hello, $title $name!';
+  }
+  return 'Hello, $name!';
+}
+
+// 命名参数
+String createUser({required String name, int age = 18, String? email}) {
+  return 'User: $name, Age: $age${email != null ? ", Email: $email" : ""}';
+}
+```
+
+#### 函数调用
+
+```dart
+print(add(5, 3));        // 输出: 8
+print(multiply(4, 2));    // 输出: 8
+print(greet('John'));     // 输出: Hello, John!
+print(greet('John', 'Dr')); // 输出: Hello, Dr John!
+
+// 使用命名参数
+print(createUser(name: 'Alice', age: 25));  // 输出: User: Alice, Age: 25
+print(createUser(name: 'Bob', email: 'bob@example.com'));  // 输出: User: Bob, Age: 18, Email: bob@example.com
+```
+
+### 类和对象
+
+#### 类的定义
+
+```dart
+class Person {
+  // 属性
+  String name;
+  int age;
+  
+  // 构造函数
+  Person(this.name, this.age);
+  
+  // 命名构造函数
+  Person.guest() {
+    name = 'Guest';
+    age = 18;
+  }
+  
+  // 方法
+  void introduce() {
+    print('Hello, my name is $name and I am $age years old.');
+  }
+}
+```
+
+#### 创建和使用对象
+
+```dart
+void main() {
+  // 创建对象
+  var person1 = Person('John', 30);
+  person1.introduce();  // 输出: Hello, my name is John and I am 30 years old.
+  
+  // 使用命名构造函数
+  var guest = Person.guest();
+  guest.introduce();    // 输出: Hello, my name is Guest and I am 18 years old.
+}
+```
+
+### 异步编程
+
+Dart 使用 `Future` 和 `async`/`await` 进行异步编程：
+
+```dart
+// 返回 Future 的函数
+Future<String> fetchData() {
+  return Future.delayed(Duration(seconds: 2), () => 'Data loaded');
+}
+
+// 使用 then 处理 Future
+void fetchDataWithThen() {
+  print('Fetching data...');
+  fetchData().then((result) {
+    print(result);  // 2秒后输出: Data loaded
+  });
+  print('Function completed');  // 立即输出
+}
+
+// 使用 async/await 处理 Future
+Future<void> fetchDataWithAsync() async {
+  print('Fetching data...');
+  String result = await fetchData();  // 等待 Future 完成
+  print(result);  // 2秒后输出: Data loaded
+  print('Function completed');  // 在 Future 完成后输出
+}
+```
+
+## 练习：创建一个简单的 Dart 程序
+
+创建一个计算器类，实现基本的数学运算：
+
+```dart
+class Calculator {
+  double add(double a, double b) => a + b;
+  double subtract(double a, double b) => a - b;
+  double multiply(double a, double b) => a * b;
+  double divide(double a, double b) {
+    if (b == 0) throw Exception('Cannot divide by zero');
+    return a / b;
+  }
+}
+
+void main() {
+  var calc = Calculator();
+  
+  print('5 + 3 = ${calc.add(5, 3)}');        // 输出: 5 + 3 = 8.0
+  print('5 - 3 = ${calc.subtract(5, 3)}');   // 输出: 5 - 3 = 2.0
+  print('5 * 3 = ${calc.multiply(5, 3)}');   // 输出: 5 * 3 = 15.0
+  print('5 / 3 = ${calc.divide(5, 3)}');     // 输出: 5 / 3 = 1.6666666666666667
+  
+  try {
+    print('5 / 0 = ${calc.divide(5, 0)}');
+  } catch (e) {
+    print('Error: $e');  // 输出: Error: Exception: Cannot divide by zero
+  }
+}
+```
+
+## 下一步
+
+掌握了 Dart 语言基础后，你已经为学习 Flutter 框架打下了坚实的基础。接下来，我们将深入探索 Flutter 的核心概念 - Widget。

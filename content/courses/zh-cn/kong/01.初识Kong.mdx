@@ -1,0 +1,149 @@
+---
+title: "初识Kong"
+---
+
+# 第一章：初识Kong 👋
+
+## Kong是什么？为什么它这么"火"？
+
+Kong是一个云原生、高性能、可扩展的API网关。简单来说，它就像是微服务架构中的"交通警察"，负责管理、控制和处理所有API流量。
+
+为什么Kong如此受欢迎？主要原因包括：
+
+- **开源且活跃**：拥有庞大的社区支持和不断更新的功能
+- **高性能**：基于NGINX和OpenResty构建，提供极高的性能
+- **可扩展性**：插件系统让你能够轻松扩展其功能
+- **云原生**：完美兼容Kubernetes等现代云环境
+- **多平台支持**：可以在几乎任何环境中运行
+
+## 从一个比萨外卖平台说起：为什么我们需要API网关
+
+想象一下，你在经营一个比萨外卖平台，随着业务的增长，你的系统变得越来越复杂：
+
+- 订单服务负责处理订单
+- 支付服务处理付款
+- 配送服务管理送餐
+- 用户服务管理客户信息
+- ...等等
+
+每个服务都有自己的API，客户端（网站、手机App）需要知道如何与每个服务通信。这会导致以下问题：
+
+1. **客户端复杂性增加**：需要知道每个服务的位置和通信方式
+2. **安全隐患**：每个服务都暴露在外部，增加攻击面
+3. **难以实施统一策略**：如认证、限流等需要在每个服务中单独实现
+4. **监控困难**：没有统一的地方查看API调用情况
+
+这时，API网关（如Kong）就派上用场了！它作为所有API的统一入口，解决了上述所有问题：
+
+- 客户端只需要知道网关的地址
+- 只有网关暴露在外部，内部服务受保护
+- 统一实施认证、限流等策略
+- 集中监控所有API流量
+
+## Kong的前世今生：从Kong.inc到开源明星
+
+Kong的故事始于2010年，当时一家名为Mashape的公司创建了一个API市场，用于分享和销售API。为了支持这个市场，他们需要一个强大的API管理工具，于是Kong就诞生了。
+
+- **2015年**：Kong作为开源项目正式发布
+- **2017年**：Mashape更名为Kong Inc.，专注于Kong的开发
+- **2018年**：Kong Enterprise版本发布，提供更多商业功能
+- **2019年**：获得4,300万美元C轮融资，证明了市场对Kong的认可
+- **至今**：已成为GitHub上星数最多的API网关项目之一，被全球数千家企业使用
+
+## 快速安装：让Kong在你的电脑上安家落户
+
+### Docker安装（最简单的方式）
+
+```bash
+# 拉取Kong镜像
+docker pull kong:latest
+
+# 创建网络
+docker network create kong-net
+
+# 启动数据库
+docker run -d --name kong-database \
+  --network=kong-net \
+  -p 5432:5432 \
+  -e "POSTGRES_USER=kong" \
+  -e "POSTGRES_DB=kong" \
+  -e "POSTGRES_PASSWORD=kongpass" \
+  postgres:13
+
+# 初始化数据库
+docker run --rm \
+  --network=kong-net \
+  -e "KONG_DATABASE=postgres" \
+  -e "KONG_PG_HOST=kong-database" \
+  -e "KONG_PG_PASSWORD=kongpass" \
+  -e "KONG_PASSWORD=test" \
+  kong:latest kong migrations bootstrap
+
+# 启动Kong
+docker run -d --name kong \
+  --network=kong-net \
+  -e "KONG_DATABASE=postgres" \
+  -e "KONG_PG_HOST=kong-database" \
+  -e "KONG_PG_PASSWORD=kongpass" \
+  -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+  -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+  -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+  -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+  -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" \
+  -p 8000:8000 \
+  -p 8443:8443 \
+  -p 8001:8001 \
+  -p 8444:8444 \
+  kong:latest
+```
+
+### DB-less模式（无需数据库）
+
+如果你只想快速尝试，可以使用DB-less模式：
+
+```bash
+# 创建配置文件
+mkdir -p /tmp/kong
+cat > /tmp/kong/kong.yml << EOF
+_format_version: "2.1"
+services:
+  - name: demo-service
+    url: http://httpbin.org
+    routes:
+      - name: demo-route
+        paths:
+          - /demo
+EOF
+
+# 启动Kong（DB-less模式）
+docker run -d --name kong-dbless \
+  -v /tmp/kong:/kong/declarative \
+  -e "KONG_DATABASE=off" \
+  -e "KONG_DECLARATIVE_CONFIG=/kong/declarative/kong.yml" \
+  -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+  -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+  -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+  -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+  -e "KONG_ADMIN_LISTEN=0.0.0.0:8001" \
+  -p 8000:8000 \
+  -p 8001:8001 \
+  kong:latest
+```
+
+### 验证安装
+
+安装完成后，可以通过访问Kong的管理API来验证安装是否成功：
+
+```bash
+curl http://localhost:8001
+```
+
+如果返回了Kong的配置信息，恭喜你！Kong已经成功安装并运行了。
+
+## 下一步
+
+现在你已经了解了Kong的基本概念并成功安装了它，接下来我们将在第二章中探索Kong的基础功能和核心概念。准备好进一步深入Kong的世界了吗？
+
+---
+
+> 温馨提示：本教程是系列内容的一部分，请继续阅读下一章节，逐步掌握Kong的各项功能。 

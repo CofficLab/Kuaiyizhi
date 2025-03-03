@@ -1,0 +1,503 @@
+---
+title: 'Java基础语法与第一个程序'
+excerpt: '学习Java的基本语法结构，编写并运行你的第一个Java程序'
+---
+
+# Java基础语法与第一个程序
+
+完成环境搭建后，我们可以开始编写第一个Java程序了！本教程将介绍Java的基本语法结构，并带你创建一个简单的"Hello World"程序。
+
+<div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
+  <div className="flex items-start">
+    <div className="mr-3 text-blue-600">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <div>
+      <p className="font-medium">学习目标</p>
+      <ul className="list-disc list-inside">
+        <li>理解Java程序的基本结构</li>
+        <li>创建并运行第一个Java程序</li>
+        <li>学习Java的主要语法规则</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+## Java程序的基本结构
+
+Java程序由**类**、**方法**和**语句**组成：
+
+- **类(Class)**: Java程序的基本单位，所有代码都必须位于类中
+- **方法(Method)**: 类中执行操作的代码块，如main方法是程序的入口点
+- **语句(Statement)**: 方法内执行具体操作的代码行，以分号结束
+
+## 第一个Java程序：Hello World
+
+创建一个名为`HelloWorld.java`的文件，输入以下代码：
+
+```java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+让我们逐行分析这段代码：
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+  <div className="border rounded p-4 bg-gray-50">
+    <code>public class HelloWorld &#123;</code>
+    <p className="mt-2">定义一个名为HelloWorld的公共类，类名必须与文件名相同</p>
+  </div>
+  <div className="border rounded p-4 bg-gray-50">
+    <code>public static void main(String[] args) &#123;</code>
+    <p className="mt-2">声明main方法，程序执行的起点，接收字符串数组参数</p>
+  </div>
+  <div className="border rounded p-4 bg-gray-50">
+    <code>System.out.println("Hello, World!");</code>
+    <p className="mt-2">输出文本到控制台，println方法会在末尾添加换行符</p>
+  </div>
+  <div className="border rounded p-4 bg-gray-50">
+    <code>&#125;</code>
+    <p className="mt-2">花括号标记方法和类的结束</p>
+  </div>
+</div>
+
+## 编译和运行Java程序
+
+Java是一种编译型语言，需要先编译再运行：
+
+1. **编译**：将`.java`源文件转换为`.class`字节码文件
+2. **运行**：在Java虚拟机(JVM)中执行字节码文件
+
+打开终端或命令提示符，进入源文件所在目录，执行以下命令：
+
+```bash
+# 编译Java源文件
+javac HelloWorld.java
+
+# 运行编译后的程序
+java HelloWorld
+```
+
+如果一切正常，你应该能看到终端输出：
+```
+Hello, World!
+```
+
+<div className="bg-green-50 p-4 rounded-lg border border-green-200 my-4">
+  <div className="flex items-start">
+    <div className="mr-3 text-green-600">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    <div>
+      <p className="font-medium">恭喜！</p>
+      <p>你刚刚成功运行了你的第一个Java程序！</p>
+    </div>
+  </div>
+</div>
+
+## 使用IDE运行程序
+
+如果你使用IDE，操作会更简单：
+
+<div className="mb-6">
+  <h3 className="font-medium">IntelliJ IDEA</h3>
+  <ol className="list-decimal list-inside ml-4">
+    <li>创建新项目，选择Java</li>
+    <li>在src目录右键，创建新Java类</li>
+    <li>输入代码后，点击左侧绿色运行按钮</li>
+  </ol>
+</div>
+
+<div className="mb-6">
+  <h3 className="font-medium">Eclipse</h3>
+  <ol className="list-decimal list-inside ml-4">
+    <li>File > New > Java Project</li>
+    <li>右键项目 > New > Class</li>
+    <li>输入代码后，Run > Run</li>
+  </ol>
+</div>
+
+<div className="mb-6">
+  <h3 className="font-medium">VS Code</h3>
+  <ol className="list-decimal list-inside ml-4">
+    <li>安装Java Extension Pack</li>
+    <li>创建.java文件并编写代码</li>
+    <li>点击Run按钮或右键选择Run Java</li>
+  </ol>
+</div>
+
+## Java基础语法规则
+
+### 1. 大小写敏感
+
+Java是**大小写敏感**的语言，`Hello`和`hello`是不同的标识符。
+
+### 2. 类名
+
+- 类名以**大写字母开头**
+- 如果是多个单词，采用**驼峰命名法**（如`HelloWorld`）
+- 类名应该是**名词**，表示对象
+
+```java
+// 正确的类名
+public class Student { }
+public class BankAccount { }
+
+// 不推荐的类名
+public class student { }  // 小写开头
+public class bank_account { }  // 下划线命名
+```
+
+### 3. 方法名
+
+- 方法名以**小写字母开头**
+- 如果是多个单词，采用**驼峰命名法**（如`calculateTotal`）
+- 方法名通常是**动词**或**动词短语**
+
+```java
+// 正确的方法名
+public void calculateTotal() { }
+public void sendMessage() { }
+
+// 不推荐的方法名
+public void CalculateTotal() { }  // 大写开头
+public void send_message() { }    // 下划线命名
+```
+
+### 4. 变量声明
+
+Java是**强类型**语言，变量必须先声明类型再使用：
+
+```java
+// 声明变量
+int age;        // 整数
+double price;   // 浮点数
+String name;    // 字符串
+
+// 声明并初始化
+int age = 25;
+double price = 99.99;
+String name = "John";
+```
+
+### 5. 注释
+
+Java支持三种类型的注释：
+
+```java
+// 单行注释
+
+/*
+ * 多行注释
+ * 可以跨越多行
+ */
+
+/**
+ * 文档注释
+ * 用于生成JavaDoc文档
+ * @author 你的名字
+ */
+```
+
+## 第二个程序：变量和用户输入
+
+让我们创建一个更复杂一点的程序，接收用户输入并显示个性化的欢迎信息：
+
+```java
+import java.util.Scanner;  // 导入Scanner类
+
+public class Greeting {
+    public static void main(String[] args) {
+        // 创建Scanner对象读取用户输入
+        Scanner scanner = new Scanner(System.in);
+        
+        // 提示用户输入姓名
+        System.out.print("请输入您的姓名: ");
+        String name = scanner.nextLine();
+        
+        // 提示用户输入年龄
+        System.out.print("请输入您的年龄: ");
+        int age = scanner.nextInt();
+        
+        // 显示个性化欢迎信息
+        System.out.println("你好，" + name + "！");
+        System.out.println("你今年" + age + "岁。");
+        
+        // 关闭Scanner
+        scanner.close();
+    }
+}
+```
+
+这个程序展示了几个新的概念：
+- **导入语句**：`import`用于引入其他包中的类
+- **Scanner类**：用于读取用户输入
+- **变量**：存储名字和年龄
+- **字符串连接**：使用`+`连接字符串和其他数据类型
+
+## Java的基本数据类型
+
+Java有8种基本数据类型，分为四类：
+
+<div className="overflow-x-auto">
+  <table className="min-w-full border-collapse border rounded-lg">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="border p-2">类型</th>
+        <th className="border p-2">关键字</th>
+        <th className="border p-2">大小</th>
+        <th className="border p-2">范围</th>
+        <th className="border p-2">示例</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border p-2" rowSpan="4">整数</td>
+        <td className="border p-2">byte</td>
+        <td className="border p-2">8位</td>
+        <td className="border p-2">-128到127</td>
+        <td className="border p-2"><code>byte b = 100;</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2">short</td>
+        <td className="border p-2">16位</td>
+        <td className="border p-2">-32,768到32,767</td>
+        <td className="border p-2"><code>short s = 1000;</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2">int</td>
+        <td className="border p-2">32位</td>
+        <td className="border p-2">-2^31到2^31-1</td>
+        <td className="border p-2"><code>int i = 100000;</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2">long</td>
+        <td className="border p-2">64位</td>
+        <td className="border p-2">-2^63到2^63-1</td>
+        <td className="border p-2"><code>long l = 100000L;</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2" rowSpan="2">浮点数</td>
+        <td className="border p-2">float</td>
+        <td className="border p-2">32位</td>
+        <td className="border p-2">约±3.40282347E+38F</td>
+        <td className="border p-2"><code>float f = 3.14f;</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2">double</td>
+        <td className="border p-2">64位</td>
+        <td className="border p-2">约±1.79769313486231570E+308</td>
+        <td className="border p-2"><code>double d = 3.14159;</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2">字符</td>
+        <td className="border p-2">char</td>
+        <td className="border p-2">16位</td>
+        <td className="border p-2">0到65,535</td>
+        <td className="border p-2"><code>char c = 'A';</code></td>
+      </tr>
+      <tr>
+        <td className="border p-2">布尔</td>
+        <td className="border p-2">boolean</td>
+        <td className="border p-2">1位</td>
+        <td className="border p-2">true或false</td>
+        <td className="border p-2"><code>boolean flag = true;</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## 运算符
+
+Java支持多种运算符类型：
+
+1. **算术运算符**：`+`、`-`、`*`、`/`、`%`、`++`、`--`
+2. **关系运算符**：`==`、`!=`、`>`、`<`、`>=`、`<=`
+3. **逻辑运算符**：`&&`、`||`、`!`
+4. **赋值运算符**：`=`、`+=`、`-=`、`*=`、`/=`、`%=`
+5. **位运算符**：`&`、`|`、`^`、`~`、`<<`、`>>`、`>>>`
+
+```java
+// 算术运算符示例
+int a = 10;
+int b = 3;
+System.out.println("a + b = " + (a + b));  // 13
+System.out.println("a - b = " + (a - b));  // 7
+System.out.println("a * b = " + (a * b));  // 30
+System.out.println("a / b = " + (a / b));  // 3 (整数除法)
+System.out.println("a % b = " + (a % b));  // 1 (取余)
+
+// 关系运算符示例
+System.out.println("a == b: " + (a == b));  // false
+System.out.println("a != b: " + (a != b));  // true
+System.out.println("a > b: " + (a > b));    // true
+
+// 逻辑运算符示例
+boolean x = true;
+boolean y = false;
+System.out.println("x && y: " + (x && y));  // false
+System.out.println("x || y: " + (x || y));  // true
+System.out.println("!x: " + (!x));          // false
+```
+
+## 控制流语句
+
+### 1. 条件语句
+
+```java
+// if语句
+int age = 18;
+if (age >= 18) {
+    System.out.println("您已成年");
+} else {
+    System.out.println("您未成年");
+}
+
+// if-else if-else语句
+int score = 85;
+if (score >= 90) {
+    System.out.println("优秀");
+} else if (score >= 80) {
+    System.out.println("良好");
+} else if (score >= 60) {
+    System.out.println("及格");
+} else {
+    System.out.println("不及格");
+}
+
+// switch语句
+char grade = 'B';
+switch (grade) {
+    case 'A':
+        System.out.println("优秀");
+        break;
+    case 'B':
+        System.out.println("良好");
+        break;
+    case 'C':
+        System.out.println("及格");
+        break;
+    default:
+        System.out.println("未知等级");
+}
+```
+
+### 2. 循环语句
+
+```java
+// for循环
+for (int i = 1; i <= 5; i++) {
+    System.out.println("循环次数: " + i);
+}
+
+// while循环
+int i = 1;
+while (i <= 5) {
+    System.out.println("循环次数: " + i);
+    i++;
+}
+
+// do-while循环
+int j = 1;
+do {
+    System.out.println("循环次数: " + j);
+    j++;
+} while (j <= 5);
+```
+
+## 实践练习：创建计算器程序
+
+现在，让我们运用所学的知识，创建一个简单的计算器程序：
+
+```java
+import java.util.Scanner;
+
+public class SimpleCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("简易计算器");
+        System.out.println("----------");
+        
+        // 输入第一个数
+        System.out.print("请输入第一个数: ");
+        double num1 = scanner.nextDouble();
+        
+        // 输入操作符
+        System.out.print("请输入操作符 (+, -, *, /): ");
+        char operator = scanner.next().charAt(0);
+        
+        // 输入第二个数
+        System.out.print("请输入第二个数: ");
+        double num2 = scanner.nextDouble();
+        
+        // 计算结果
+        double result = 0.0;
+        
+        switch (operator) {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                if (num2 != 0) {
+                    result = num1 / num2;
+                } else {
+                    System.out.println("错误：除数不能为零");
+                    scanner.close();
+                    return;
+                }
+                break;
+            default:
+                System.out.println("无效的操作符");
+                scanner.close();
+                return;
+        }
+        
+        // 显示结果
+        System.out.println(num1 + " " + operator + " " + num2 + " = " + result);
+        
+        // 关闭Scanner
+        scanner.close();
+    }
+}
+```
+
+## 总结
+
+在本教程中，我们学习了：
+
+- Java程序的基本结构
+- 如何编写、编译和运行Java程序
+- Java的命名规范和语法规则
+- 基本数据类型和变量声明
+- 运算符和表达式
+- 控制流语句（条件和循环）
+
+现在你已经掌握了Java编程的基础知识！在下一个教程中，我们将深入探讨Java的面向对象编程特性，学习如何创建和使用类、对象、方法和继承。
+
+<div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 my-4">
+  <div className="flex">
+    <div className="mr-3 text-yellow-600">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    <div>
+      <p className="font-medium">实践提示</p>
+      <p>多练习是学习编程的关键！尝试修改上面的例子，或者自己创建新的程序来加深理解。</p>
+    </div>
+  </div>
+</div> 

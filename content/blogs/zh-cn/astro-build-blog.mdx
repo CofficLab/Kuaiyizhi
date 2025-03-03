@@ -1,0 +1,185 @@
+---
+title: 基于 Astro 开发支持标签分类的博客系统
+date: 2025-02-04
+excerpt: 本文将指导你如何使用 Astro 创建一个简单的博客系统，支持按照标签分类的功能，包括文章的创建、展示和标签过滤。
+authors:
+  - name: Nookery
+    picture: https://avatars.githubusercontent.com/u/5194193?s=200
+    url: https://github.com/nookery
+tags:
+  - Astro
+  - 博客
+  - 标签
+---
+
+在本教程中，我们将使用 Astro 创建一个简单的博客系统，支持按照标签分类的功能。我们将涵盖以下内容：
+
+1. 创建项目
+2. 配置文章结构
+3. 实现标签分类
+4. 展示文章列表
+5. 添加标签过滤功能
+
+## 1. 创建项目
+
+首先，确保你已经安装了 Node.js 和 npm。然后使用以下命令创建一个新的 Astro 项目：
+
+```bash
+npm create astro@latest
+```
+
+按照提示选择模板和配置选项，完成项目初始化。
+
+## 2. 配置文章结构
+
+在 `src/content` 目录下创建一个 `docs` 文件夹，用于存放博客文章。每篇文章使用 Markdown 格式，并在文件头部添加 frontmatter 信息，包括标题、日期、标签等。
+
+例如，创建一篇名为 `my-first-post.md` 的文章：
+
+```md
+---
+title: 我的第一篇文章
+date: 2025-02-01
+tags: [入门, 个人]
+---
+
+欢迎来到我的博客！这是我的第一篇文章。
+```
+
+你可以根据需要创建更多文章，并为每篇文章添加适当的标签。
+
+## 3. 实现标签分类
+
+接下来，我们需要实现标签分类的功能。首先，创建一个获取所有标签的函数：
+
+```javascript
+// src/utils/getTags.js
+export function getTags(posts) {
+  const tags = new Set();
+  posts.forEach(post => {
+    post.data.tags?.forEach(tag => tags.add(tag));
+  });
+  return Array.from(tags);
+}
+```
+
+## 4. 展示文章列表
+
+在 `src/pages` 目录下创建一个新的页面 `index.astro`，用于展示所有文章和标签：
+
+```astro
+---
+import { getCollection } from 'astro:content';
+import { getTags } from '../utils/getTags';
+
+const posts = await getCollection('docs');
+const tags = getTags(posts);
+---
+
+<h1>我的博客</h1>
+
+<h2>标签</h2>
+<ul>
+  {tags.map(tag => (
+    <li>
+      <a href={`#${tag}`}>{tag}</a>
+    </li>
+  ))}
+</ul>
+
+<h2>文章列表</h2>
+<ul>
+  {posts.map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>标签: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+## 5. 添加标签过滤功能
+
+为了实现标签过滤功能，我们可以在页面中添加一个简单的 JavaScript 逻辑，来根据用户选择的标签过滤文章。
+
+首先，修改 `index.astro` 文件，添加一个状态来跟踪当前选择的标签：
+
+```astro
+---
+import { getCollection } from 'astro:content';
+import { getTags } from '../utils/getTags';
+
+const posts = await getCollection('docs');
+const tags = getTags(posts);
+const selectedTag = Astro.url.searchParams.get('tag') || '';
+---
+
+<h1>我的博客</h1>
+
+<h2>标签</h2>
+<ul>
+  {tags.map(tag => (
+    <li>
+      <a href={`?tag=${tag}`}>{tag}</a>
+    </li>
+  ))}
+</ul>
+
+<h2>文章列表</h2>
+<ul>
+  {posts.filter(post => 
+    selectedTag ? post.data.tags.includes(selectedTag) : true
+  ).map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>标签: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+## 6. 按照标签展示文章列表
+
+为了实现按照标签展示文章列表的功能，我们可以创建一个新的页面来动态过滤和展示基于 URL 中标签的文章。
+
+首先，在 `src/pages/blogs` 目录下创建一个新的文件 `tags.astro`，用于根据标签展示文章：
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+const { params } = Astro.url;
+const tag = params.tag;
+const posts = await getCollection('docs');
+const filteredPosts = posts.filter(post => post.data.tags.includes(tag));
+---
+
+<h1>标签: {tag}</h1>
+
+<h2>文章列表</h2>
+<ul>
+  {filteredPosts.map(post => (
+    <li>
+      <a href={`/docs/${post.slug}`}>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.date}</p>
+        <p>标签: {post.data.tags.join(', ')}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+```
+
+通过这种方式，用户可以访问类似 `/blogs/tags/golang` 的 URL 来查看所有带有 "golang" 标签的文章。
+
+## 结论
+
+通过本教程，你学习了如何使用 Astro 创建一个支持标签分类的博客系统。你可以根据自己的需求，进一步扩展和优化这个系统，打造出一个更强大、更灵活的博客平台。
+
+希望你能在这个过程中获得乐趣，并在未来的项目中应用这些知识！

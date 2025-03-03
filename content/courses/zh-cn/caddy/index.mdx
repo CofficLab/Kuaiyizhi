@@ -1,0 +1,94 @@
+---
+title: Caddy：现代化的 Web 服务器
+---
+
+Caddy 是一个开源的 Web 服务器，因其自动化的 HTTPS 配置、易用的配置文件和强大的扩展能力而受到开发者的青睐。它是用 Go 语言编写的，具有高性能和安全性。  
+
+官方网站：https://caddyserver.com/
+
+### 为什么选择 Caddy？
+
+1. **自动化 HTTPS**
+   - Caddy 可以自动获取和续订 Let's Encrypt 的 SSL 证书
+   - 默认启用 HTTPS，确保网站的安全性
+
+2. **简单的配置**
+   - 使用 Caddyfile 进行配置，语法简单明了
+   - 支持 JSON 格式的配置，适合自动化和脚本化管理
+
+3. **强大的功能**
+   - 内置反向代理、负载均衡和静态文件服务
+   - 支持 HTTP/2 和 HTTP/3，提升网站性能
+   - 丰富的插件生态系统，支持自定义扩展
+
+4. **跨平台支持**
+   - 支持 Windows、macOS 和 Linux
+   - 可以在 Docker 中运行，方便部署
+
+## Caddy 的核心特性
+
+### 1. 自动化 HTTPS
+
+Caddy 的一大亮点是其自动化的 HTTPS 配置。只需简单的配置，Caddy 就能自动获取和续订 SSL 证书，确保网站的安全性。
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server
+}
+```
+
+在上面的例子中，Caddy 会自动为 `example.com` 配置 HTTPS，并提供静态文件服务。
+
+### 2. 反向代理
+
+Caddy 可以轻松配置为反向代理服务器，支持负载均衡和健康检查。
+
+```caddyfile
+example.com {
+    reverse_proxy /api/* localhost:8080
+}
+```
+
+这段配置将 `/api/*` 的请求代理到本地的 8080 端口。
+
+### 3. 高性能
+
+Caddy 支持 HTTP/2 和 HTTP/3，能够显著提升网站的加载速度和性能。其异步架构和高效的资源管理使其在高并发场景下表现出色。
+
+### 4. 插件生态
+
+Caddy 拥有丰富的插件生态系统，开发者可以根据需要扩展其功能。例如，使用插件可以实现身份验证、速率限制、日志记录等功能。
+
+## 如何开始使用 Caddy？
+
+### 安装 Caddy
+
+Caddy 提供了多种安装方式，可以通过包管理器、Docker 或直接下载二进制文件进行安装。
+
+```bash
+# 使用 Homebrew 安装 Caddy
+brew install caddy
+
+# 使用 Docker 运行 Caddy
+docker run -d -p 80:80 -p 443:443 caddy
+```
+
+### 配置 Caddy
+
+Caddy 的配置文件称为 Caddyfile，语法简单直观。以下是一个基本的 Caddyfile 示例：
+
+```caddyfile
+example.com {
+    root * /var/www/html
+    file_server
+}
+```
+
+### 启动 Caddy
+
+配置完成后，可以通过以下命令启动 Caddy：
+
+```bash
+caddy run --config /path/to/Caddyfile
+```

@@ -1,0 +1,14 @@
+---
+description: ui
+globs: *.astro,*.vue
+---
+
+
+- Use DaisyUI and TailwindCSS
+- 尽量避免使用原生的CSS
+- 使用TS而不是JS
+- 写出的代码要反复检查，不要出现语法错误
+- 当需要图标时，这样用：import { RiGithubFill } from '@remixicon/vue'，因为已经安装了'@remixicon/vue'
+- 如果某一部分代码适合提取出来作为单独组件，就提取出来，严格执行关注点分离原则
+- 如果这个规则被应用，则在输出中说明：🍋 我注意到了项目的UI规则
+- 如果这个规则被应用，则在输出中的较靠前的位置输出鼓励性的内容，鼓励用户；如果更幽默一些能逗笑用户就更好了！

@@ -1,0 +1,28 @@
+---
+import DocLayout from '@layouts/DocLayout.astro';
+import CourseDB from '@/database/CourseDB';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+const doc = await CourseDB.find(id);
+
+if (!doc) {
+  return Astro.redirect(404);
+}
+
+const { Content, headings } = await doc.render();
+
+const sidebarItem = await doc.getTopSidebarItem();
+---
+
+<DocLayout
+  title={doc.getTitle()}
+  description={doc.getDescription()}
+  sidebarItem={sidebarItem}
+  headings={headings}>
+  <Content />
+</DocLayout>

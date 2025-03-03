@@ -1,0 +1,249 @@
+---
+title: 'Supervisor Complete Guide: A Process Management Powerhouse'
+description: 'A comprehensive guide to installing, configuring, and using Supervisor to easily manage Linux/Unix system processes'
+date: 2025-02-13
+heroImage: '/blog-placeholder-3.jpg'
+category: 'Technical Tutorial'
+tags: ['Linux', 'DevOps', 'Process Management', 'Supervisor']
+---
+
+In server operations and application deployment, process management is a crucial topic. How do you ensure applications run continuously? How do you automatically restart programs after crashes? How do you manage multiple processes? Supervisor is a tool designed to solve these problems. This article will comprehensively introduce Supervisor's usage, from basics to advanced topics, helping you master this powerful process management tool.
+
+## What is Supervisor?
+
+Supervisor is a process management tool written in Python that can convert a regular command-line process into a background daemon and monitor its running state, automatically restarting it when it exits. It provides rich configuration options and convenient management interfaces, making it one of the preferred tools for service process management on Linux/Unix systems.
+
+### Key Features of Supervisor:
+
+- Process start, stop, and restart
+- Automatic process restart after crashes
+- Process group management
+- Log management
+- Web management interface
+- Permission management
+- Event notifications
+
+## Installing Supervisor
+
+Installing Supervisor is straightforward and can be done through package managers or pip.
+
+### Using Package Managers
+
+On Ubuntu/Debian systems:
+```bash
+sudo apt update
+sudo apt install supervisor
+```
+
+On CentOS/RHEL systems:
+```bash
+sudo yum install epel-release
+sudo yum install supervisor
+```
+
+### Using pip
+
+```bash
+pip install supervisor
+```
+
+After installation, Supervisor creates these important files and directories:
+
+- `/etc/supervisor/supervisord.conf`: Main configuration file
+- `/etc/supervisor/conf.d/`: Program configuration directory
+- `/var/log/supervisor/`: Log file directory
+
+## Basic Supervisor Configuration
+
+### Main Configuration File
+
+Supervisor's main configuration file is typically located at `/etc/supervisor/supervisord.conf` and contains global settings. Here's a basic configuration example:
+
+```ini
+[unix_http_server]
+file=/var/run/supervisor.sock
+chmod=0700
+
+[supervisord]
+logfile=/var/log/supervisor/supervisord.log
+pidfile=/var/run/supervisord.pid
+childlogdir=/var/log/supervisor
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl=unix:///var/run/supervisor.sock
+
+[include]
+files = /etc/supervisor/conf.d/*.conf
+```
+
+### Program Configuration File
+
+For each program you want to manage, create a configuration file in the `/etc/supervisor/conf.d/` directory. For example, create a file named `myapp.conf`:
+
+```ini
+[program:myapp]
+command=/usr/bin/python /path/to/your/app.py
+directory=/path/to/your/app
+user=www-data
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/supervisor/myapp.err.log
+stdout_logfile=/var/log/supervisor/myapp.out.log
+environment=PATH="/usr/local/bin:/usr/bin:/bin"
+```
+
+## Common Supervisor Commands
+
+### Basic supervisorctl Operations
+
+```bash
+# Start supervisord
+sudo supervisord
+
+# View all program statuses
+sudo supervisorctl status
+
+# Start specific program
+sudo supervisorctl start myapp
+
+# Stop specific program
+sudo supervisorctl stop myapp
+
+# Restart specific program
+sudo supervisorctl restart myapp
+
+# Reload configuration files
+sudo supervisorctl reread
+sudo supervisorctl update
+
+# Enter interactive command line
+sudo supervisorctl
+```
+
+## Advanced Configuration
+
+### Process Group Management
+
+You can organize multiple related programs into a group:
+
+```ini
+[group:mygroup]
+programs=prog1,prog2,prog3
+
+[program:prog1]
+command=/path/to/prog1
+...
+
+[program:prog2]
+command=/path/to/prog2
+...
+
+[program:prog3]
+command=/path/to/prog3
+...
+```
+
+### Environment Variable Configuration
+
+```ini
+[program:myapp]
+command=/path/to/app
+environment=
+    PATH="/usr/local/bin:/usr/bin:/bin",
+    NODE_ENV="production",
+    DATABASE_URL="postgresql://user:pass@localhost/db"
+```
+
+### Event Listeners
+
+```ini
+[eventlistener:memmon]
+command=memmon -p program_name=1GB
+events=TICK_60
+```
+
+## Log Management
+
+Supervisor provides powerful log management capabilities:
+
+```ini
+[program:myapp]
+stdout_logfile=/var/log/supervisor/myapp.out.log
+stderr_logfile=/var/log/supervisor/myapp.err.log
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=10
+stdout_capture_maxbytes=1MB
+stderr_capture_maxbytes=1MB
+```
+
+## Web Interface Configuration
+
+You can enable Supervisor's web interface for visual management:
+
+```ini
+[inet_http_server]
+port=*:9001
+username=admin
+password=123456
+```
+
+## Best Practices
+
+1. **Set Appropriate Restart Policies**
+```ini
+[program:myapp]
+startretries=3
+startsecs=10
+stopwaitsecs=10
+```
+
+2. **Control Start Order with Priorities**
+```ini
+[program:database]
+priority=100
+
+[program:webapp]
+priority=200
+```
+
+3. **Set Resource Limits**
+```ini
+[program:myapp]
+user=nobody
+umask=022
+```
+
+## Common Troubleshooting
+
+1. **Process Won't Start**
+- Check command path correctness
+- Verify user permissions
+- Review error logs
+
+2. **Auto-restart Not Working**
+- Confirm `autorestart` configuration
+- Check `exitcodes` settings
+
+3. **Log File Permission Issues**
+- Ensure log directory exists
+- Check directory permissions
+
+## Conclusion
+
+Supervisor is a powerful and user-friendly process management tool that helps us:
+
+- Convert regular processes into daemons
+- Implement automatic process restarts
+- Provide convenient process management interfaces
+- Handle log recording
+- Support process group management
+
+Through proper configuration and use of Supervisor, we can greatly simplify server process management and improve system reliability and maintainability.
+
+## References
+
+- [Supervisor Official Documentation](http://supervisord.org/)
+- [Supervisor GitHub Repository](https://github.com/Supervisor/supervisor) 

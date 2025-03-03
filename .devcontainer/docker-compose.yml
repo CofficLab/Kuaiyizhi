@@ -1,8 +1,0 @@
-version: '3.9'
-services:
-  app:
-    build:
-      context: ../
-      dockerfile: .devcontainer/Dockerfile
-    volumes:
-      - ../:/workdir:cached

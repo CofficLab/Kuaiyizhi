@@ -1,0 +1,534 @@
+---
+title: "Kong的江湖武功秘籍"
+---
+
+# 第四章：Kong的江湖武功秘籍 🎯
+
+## 自定义插件开发：打造专属"必杀技"
+
+Kong的插件系统是其最强大的特性之一，但有时预置的插件可能无法满足你的特定需求。这时，开发自定义插件就成为了必要的技能。
+
+### 插件开发基础
+
+Kong插件使用Lua语言开发，基于OpenResty平台。开发插件前，你需要了解：
+
+1. **Lua基础语法**：变量、函数、表等
+2. **Kong插件框架**：生命周期、配置架构等
+3. **OpenResty概念**：请求处理阶段、共享内存等
+
+### 插件结构
+
+一个典型的Kong插件包含以下文件：
+
+```
+my-custom-plugin/
+├── handler.lua       # 插件逻辑
+├── schema.lua        # 配置验证
+└── api.lua           # 管理API (可选)
+```
+
+### 创建你的第一个插件
+
+让我们创建一个简单的插件，它会在响应头中添加一个自定义头部：
+
+1. **创建插件目录**：
+
+```bash
+mkdir -p /usr/local/share/lua/5.1/kong/plugins/header-modifier
+```
+
+2. **创建schema.lua**：
+
+```lua
+-- schema.lua
+return {
+  name = "header-modifier",
+  fields = {
+    { config = {
+        type = "record",
+        fields = {
+          { header_name = { type = "string", required = true } },
+          { header_value = { type = "string", required = true } }
+        }
+    }}
+  }
+}
+```
+
+3. **创建handler.lua**：
+
+```lua
+-- handler.lua
+local HeaderModifierHandler = {}
+
+HeaderModifierHandler.PRIORITY = 1000
+HeaderModifierHandler.VERSION = "1.0.0"
+
+function HeaderModifierHandler:header_filter(conf)
+  kong.response.set_header(conf.header_name, conf.header_value)
+end
+
+return HeaderModifierHandler
+```
+
+4. **启用插件**：
+
+在Kong配置文件中添加：
+
+```
+plugins = bundled,header-modifier
+```
+
+5. **应用插件**：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=header-modifier" \
+  --data "config.header_name=X-Custom-Header" \
+  --data "config.header_value=Hello-World"
+```
+
+### 高级插件开发技巧
+
+1. **访问请求和响应**：
+
+```lua
+-- 获取请求信息
+local host = kong.request.get_host()
+local headers = kong.request.get_headers()
+local query = kong.request.get_query()
+local body = kong.request.get_body()
+
+-- 修改响应
+kong.response.set_status(200)
+kong.response.set_header("X-Custom", "value")
+```
+
+2. **缓存和共享数据**：
+
+```lua
+-- 使用Kong缓存
+local cache = kong.cache
+local value, err = cache:get("my_key", nil, function()
+  -- 这个函数只在缓存未命中时执行
+  return "cached_value"
+end)
+```
+
+3. **日志记录**：
+
+```lua
+kong.log.info("这是一条信息日志")
+kong.log.err("这是一条错误日志")
+```
+
+4. **错误处理**：
+
+```lua
+return kong.response.exit(403, { message = "未授权访问" })
+```
+
+### 插件测试
+
+测试是插件开发的重要部分：
+
+```lua
+-- spec/my-plugin/01-unit_spec.lua
+describe("my-plugin", function()
+  it("does something", function()
+    -- 测试代码
+    assert.equal(1, 1)
+  end)
+end)
+```
+
+运行测试：
+
+```bash
+bin/busted -v spec/my-plugin
+```
+
+## Kong的认证体系：OAuth2、JWT等高级玩法
+
+Kong提供了多种认证机制，从简单的API密钥到复杂的OAuth2流程。让我们深入了解这些高级认证方案。
+
+### OAuth 2.0
+
+OAuth 2.0是一个授权框架，允许第三方应用获取对用户资源的有限访问权限。
+
+#### 配置OAuth 2.0插件
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=oauth2" \
+  --data "config.scopes=email,profile" \
+  --data "config.mandatory_scope=true" \
+  --data "config.enable_authorization_code=true" \
+  --data "config.enable_client_credentials=true" \
+  --data "config.global_credentials=false"
+```
+
+#### 创建OAuth应用
+
+```bash
+curl -X POST http://localhost:8001/consumers/example-user/oauth2 \
+  --data "name=My Application" \
+  --data "client_id=SOME-CLIENT-ID" \
+  --data "client_secret=SOME-CLIENT-SECRET" \
+  --data "redirect_uris=https://example.com/callback"
+```
+
+#### OAuth 2.0流程
+
+1. **授权码流程**（最常用）：
+
+```
+# 1. 重定向用户到授权页面
+https://kong:8443/oauth2/authorize?response_type=code&client_id=SOME-CLIENT-ID&scope=email&redirect_uri=https://example.com/callback
+
+# 2. 用户授权后，使用授权码交换令牌
+curl -X POST https://kong:8443/oauth2/token \
+  --data "grant_type=authorization_code" \
+  --data "client_id=SOME-CLIENT-ID" \
+  --data "client_secret=SOME-CLIENT-SECRET" \
+  --data "code=AUTHORIZATION_CODE" \
+  --data "redirect_uri=https://example.com/callback"
+```
+
+2. **客户端凭证流程**（服务器间通信）：
+
+```bash
+curl -X POST https://kong:8443/oauth2/token \
+  --data "grant_type=client_credentials" \
+  --data "client_id=SOME-CLIENT-ID" \
+  --data "client_secret=SOME-CLIENT-SECRET" \
+  --data "scope=email"
+```
+
+### JWT认证
+
+JWT（JSON Web Token）是一种紧凑的、自包含的方式，用于在各方之间安全地传输信息。
+
+#### 配置JWT插件
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=jwt" \
+  --data "config.claims_to_verify=exp" \
+  --data "config.key_claim_name=kid"
+```
+
+#### 为消费者创建JWT凭证
+
+```bash
+curl -X POST http://localhost:8001/consumers/example-user/jwt \
+  --data "algorithm=HS256" \
+  --data "key=my-key" \
+  --data "secret=my-secret"
+```
+
+#### 使用JWT
+
+1. **生成令牌**（使用第三方工具或库）
+2. **在请求中使用令牌**：
+
+```bash
+curl -i http://localhost:8000/api \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+### 多因素认证
+
+对于需要更高安全性的场景，可以组合多个认证插件：
+
+```bash
+# 首先应用基本认证
+curl -X POST http://localhost:8001/services/secure-service/plugins \
+  --data "name=basic-auth" \
+  --data "config.hide_credentials=true"
+
+# 然后应用IP限制
+curl -X POST http://localhost:8001/services/secure-service/plugins \
+  --data "name=ip-restriction" \
+  --data "config.whitelist=192.168.1.1,192.168.1.2"
+```
+
+### 自定义认证逻辑
+
+对于特殊的认证需求，可以开发自定义认证插件：
+
+```lua
+-- 自定义认证插件示例
+function CustomAuthHandler:access(conf)
+  -- 获取认证头
+  local auth_header = kong.request.get_header("Authorization")
+  
+  if not auth_header then
+    return kong.response.exit(401, { message = "未授权" })
+  end
+  
+  -- 自定义验证逻辑
+  if not is_valid_token(auth_header) then
+    return kong.response.exit(403, { message = "无效令牌" })
+  end
+  
+  -- 设置已认证的消费者
+  kong.service.request.set_header("X-Consumer-ID", consumer_id)
+end
+```
+
+## 微服务治理：服务发现、负载均衡、熔断降级
+
+随着微服务架构的普及，API网关在服务治理中扮演着关键角色。Kong提供了多种工具来管理微服务生态系统。
+
+### 服务发现
+
+服务发现允许Kong动态找到上游服务的位置，而不需要硬编码IP地址。
+
+#### 使用DNS服务发现
+
+```bash
+curl -X POST http://localhost:8001/services \
+  --data "name=example-service" \
+  --data "host=example-service.internal" \
+  --data "port=80"
+```
+
+Kong会自动解析DNS记录，支持SRV和A记录。
+
+#### 集成Consul服务发现
+
+使用Kong的Consul插件：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=consul" \
+  --data "config.host=consul.internal" \
+  --data "config.port=8500" \
+  --data "config.connect_timeout=1000" \
+  --data "config.register_service=true" \
+  --data "config.service_name=example-service"
+```
+
+### 负载均衡
+
+Kong提供了多种负载均衡策略，帮助分配流量到多个上游实例。
+
+#### 上游配置
+
+```bash
+# 创建上游
+curl -X POST http://localhost:8001/upstreams \
+  --data "name=example-upstream"
+
+# 添加目标
+curl -X POST http://localhost:8001/upstreams/example-upstream/targets \
+  --data "target=service1.internal:80" \
+  --data "weight=100"
+
+curl -X POST http://localhost:8001/upstreams/example-upstream/targets \
+  --data "target=service2.internal:80" \
+  --data "weight=50"
+
+# 使用上游
+curl -X POST http://localhost:8001/services \
+  --data "name=load-balanced-service" \
+  --data "host=example-upstream"
+```
+
+#### 负载均衡算法
+
+Kong支持多种负载均衡算法：
+
+- **轮询**（默认）：依次将请求分配给每个目标
+- **加权轮询**：根据权重分配请求
+- **一致性哈希**：基于特定请求属性（如IP或头部）将相似请求发送到同一目标
+
+```bash
+curl -X PATCH http://localhost:8001/upstreams/example-upstream \
+  --data "hash_on=header" \
+  --data "hash_on_header=x-user-id" \
+  --data "hash_fallback=ip"
+```
+
+### 熔断与降级
+
+熔断器模式可以防止级联故障，保护系统稳定性。
+
+#### 使用健康检查
+
+```bash
+curl -X PATCH http://localhost:8001/upstreams/example-upstream \
+  --data "healthchecks.active.healthy.interval=5" \
+  --data "healthchecks.active.healthy.successes=2" \
+  --data "healthchecks.active.unhealthy.interval=5" \
+  --data "healthchecks.active.unhealthy.http_failures=2" \
+  --data "healthchecks.active.type=http" \
+  --data "healthchecks.active.http_path=/health"
+```
+
+#### 实现熔断
+
+使用Kong的circuit-breaker插件（社区插件）：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=circuit-breaker" \
+  --data "config.error_threshold=50" \
+  --data "config.window_size=10" \
+  --data "config.min_calls=5"
+```
+
+#### 降级策略
+
+当服务不可用时，可以使用request-termination插件提供降级响应：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=request-termination" \
+  --data "config.status_code=503" \
+  --data "config.message=服务暂时不可用，请稍后再试" \
+  --data "config.content_type=application/json"
+```
+
+结合Kong的路由优先级和条件逻辑，可以实现更复杂的降级策略。
+
+## Kong Gateway Enterprise：商业版的独特功能
+
+Kong Gateway Enterprise是Kong的商业版本，提供了许多开源版本没有的高级功能。
+
+### 开发者门户
+
+开发者门户是一个自助服务平台，允许API消费者发现、测试和订阅API。
+
+**主要功能**：
+- API目录和文档
+- 交互式API测试
+- 自助服务注册和密钥管理
+- 使用分析和报告
+- 自定义品牌和主题
+
+**配置示例**：
+
+```bash
+# 启用开发者门户
+curl -X PATCH http://localhost:8001/workspaces/default \
+  --data "config.portal=true" \
+  --data "config.portal_auto_approve=true"
+
+# 发布服务到门户
+curl -X PATCH http://localhost:8001/services/example-service \
+  --data "tags=portal"
+```
+
+### Kong Manager
+
+Kong Manager是一个图形用户界面，用于管理Kong Gateway的所有方面。
+
+**主要功能**：
+- 服务、路由和插件管理
+- 消费者和凭证管理
+- 健康监控和警报
+- 多工作区支持
+- 基于角色的访问控制
+
+### Kong Vitals
+
+Kong Vitals提供了关于API流量和性能的实时分析。
+
+**主要指标**：
+- 请求量和延迟
+- 错误率和状态码分布
+- 缓存命中率
+- 按消费者、服务和路由的细分数据
+
+**启用Vitals**：
+
+```bash
+# 在kong.conf中设置
+vitals = on
+```
+
+### 高级安全功能
+
+#### OpenID Connect
+
+企业版提供了完整的OpenID Connect实现：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=openid-connect" \
+  --data "config.issuer=https://auth.example.com" \
+  --data "config.client_id=YOUR_CLIENT_ID" \
+  --data "config.client_secret=YOUR_CLIENT_SECRET" \
+  --data "config.scopes=openid,email,profile"
+```
+
+#### 高级速率限制
+
+企业版提供了更强大的速率限制功能：
+
+```bash
+curl -X POST http://localhost:8001/services/example-service/plugins \
+  --data "name=rate-limiting-advanced" \
+  --data "config.limit=10" \
+  --data "config.window_size=60" \
+  --data "config.sync_rate=10" \
+  --data "config.namespace=example"
+```
+
+#### 企业级插件
+
+- **Kafka日志**：将日志发送到Kafka集群
+- **Vault**：与HashiCorp Vault集成，安全存储敏感信息
+- **LDAP认证**：与企业目录服务集成
+- **Canary Release**：支持金丝雀发布和A/B测试
+
+### 多工作区和团队
+
+企业版支持多工作区，允许不同团队在同一Kong实例上独立工作：
+
+```bash
+# 创建新工作区
+curl -X POST http://localhost:8001/workspaces \
+  --data "name=team-a"
+
+# 在特定工作区中创建服务
+curl -X POST http://localhost:8001/team-a/services \
+  --data "name=team-a-service" \
+  --data "url=http://team-a-backend.internal"
+```
+
+### 混合模式部署
+
+企业版提供了更强大的混合模式部署支持：
+
+```
+控制平面 ←→ 数据平面1
+         ↘→ 数据平面2
+         ↘→ 数据平面3
+```
+
+这种架构允许集中管理配置，同时在多个数据中心部署数据平面节点。
+
+## 小结与练习
+
+在本章中，我们探索了Kong的高级功能：
+
+- 自定义插件开发
+- 高级认证机制
+- 微服务治理工具
+- Kong Gateway Enterprise的独特功能
+
+### 练习
+
+1. 开发一个自定义插件，在请求头中添加当前时间戳
+2. 配置OAuth 2.0认证，并测试授权码流程
+3. 设置一个具有健康检查和负载均衡的上游服务
+4. 如果可能，尝试Kong Enterprise的开发者门户功能
+
+在下一章中，我们将通过实际案例，将所学知识应用到真实场景中。
+
+---
+
+> 温馨提示：本教程是系列内容的一部分，请继续阅读下一章节，逐步掌握Kong的各项功能。 

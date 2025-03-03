@@ -1,0 +1,259 @@
+---
+title: 'FastAPI：Python的高性能Web框架入门'
+date: 2025-03-22
+excerpt: '快速上手Python的现代Web框架FastAPI，了解其高性能特性、依赖注入系统和自动生成API文档的能力。'
+authors:
+  - name: Nookery
+    picture: https://avatars.githubusercontent.com/u/5194193?s=200
+    url: https://github.com/nookery
+tags:
+  - Python
+  - Web开发
+  - FastAPI
+  - API开发
+---
+
+# FastAPI：Python的高性能Web框架
+
+在这篇教程中，我们将探索FastAPI——一个现代、快速、高性能的Python Web框架，专为API开发而设计。即使你是Web开发新手，也能快速上手并构建高效的API服务。
+
+## 为什么选择FastAPI？
+
+FastAPI具有许多令人印象深刻的特性，使其成为Python开发者的首选工具：
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <div class="bg-blue-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">🚀 高性能</h3>
+    <p>性能与NodeJS和Go相当，是Python最快的Web框架之一</p>
+  </div>
+  <div class="bg-green-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">📝 自动文档</h3>
+    <p>自动生成交互式API文档，支持Swagger UI和ReDoc</p>
+  </div>
+  <div class="bg-yellow-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">✅ 类型提示</h3>
+    <p>基于Python类型提示的数据校验和序列化</p>
+  </div>
+  <div class="bg-purple-50 p-4 rounded-lg">
+    <h3 class="text-lg font-bold">🔍 易于学习</h3>
+    <p>简洁直观的API设计，易于上手和使用</p>
+  </div>
+</div>
+
+## 环境准备
+
+首先，我们需要安装FastAPI和ASGI服务器Uvicorn：
+
+```bash
+pip install fastapi uvicorn
+```
+
+## 第一个FastAPI应用
+
+创建一个名为`main.py`的文件，编写以下内容：
+
+```python
+from fastapi import FastAPI
+
+# 创建FastAPI实例
+app = FastAPI()
+
+# 定义根路由
+@app.get("/")
+def read_root():
+    return {"message": "Hello World"}
+
+# 带参数的路由
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
+```
+
+运行应用：
+
+```bash
+uvicorn main:app --reload
+```
+
+现在，访问 http://127.0.0.1:8000 就能看到API返回的JSON响应了！
+
+<div class="bg-gray-100 p-4 rounded-lg my-4">
+  <p class="font-semibold">💡 提示</p>
+  <p>--reload 参数使服务器在代码变更时自动重启，非常适合开发阶段使用</p>
+</div>
+
+## 请求体和数据模型
+
+FastAPI使用Pydantic库进行数据验证。通过定义数据模型，可以轻松处理请求体：
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+# 定义数据模型
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = None
+
+@app.post("/items/")
+def create_item(item: Item):
+    return item
+```
+
+这段代码定义了一个`Item`模型，当客户端发送POST请求时，FastAPI会自动：
+- 解析JSON请求体
+- 验证数据类型
+- 提供完整的编辑器支持和错误提示
+
+## 参数验证
+
+FastAPI提供了丰富的验证功能，确保输入数据符合预期：
+
+```python
+from fastapi import FastAPI, Path, Query
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+def read_item(
+    item_id: int = Path(..., title="The ID of the item", ge=1),
+    q: str = Query(None, max_length=50)
+):
+    return {"item_id": item_id, "q": q}
+```
+
+上面的代码实现了：
+- `item_id` 必须大于等于1
+- 查询参数 `q` 的最大长度为50个字符
+
+<div class="flex p-4 mb-4 border border-blue-200 rounded bg-blue-50">
+  <div class="mr-4 text-blue-500">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+  </div>
+  <div>
+    <p class="font-medium">FastAPI会自动生成错误响应</p>
+    <p>当用户提供无效数据时，会返回清晰的错误信息，包括错误位置和原因。</p>
+  </div>
+</div>
+
+## 依赖注入系统
+
+FastAPI的依赖注入系统使代码组织更加灵活：
+
+```python
+from fastapi import FastAPI, Depends, HTTPException
+
+app = FastAPI()
+
+def common_parameters(q: str = None, skip: int = 0, limit: int = 100):
+    return {"q": q, "skip": skip, "limit": limit}
+
+@app.get("/items/")
+def read_items(commons: dict = Depends(common_parameters)):
+    return {"commons": commons}
+
+@app.get("/users/")
+def read_users(commons: dict = Depends(common_parameters)):
+    return {"commons": commons}
+```
+
+这样就能在多个路径操作之间共享代码，同时保持代码的可读性和可维护性。
+
+## 自动生成API文档
+
+FastAPI最强大的功能之一是自动生成交互式API文档：
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <div class="border rounded p-4">
+    <h3 class="text-lg font-bold mb-2">Swagger UI</h3>
+    <p class="mb-2">访问 <code>/docs</code> 路径即可获得基于Swagger UI的交互式文档</p>
+  </div>
+  <div class="border rounded p-4">
+    <h3 class="text-lg font-bold mb-2">ReDoc</h3>
+    <p class="mb-2">访问 <code>/redoc</code> 路径获得基于ReDoc的另一种风格文档</p>
+  </div>
+</div>
+
+这些文档不仅可以查看API规范，还可以直接在页面上测试API调用！
+
+## 实用示例：构建待办事项API
+
+下面是一个实用的待办事项API示例：
+
+```python
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
+from uuid import uuid4, UUID
+
+app = FastAPI(title="待办事项API")
+
+# 数据模型
+class TodoCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    completed: bool = False
+
+class Todo(TodoCreate):
+    id: UUID
+
+# 内存存储
+todos = []
+
+@app.post("/todos/", response_model=Todo)
+def create_todo(todo: TodoCreate):
+    new_todo = Todo(id=uuid4(), **todo.dict())
+    todos.append(new_todo)
+    return new_todo
+
+@app.get("/todos/", response_model=List[Todo])
+def read_todos(skip: int = 0, limit: int = 10):
+    return todos[skip : skip + limit]
+
+@app.get("/todos/{todo_id}", response_model=Todo)
+def read_todo(todo_id: UUID):
+    for todo in todos:
+        if todo.id == todo_id:
+            return todo
+    raise HTTPException(status_code=404, detail="Todo not found")
+
+@app.put("/todos/{todo_id}", response_model=Todo)
+def update_todo(todo_id: UUID, todo: TodoCreate):
+    for i, saved_todo in enumerate(todos):
+        if saved_todo.id == todo_id:
+            updated_todo = Todo(id=todo_id, **todo.dict())
+            todos[i] = updated_todo
+            return updated_todo
+    raise HTTPException(status_code=404, detail="Todo not found")
+
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: UUID):
+    for i, todo in enumerate(todos):
+        if todo.id == todo_id:
+            del todos[i]
+            return {"detail": "Todo deleted"}
+    raise HTTPException(status_code=404, detail="Todo not found")
+```
+
+## 总结
+
+FastAPI是一个强大而优雅的Python Web框架，它结合了现代Python特性，提供了出色的开发体验：
+
+- **开发速度快**：直观的API设计和出色的文档
+- **执行速度快**：基于Starlette和Pydantic的高性能实现
+- **错误减少**：强类型系统和自动数据验证
+- **易于维护**：清晰的代码结构和依赖注入系统
+
+无论你是构建简单的微服务，还是复杂的API后端，FastAPI都能帮助你高效地完成任务。
+
+## 学习资源
+
+- [FastAPI官方文档](https://fastapi.tiangolo.com/)
+- [FastAPI GitHub仓库](https://github.com/tiangolo/fastapi)
+- [Starlette文档](https://www.starlette.io/)
+- [Pydantic文档](https://pydantic-docs.helpmanual.io/)
+
+开始使用FastAPI，享受Python Web开发的乐趣吧！ 

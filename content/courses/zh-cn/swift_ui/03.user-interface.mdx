@@ -1,0 +1,259 @@
+---
+title: SwiftUI 用户界面
+---
+
+# SwiftUI 用户界面
+
+## 常用控件
+
+### 文本和标签
+
+```swift
+// 基本文本
+Text("Hello, World!")
+    .font(.title)
+    .bold()
+
+// 标签
+Label("用户名", systemImage: "person.circle")
+
+// 可编辑文本
+TextEditor(text: $notes)
+    .frame(height: 100)
+```
+
+### 按钮和控制器
+
+```swift
+// 基本按钮
+Button("点击我") {
+    print("按钮被点击")
+}
+
+// 自定义按钮
+Button(action: handleTap) {
+    HStack {
+        Image(systemName: "star.fill")
+        Text("收藏")
+    }
+    .padding()
+    .background(Color.blue)
+    .foregroundColor(.white)
+    .cornerRadius(8)
+}
+
+// 开关
+Toggle("通知", isOn: $isNotificationEnabled)
+
+// 滑块
+Slider(value: $volume, in: 0...100)
+
+// 步进器
+Stepper("数量: \(quantity)",
+        value: $quantity,
+        in: 1...10)
+```
+
+## 列表和滚动视图
+
+### 基本列表
+
+```swift
+List {
+    Text("第一项")
+    Text("第二项")
+    Text("第三项")
+}
+
+// 动态列表
+List(items, id: \.id) { item in
+    Text(item.title)
+}
+
+// 分组列表
+List {
+    Section(header: Text("收藏")) {
+        ForEach(favoriteItems) { item in
+            ItemRow(item: item)
+        }
+    }
+    
+    Section(header: Text("推荐")) {
+        ForEach(recommendedItems) { item in
+            ItemRow(item: item)
+        }
+    }
+}
+```
+
+### 滚动视图
+
+```swift
+ScrollView {
+    VStack(spacing: 20) {
+        ForEach(0..<50) { i in
+            Text("项目 \(i)")
+        }
+    }
+}
+
+// 水平滚动
+ScrollView(.horizontal, showsIndicators: false) {
+    HStack(spacing: 15) {
+        ForEach(images, id: \.self) { image in
+            Image(image)
+                .resizable()
+                .frame(width: 200, height: 200)
+        }
+    }
+}
+```
+
+## 导航系统
+
+### 导航视图
+
+```swift
+NavigationView {
+    List(items) { item in
+        NavigationLink(destination: DetailView(item: item)) {
+            Text(item.title)
+        }
+    }
+    .navigationTitle("我的列表")
+    .navigationBarItems(
+        trailing: Button(action: addItem) {
+            Image(systemName: "plus")
+        }
+    )
+}
+```
+
+### 标签视图
+
+```swift
+TabView {
+    HomeView()
+        .tabItem {
+            Label("首页", systemImage: "house")
+        }
+    
+    ProfileView()
+        .tabItem {
+            Label("我的", systemImage: "person")
+        }
+}
+```
+
+## 手势识别
+
+### 基本手势
+
+```swift
+// 点击手势
+Text("点击我")
+    .onTapGesture {
+        print("被点击了")
+    }
+
+// 长按手势
+Image("photo")
+    .onLongPressGesture(minimumDuration: 1) {
+        print("长按触发")
+    }
+
+// 拖拽手势
+Circle()
+    .fill(Color.blue)
+    .frame(width: 100, height: 100)
+    .offset(offset)
+    .gesture(
+        DragGesture()
+            .onChanged { value in
+                offset = value.translation
+            }
+            .onEnded { _ in
+                withAnimation {
+                    offset = .zero
+                }
+            }
+    )
+```
+
+## 练习
+
+创建一个简单的照片库应用：
+
+```swift
+struct Photo: Identifiable {
+    let id = UUID()
+    let name: String
+    let image: String
+}
+
+struct PhotoGallery: View {
+    let photos = [
+        Photo(name: "风景1", image: "landscape1"),
+        Photo(name: "风景2", image: "landscape2"),
+        Photo(name: "风景3", image: "landscape3")
+    ]
+    
+    @State private var selectedPhoto: Photo?
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 10) {
+                    ForEach(photos) { photo in
+                        Image(photo.image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 120)
+                            .clipped()
+                            .cornerRadius(8)
+                            .onTapGesture {
+                                selectedPhoto = photo
+                            }
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("照片库")
+            .sheet(item: $selectedPhoto) { photo in
+                PhotoDetailView(photo: photo)
+            }
+        }
+    }
+}
+
+struct PhotoDetailView: View {
+    let photo: Photo
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        VStack {
+            Image(photo.image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            
+            Text(photo.name)
+                .font(.title)
+            
+            Button("关闭") {
+                presentationMode.wrappedValue.dismiss()
+            }
+            .padding()
+        }
+    }
+}
+```
+
+通过这个练习，你可以学习：
+1. 使用 Grid 布局创建照片网格
+2. 实现照片预览功能
+3. 添加手势交互
+4. 使用模态视图展示详情

@@ -1,0 +1,235 @@
+---
+title: 04 - Dockerfile 基础
+description: 学习如何使用Dockerfile创建自定义Docker镜像
+excerpt: 本文详细介绍Dockerfile的基本语法和常用指令，教你如何构建自己的Docker镜像，打包应用程序及其依赖。
+---
+
+# Dockerfile 基础
+
+在前面的教程中，我们学习了如何使用现有的Docker镜像来运行容器。但在实际开发中，我们通常需要创建自定义的镜像来部署自己的应用程序。这就需要用到Dockerfile。
+
+## 什么是Dockerfile？
+
+Dockerfile是一个文本文件，包含了一系列指令，用于告诉Docker如何构建镜像。通过Dockerfile，我们可以自动化镜像构建过程，确保镜像的一致性和可重复性。
+
+## Dockerfile基本语法
+
+Dockerfile由一系列指令和参数组成。每条指令都必须大写，后面跟随参数。指令按顺序执行，每条指令都会创建一个新的镜像层。
+
+## 常用Dockerfile指令
+
+### FROM
+
+`FROM`指令指定基础镜像，是Dockerfile的第一条指令。
+
+```dockerfile
+FROM ubuntu:20.04
+```
+
+或者使用轻量级的基础镜像：
+
+```dockerfile
+FROM alpine:3.14
+```
+
+### LABEL
+
+`LABEL`指令为镜像添加元数据，如维护者信息、版本等。
+
+```dockerfile
+LABEL maintainer="your-email@example.com"
+LABEL version="1.0"
+```
+
+### RUN
+
+`RUN`指令在当前镜像的新层中执行命令，并创建新的镜像层。通常用于安装软件包。
+
+```dockerfile
+RUN apt-get update && apt-get install -y \
+    nginx \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+注意：最好将多个相关的命令合并为一条RUN指令，以减少镜像层数。
+
+### COPY和ADD
+
+`COPY`指令将文件从构建上下文复制到镜像中。
+
+```dockerfile
+COPY app.js /app/
+```
+
+`ADD`指令类似于`COPY`，但有额外功能：可以解压压缩文件，也可以从URL下载文件。
+
+```dockerfile
+ADD app.tar.gz /app/
+```
+
+一般情况下，除非需要自动解压缩，否则推荐使用`COPY`。
+
+### WORKDIR
+
+`WORKDIR`指令设置后续指令的工作目录。
+
+```dockerfile
+WORKDIR /app
+```
+
+### ENV
+
+`ENV`指令设置环境变量。
+
+```dockerfile
+ENV NODE_ENV=production
+ENV PORT=3000
+```
+
+### EXPOSE
+
+`EXPOSE`指令声明容器运行时监听的端口。
+
+```dockerfile
+EXPOSE 80
+```
+
+注意：`EXPOSE`只是声明，并不会实际发布端口。运行容器时仍需使用`-p`参数映射端口。
+
+### CMD和ENTRYPOINT
+
+`CMD`指令提供容器启动时执行的默认命令。
+
+```dockerfile
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+`ENTRYPOINT`指令设置容器启动时运行的可执行文件。
+
+```dockerfile
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+```
+
+`CMD`和`ENTRYPOINT`的区别：
+- `ENTRYPOINT`指定的命令不会被`docker run`的命令行参数覆盖，而`CMD`会被覆盖
+- 通常`ENTRYPOINT`用于设置固定的可执行文件，`CMD`用于设置默认参数
+
+### VOLUME
+
+`VOLUME`指令创建挂载点，用于持久化数据或共享数据。
+
+```dockerfile
+VOLUME ["/data"]
+```
+
+### USER
+
+`USER`指令设置后续指令和容器运行时的用户。
+
+```dockerfile
+USER nginx
+```
+
+## Dockerfile最佳实践
+
+### 1. 使用多阶段构建
+
+多阶段构建可以显著减小最终镜像的大小，特别是对于编译型语言。
+
+```dockerfile
+# 构建阶段
+FROM golang:1.17 AS builder
+WORKDIR /app
+COPY . .
+RUN go build -o myapp
+
+# 最终镜像
+FROM alpine:3.14
+WORKDIR /app
+COPY --from=builder /app/myapp .
+CMD ["./myapp"]
+```
+
+### 2. 最小化层数
+
+合并相关的RUN指令，减少镜像层数。
+
+### 3. 使用.dockerignore文件
+
+创建`.dockerignore`文件，排除不需要的文件，减小构建上下文大小。
+
+```
+node_modules
+.git
+*.log
+```
+
+### 4. 使用特定标签而非latest
+
+使用特定版本标签，而不是`latest`，以确保镜像的一致性。
+
+```dockerfile
+FROM node:14.17.0-alpine
+```
+
+### 5. 清理缓存
+
+在安装包的同一个RUN指令中清理缓存，减小镜像大小。
+
+```dockerfile
+RUN apt-get update && apt-get install -y \
+    package1 \
+    package2 \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+## 实例：构建一个Node.js应用镜像
+
+下面是一个构建Node.js应用的Dockerfile示例：
+
+```dockerfile
+# 使用官方Node.js镜像作为基础镜像
+FROM node:14-alpine
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制package.json和package-lock.json
+COPY package*.json ./
+
+# 安装依赖
+RUN npm install --production
+
+# 复制应用代码
+COPY . .
+
+# 暴露端口
+EXPOSE 3000
+
+# 启动应用
+CMD ["node", "app.js"]
+```
+
+## 构建和运行自定义镜像
+
+### 构建镜像
+
+```bash
+# 在Dockerfile所在目录执行
+docker build -t myapp:1.0 .
+```
+
+参数说明：
+- `-t myapp:1.0`：指定镜像名称和标签
+- `.`：构建上下文路径（当前目录）
+
+### 运行容器
+
+```bash
+docker run -d -p 3000:3000 --name myapp-container myapp:1.0
+```
+
+## 总结
+
+本文介绍了Dockerfile的基本语法和常用指令，以及构建自定义Docker镜像的最佳实践。通过Dockerfile，我们可以将应用程序及其依赖打包成一个可移植的镜像，实现一致的部署环境。在下一篇教程中，我们将学习Docker数据管理，包括卷（Volumes）和绑定挂载（Bind Mounts）的使用。

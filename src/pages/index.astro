@@ -1,0 +1,10 @@
+---
+import { getLang } from "@utils/lang";
+
+// 不要预渲染，因为这是一个动态页面（动态获取当前语言）
+export const prerender = false
+
+const langCode = getLang(Astro.preferredLocale ?? "", Astro.currentLocale ?? "")
+
+return Astro.redirect(`/${langCode}`)
+---

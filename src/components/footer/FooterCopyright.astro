@@ -1,0 +1,22 @@
+---
+interface Props {
+  label: string;
+  href?: string;
+  id?: string;
+}
+
+const { label, href = 'javascript:void(0)', id } = Astro.props;
+---
+
+<div class="self-center text-sm sm:text-base">
+  <a
+    href={href}
+    class="px-4 py-2 rounded-xl ring-white/50 no-underline
+    hover:ring-1 hover:shadow-2xl hover:bg-green-600/10 hover:backdrop-blur transform duration-100
+    text-gray-700"
+    id={id}
+    target={href.startsWith('http') ? '_blank' : undefined}
+    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+    {label}
+  </a>
+</div>

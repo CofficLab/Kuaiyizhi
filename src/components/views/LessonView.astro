@@ -1,0 +1,34 @@
+---
+import DocLayout from '@layouts/DocLayout.astro';
+import LessonNotFound from '@components/lesson/LessonNotFound.astro';
+import LessonDoc from '@/models/LessonDoc';
+import { type RenderResult } from 'astro:content';
+import type { Heading } from '@/models/Heading';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const lesson = await LessonDoc.find(id);
+const title = lesson?.getTitle() || '没有找到课程';
+const description = lesson?.getDescription() || '没有找到课程';
+const sidebarItem = (await (await lesson?.getBook())?.toSidebarItem()) || null;
+
+let headings: Heading[] = [];
+let Content: RenderResult['Content'] | null = null;
+
+if (lesson) {
+  const renderResult = await lesson.render();
+  headings = renderResult.headings;
+  Content = renderResult.Content;
+}
+---
+
+<DocLayout
+  title={title}
+  description={description}
+  sidebarItem={sidebarItem}
+  headings={headings}>
+  {Content ? <Content /> : <LessonNotFound id={id} />}
+</DocLayout>
