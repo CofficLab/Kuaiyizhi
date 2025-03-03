@@ -1,16 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import bookCover from '@assets/book.png';
-import LessonBook from '@/models/LessonBook';
+import LessonDoc from '@/models/LessonDoc';
 
 interface Props {
-  lesson: LessonBook;
+  lesson: LessonDoc;
 }
 
 const { lesson } = Astro.props;
 const lessonTitle = lesson.getTitle();
 const lessonLink = lesson.getLink();
-const lessonLang = lesson.getLang();
 ---
 
 <div>
