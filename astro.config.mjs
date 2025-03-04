@@ -12,10 +12,14 @@ import mdx from '@astrojs/mdx';
 
 import cloudflare from '@astrojs/cloudflare';
 
+import sitemap from '@astrojs/sitemap';
+
+import robotsTxt from 'astro-robots-txt';
+
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
-  site: 'https://www.kuaiyizhi.cn',
+  // output: 'server',
+  site: 'https://kuaiyizhi.cn',
 
   prefetch: {
     prefetchAll: true,
@@ -45,10 +49,26 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [pagefind(), vue(), markdoc(), mdx()],
+  integrations: [
+    pagefind(),
+    vue(),
+    markdoc(),
+    mdx(),
+    sitemap({
+      filter: (page) => page !== 'https://kuaiyizhi.cn/auth/login',
+    }),
+    robotsTxt({
+      policy: [
+        {
+          userAgent: '*',
+          allow: '/',
+          disallow: ['/auth/login'],
+        },
+      ],
+    }),
+  ],
 
   adapter: cloudflare(),
-
   // adapter: node({
   //   mode: 'standalone',
   // }),
