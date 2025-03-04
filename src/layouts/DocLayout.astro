@@ -19,16 +19,7 @@ const shouldShowSidebar = sidebarItem
 const hasTableOfContents = headings.length > 0;
 ---
 
-<AppLayout
-  title={title}
-  description={description}
-  template="doc"
-  isDocContent={true}
-  frontmatter={{
-    title: title,
-    description: description,
-    template: 'doc',
-  }}>
+<AppLayout title={title} description={description} isDocContent={true}>
   <div class="flex relative overflow-hidden">
     {/* 侧边栏 */}
     {
