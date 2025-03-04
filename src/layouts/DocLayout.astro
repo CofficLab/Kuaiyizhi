@@ -9,9 +9,16 @@ interface Props {
   description: string;
   sidebarItem: SidebarItem | null;
   headings?: Array<{ depth: number; slug: string; text: string }>;
+  backgroudColor?: 'base' | 'colorful';
 }
 
-const { title, description, sidebarItem, headings = [] } = Astro.props;
+const {
+  title,
+  description,
+  sidebarItem,
+  headings = [],
+  backgroudColor,
+} = Astro.props;
 
 const shouldShowSidebar = sidebarItem
   ? sidebarItem.getItems().length > 0
@@ -19,7 +26,10 @@ const shouldShowSidebar = sidebarItem
 const hasTableOfContents = headings.length > 0;
 ---
 
-<AppLayout title={title} description={description} isDocContent={true}>
+<AppLayout
+  title={title}
+  description={description}
+  backgroudColor={backgroudColor}>
   <div class="flex relative overflow-hidden">
     {/* 侧边栏 */}
     {

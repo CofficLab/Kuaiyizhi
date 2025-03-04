@@ -14,17 +14,7 @@ const description = lang.isChinese()
   : 'Pursuing the Pure Light of Knowledge';
 ---
 
-<AppLayout
-  headings={[]}
-  title={title}
-  description={description}
-  template="splash"
-  frontmatter={{
-    title: title,
-    description: description,
-    template: 'splash',
-  }}
-  hidePageTitle={true}>
+<AppLayout title={title} description={description} backgroudColor="colorful">
   <div>
     <HeroSection lang={lang} />
     <CardGrid lang={lang} />

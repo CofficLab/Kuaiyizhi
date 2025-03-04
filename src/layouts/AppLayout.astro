@@ -14,11 +14,11 @@ interface Props {
   headings?: Heading[];
   sidebar?: SidebarItem | null | undefined;
   hidePageTitle?: boolean;
-  isDocContent?: boolean;
+  backgroudColor?: 'base' | 'colorful';
 }
 
 const props = Astro.props as Props;
-const { title, description, isDocContent } = props;
+const { title, description, backgroudColor } = props;
 
 const locale = isHome(Astro.url.pathname)
   ? Astro.preferredLocale
@@ -35,12 +35,14 @@ const locale = isHome(Astro.url.pathname)
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body
-    class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen">
+  <body>
     <SmartHeader />
 
     <div
-      class:list={['py-24 min-h-screen', isDocContent ? 'bg-base-100/95' : '']}>
+      class:list={[
+        'py-24 min-h-screen',
+        backgroudColor === 'base' ? 'bg-base-100/95' : '',
+      ]}>
       <slot />
     </div>
 

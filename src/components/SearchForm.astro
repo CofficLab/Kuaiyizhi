@@ -23,7 +23,7 @@ import { RiSearch2Line } from '@remixicon/vue';
   .pagefind-ui {
     --pagefind-ui-scale: 0.75;
     --pagefind-ui-primary: navy;
-    --pagefind-ui-text: black;
+    --pagefind-ui-text: gray;
     --pagefind-ui-border: slategrey;
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: 0.25rem;
@@ -53,5 +53,10 @@ import { RiSearch2Line } from '@remixicon/vue';
 
   .pagefind-ui .pagefind-ui__result-excerpt {
     color: var(--pagefind-ui-text);
+  }
+
+  .pagefind-ui .pagefind-ui__search-input {
+    background-color: transparent;
+    border: 1px solid var(--pagefind-ui-border);
   }
 </style>

@@ -14,6 +14,10 @@ const blogs = await BlogDB.allTopLevelDocsByLang(lang);
 const sidebarItem = await Tag.makeRootSidebarItem(lang);
 ---
 
-<DocLayout title="所有文章" description="我的博客" sidebarItem={sidebarItem}>
+<DocLayout
+  title="所有文章"
+  description="我的博客"
+  sidebarItem={sidebarItem}
+  backgroudColor="colorful">
   <BlogList blogs={blogs} lang={lang} />
 </DocLayout>

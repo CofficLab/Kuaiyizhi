@@ -4,5 +4,6 @@
 
 body {
   @apply bg-gradient-to-br from-yellow-100/70 to-cyan-100/90
-   dark:from-cyan-950 dark:to-slate-900;
+   dark:from-cyan-950 dark:to-slate-900
+   min-h-screen;
 }
