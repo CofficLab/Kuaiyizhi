@@ -68,6 +68,11 @@ export default class BlogDoc {
 
     getTags(): Tag[] {
         const tags = this.entry.data.tags as string[];
+
+        if (!tags || tags.length === 0) {
+            return [];
+        }
+
         return tags.map(tag => new Tag(tag, 0, this.getLang()));
     }
 
