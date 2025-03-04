@@ -18,7 +18,6 @@ import robotsTxt from 'astro-robots-txt';
 
 // https://astro.build/config
 export default defineConfig({
-  // output: 'server',
   site: 'https://kuaiyizhi.cn',
 
   prefetch: {

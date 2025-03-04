@@ -8,6 +8,9 @@ interface IpInfo {
     regionName: string;
 }
 
+// 禁用预渲染, 因为需要实时获取 IP 信息
+export const prerender = false;
+
 export const GET: APIRoute = async () => {
     try {
         const response = await fetch('http://ip-api.com/json/');
