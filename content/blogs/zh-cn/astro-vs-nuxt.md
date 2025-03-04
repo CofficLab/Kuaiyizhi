@@ -11,6 +11,8 @@ tags:
   - Nuxt.js
 ---
 
+# Astro 与 Nuxt.js 全栈框架对比指南
+
 ## 核心架构差异
 
 ### 1. 基础架构对比
@@ -61,17 +63,17 @@ graph LR
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "data": {
     "values": [
-      {"framework": "Astro", "type": "JS Size", "value": 120},
-      {"framework": "Nuxt", "type": "JS Size", "value": 420},
-      {"framework": "Astro", "type": "CSS Size", "value": 80},
-      {"framework": "Nuxt", "type": "CSS Size", "value": 150}
+      { "framework": "Astro", "type": "JS Size", "value": 120 },
+      { "framework": "Nuxt", "type": "JS Size", "value": 420 },
+      { "framework": "Astro", "type": "CSS Size", "value": 80 },
+      { "framework": "Nuxt", "type": "CSS Size", "value": 150 }
     ]
   },
   "mark": "bar",
   "encoding": {
-    "x": {"field": "framework"},
-    "y": {"field": "value", "type": "quantitative"},
-    "color": {"field": "type"}
+    "x": { "field": "framework" },
+    "y": { "field": "value", "type": "quantitative" },
+    "color": { "field": "type" }
   }
 }
 ```

@@ -10,6 +10,8 @@ tags:
   - Astro
 ---
 
+# Understanding Astro
+
 Astro is a modern static site generator focused on building fast, content-rich websites. Its design goal is to improve website performance by reducing JavaScript usage while providing a flexible development experience. Here's a detailed introduction to Astro:
 
 ## Astro's Features

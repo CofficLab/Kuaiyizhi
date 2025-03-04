@@ -10,7 +10,10 @@ tags:
   - 服务配置
 ---
 
+# Systemctl 完全指南
+
 ## 什么是 Systemctl？
+
 ### 主要特点
 
 - 统一的服务管理接口
@@ -20,6 +23,7 @@ tags:
 - 强大的服务状态追踪
 
 ## 核心功能
+
 ### 1. 服务管理基础
 
 ```bash
@@ -53,6 +57,7 @@ systemctl is-enabled service_name
 ```
 
 ## 高级特性
+
 ### 1. 服务依赖管理
 
 查看服务依赖关系：
@@ -92,9 +97,11 @@ journalctl -u service_name -f
 ```
 
 ## 最佳实践
+
 ### 1. 服务配置文件
 
 服务单元文件位置：
+
 - `/etc/systemd/system/` - 系统管理员创建的单元
 - `/usr/lib/systemd/system/` - 软件包安装的单元
 
@@ -119,16 +126,19 @@ WantedBy=multi-user.target
 常见问题诊断步骤：
 
 1. 检查服务状态
+
 ```bash
 systemctl status service_name
 ```
 
 2. 查看详细日志
+
 ```bash
 journalctl -u service_name -n 100 --no-pager
 ```
 
 3. 验证配置文件
+
 ```bash
 systemd-analyze verify /etc/systemd/system/service_name.service
 ```
@@ -156,16 +166,19 @@ systemd-analyze verify /etc/systemd/system/service_name.service
 ## 常见问题
 
 1. 服务无法启动
+
 - 检查配置文件语法
 - 验证依赖服务状态
 - 查看详细错误日志
 
 2. 服务启动缓慢
+
 - 分析启动依赖
 - 优化服务配置
 - 检查资源使用情况
 
 3. 服务异常退出
+
 - 配置自动重启策略
 - 设置合理的超时时间
 - 增加错误处理机制

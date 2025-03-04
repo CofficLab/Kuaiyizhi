@@ -16,7 +16,9 @@ export default class BlogDB {
      */
     static async getDocsByDepth(depth: number): Promise<BlogDoc[]> {
         const entries = await getCollection(collectionName, ({ id }) => id.split('/').length === depth);
-        return entries.map(entry => BlogDoc.fromEntry(entry));
+        return entries
+            .map(entry => BlogDoc.fromEntry(entry))
+            .sort((a, b) => b.getDate().getTime() - a.getDate().getTime());
     }
 
     static async find(id: string): Promise<BlogDoc | null> {

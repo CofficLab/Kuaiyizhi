@@ -10,6 +10,8 @@ import markdoc from '@astrojs/markdoc';
 
 import mdx from '@astrojs/mdx';
 
+import cloudflare from '@astrojs/cloudflare';
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
@@ -40,13 +42,14 @@ export default defineConfig({
       },
     },
 
-    // @ts-ignore
     plugins: [tailwindcss()],
   },
 
   integrations: [pagefind(), vue(), markdoc(), mdx()],
 
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: cloudflare(),
+
+  // adapter: node({
+  //   mode: 'standalone',
+  // }),
 });

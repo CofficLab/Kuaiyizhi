@@ -11,6 +11,8 @@ tags:
   - Starlight
 ---
 
+# Astro + Starlight 获取文章列表
+
 在使用 Astro + Starlight 构建文档或博客网站时，获取和展示文章列表是一个常见需求。本文将详细介绍如何实现这一功能。
 
 ## 使用 getCollection API
@@ -37,8 +39,8 @@ import { getCollection } from 'astro:content';
 // 获取所有文章并按日期排序
 const posts = await getCollection('docs', ({ data }) => {
   return data.draft !== true; // 排除草稿文章
-}).then(posts => 
-  posts.sort((a, b) => 
+}).then(posts =>
+  posts.sort((a, b) =>
     new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
   )
 );
@@ -123,7 +125,7 @@ const posts = allPosts.slice(
   {currentPage > 1 && (
     <a href={`?page=${currentPage - 1}`}>上一页</a>
   )}
-  
+
   {currentPage < totalPages && (
     <a href={`?page=${currentPage + 1}`}>下一页</a>
   )}
@@ -142,9 +144,9 @@ import { getCollection } from 'astro:content';
 const posts = await getCollection('docs', ({ data }) => {
   // 只获取特定标签的文章
   return data.tags?.includes('featured');
-}).then(posts => 
+}).then(posts =>
   // 按阅读时间排序
-  posts.sort((a, b) => 
+  posts.sort((a, b) =>
     (b.data.readingTime || 0) - (a.data.readingTime || 0)
   )
 );
@@ -166,11 +168,11 @@ interface BlogSchema {
   draft?: boolean;
 }
 
-const posts = await getCollection('docs') as CollectionEntry<BlogSchema>[];
+const posts = (await getCollection('docs')) as CollectionEntry<BlogSchema>[];
 ```
 
 3. **缓存考虑**：getCollection 的结果会被 Astro 自动缓存，所以不用担心性能问题。
 
 ## 结论
 
-Astro + Starlight 提供了强大而灵活的 API 来处理文章列表。通过合理使用这些 API，你可以轻松实现文章的获取、过滤、排序和展示功能。根据具体需求，你可以进一步优化和扩展这些功能，打造出更好的用户体验。 
+Astro + Starlight 提供了强大而灵活的 API 来处理文章列表。通过合理使用这些 API，你可以轻松实现文章的获取、过滤、排序和展示功能。根据具体需求，你可以进一步优化和扩展这些功能，打造出更好的用户体验。

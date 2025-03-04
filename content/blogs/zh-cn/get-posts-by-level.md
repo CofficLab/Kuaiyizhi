@@ -11,6 +11,8 @@ tags:
   - Starlight
 ---
 
+# Astro + Starlight 获取特定层级的文章
+
 在 Astro + Starlight 项目中，文章通常按照多级目录组织。有时我们只需要获取特定层级的文章，本文将介绍几种实现方法。
 
 ## 获取一级目录文章
@@ -60,8 +62,8 @@ const astroPosts = allPosts.filter(post => {
 // 只获取 blog/astro 直接子目录的文章（不包含更深层级）
 const directAstroPosts = allPosts.filter(post => {
   const parts = post.slug.split('/');
-  return parts[0] === 'blog' && 
-         parts[1] === 'astro' && 
+  return parts[0] === 'blog' &&
+         parts[1] === 'astro' &&
          parts.length === 3;
 });
 ---
@@ -84,11 +86,11 @@ interface TreeNode {
 // 构建目录树
 function buildTree(posts: any[]) {
   const tree: Record<string, TreeNode> = {};
-  
+
   posts.forEach(post => {
     const parts = post.slug.split('/');
     let current = tree;
-    
+
     parts.forEach((part, index) => {
       if (!current[part]) {
         current[part] = {
@@ -100,7 +102,7 @@ function buildTree(posts: any[]) {
       current = current[part].children;
     });
   });
-  
+
   return tree;
 }
 
@@ -177,7 +179,7 @@ function isChildOf(childSlug: string, parentSlug: string): boolean {
 
 // 获取指定层级的所有文章
 function getPostsByLevel(posts: any[], level: number) {
-  return posts.filter(post => getPostLevel(post.slug) === level);
+  return posts.filter((post) => getPostLevel(post.slug) === level);
 }
 ```
 
@@ -193,4 +195,4 @@ function getPostsByLevel(posts: any[], level: number) {
 
 ## 结论
 
-通过合理使用 slug 分析和过滤，我们可以灵活地获取和组织不同层级的文章。这对于构建导航菜单、面包屑导航等功能非常有帮助。根据具体需求，你可以组合使用上述方法，实现更复杂的文章组织和展示功能。 
+通过合理使用 slug 分析和过滤，我们可以灵活地获取和组织不同层级的文章。这对于构建导航菜单、面包屑导航等功能非常有帮助。根据具体需求，你可以组合使用上述方法，实现更复杂的文章组织和展示功能。

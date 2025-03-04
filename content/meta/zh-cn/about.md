@@ -30,19 +30,23 @@ title: 关于我们
 ## 加入我们
 
 我们始终欢迎优秀的技术人才加入我们的团队。如果您：
+
 - 热爱技术，对软件开发充满热情
 - 有扎实的专业知识和实战经验
 - 愿意分享知识，帮助他人成长
-请通过以下邮箱与我们联系：contact@example.com
+
+请访问我们的 GitHub Group 了解更多信息：
+
+<https://github.com/CofficLab>
 
 ## 更多信息
 
 关于本站的更多内容，可以在以下链接中查看：
 
-- <a href="/privacy" target="_blank">隐私政策</a></li>
-- <a href="/terms" target="_blank">服务条款</a></li>
-- <a href="/faq" target="_blank">常见问题</a></li>
-- <a href="/contact" target="_blank">联系我们</a></li>
+- <a href="/zh-cn/meta/privacy" target="_blank">隐私政策</a></li>
+- <a href="/zh-cn/meta/terms" target="_blank">服务条款</a></li>
+- <a href="/zh-cn/meta/faq" target="_blank">常见问题</a></li>
+- <a href="/zh-cn/meta/contact" target="_blank">联系我们</a></li>
 
 ## 版权声明
 
