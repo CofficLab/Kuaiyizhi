@@ -11,7 +11,7 @@ import Search from 'astro-pagefind/components/Search';
 import LinkDB from '@/database/LinkDB';
 import { getLangFromPathname } from '@/utils/lang';
 import ThemeItem from './ThemeItem.astro';
-import Link from '@/components/Common/Link.vue';
+import Link from '@/components/common/Link.vue';
 
 const currentPath = Astro.url.pathname;
 const normalizedLocale = getLangFromPathname(Astro.url.pathname);
