@@ -10,8 +10,6 @@ tags:
   - Golang
 ---
 
-# Go 语言完全指南：从入门到实践
-
 ## 什么是 Go 语言？
 
 Go（又称 Golang）是由 Google 的 Robert Griesemer、Rob Pike 和 Ken Thompson 于 2007 年开始设计，并于 2009 年发布的开源编程语言。它具有以下核心特性：

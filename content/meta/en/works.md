@@ -2,8 +2,6 @@
 title: Works
 ---
 
-# Works
-
 You can visit our GitHub Group for more information:
 
 <https://github.com/CofficLab>

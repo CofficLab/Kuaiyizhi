@@ -12,8 +12,6 @@ tags:
   - 前端开发
 ---
 
-# Cursor + 聚合数据开发一个 IP 归属地组件
-
 ![cursor-5](./images/cursor-5.png)
 
 最近产品经理提出了一个需求：给系统添加 IP 归属地显示功能。

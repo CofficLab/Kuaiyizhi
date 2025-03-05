@@ -3,8 +3,6 @@ title: Evolution of Our Technical Architecture
 description: Our Journey from Laravel to VitePress to Astro
 ---
 
-# The Evolution of Our Technical Architecture
-
 ## The Beginning: The Laravel Days
 
 When we first conceptualized our project, we chose Laravel as our initial technical solution. This choice was based on several considerations:

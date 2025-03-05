@@ -11,8 +11,6 @@ tags:
   - Nuxt.js
 ---
 
-# Astro vs Nuxt.js Full-Stack Framework Comparison Guide
-
 ## Core Architecture Differences
 
 ### 1. Basic Architecture Comparison

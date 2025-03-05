@@ -10,8 +10,6 @@ tags:
   - Development Tools
 ---
 
-# Complete Guide to Homebrew
-
 ## What is Homebrew?
 
 Homebrew is the most popular package manager for macOS (or Linux) systems, allowing you to easily install, update, and manage various software packages. Through simple command-line operations, you can maintain a clean and controllable development environment.

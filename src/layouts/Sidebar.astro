@@ -1,0 +1,14 @@
+---
+import type { SidebarItem } from '@/models/SidebarItem';
+import SidebarItemComponent from './SidebarItem.astro';
+
+interface Props {
+  item: SidebarItem;
+}
+
+const { item } = Astro.props;
+---
+
+<ul class="menu bg-base-200 rounded-box w-full">
+  {item && <SidebarItemComponent item={item} />}
+</ul>

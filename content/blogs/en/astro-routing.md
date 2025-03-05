@@ -10,8 +10,6 @@ tags:
   - Astro
 ---
 
-# Complete Guide to Astro Routing System
-
 ## Routing Fundamentals
 
 ### 1. File System Routing

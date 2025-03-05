@@ -1,0 +1,65 @@
+---
+import { RiListOrdered } from '@remixicon/vue';
+import type { Heading } from '@/models/Heading';
+import { getLangFromPathname } from '@/utils/lang';
+
+interface Props {
+  headings: Heading[];
+  showDebugBorders?: boolean;
+}
+
+const { headings, showDebugBorders = false } = Astro.props;
+const lang = getLangFromPathname(Astro.url.pathname);
+
+// 只显示 h2 和 h3 标题
+const filteredHeadings = headings.filter(
+  (heading) => heading.depth >= 2 && heading.depth <= 3
+);
+---
+
+<div
+  class:list={[
+    'h-full overflow-y-auto px-4 py-6',
+    { 'border-2 border-warning': showDebugBorders },
+  ]}>
+  <div
+    class:list={[
+      'flex items-center gap-2 text-base font-medium text-base-content mb-4',
+      { 'border border-info': showDebugBorders },
+    ]}>
+    <RiListOrdered class="text-base-content/70" />
+    <span>{lang.startsWith('zh') ? '本页内容' : 'Contents'}</span>
+  </div>
+
+  {
+    filteredHeadings.length > 0 ? (
+      <ul
+        class:list={[
+          'menu menu-sm space-y-1',
+          { 'border border-secondary': showDebugBorders },
+        ]}>
+        {filteredHeadings.map((heading) => (
+          <li
+            class:list={[
+              'transition-colors',
+              { 'border-b border-base-300 last:border-0': showDebugBorders },
+            ]}>
+            <a
+              href={`#${heading.slug}`}
+              class:list={[
+                'block py-1 px-2 text-sm text-base-content/80 hover:text-primary hover:bg-base-200 rounded-md transition-colors',
+                { 'ml-4': heading.depth === 3 },
+                { 'border border-primary': showDebugBorders },
+              ]}>
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-sm text-base-content/60">
+        {lang.startsWith('zh') ? '本页没有小节' : 'No sections on this page'}
+      </p>
+    )
+  }
+</div>

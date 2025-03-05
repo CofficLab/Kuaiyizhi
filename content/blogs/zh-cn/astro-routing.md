@@ -10,8 +10,6 @@ tags:
   - Astro
 ---
 
-# Astro 路由系统完全指南
-
 ## 路由基础原理
 
 ### 1. 文件系统路由
@@ -57,7 +55,7 @@ src/pages/
 
 ### 2. 动态路由
 
-#### 基本动态参数：
+#### 基本动态参数
 
 ```astro
 <!-- src/pages/users/[id].astro -->
@@ -67,7 +65,7 @@ const { id } = Astro.params;
 <p>用户ID: {id}</p>
 ```
 
-#### 多段参数：
+#### 多段参数
 
 ```astro
 <!-- src/pages/docs/[lang]/[version]/[...slug].astro -->

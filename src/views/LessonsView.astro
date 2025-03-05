@@ -1,9 +1,7 @@
 ---
 import AppLayout from '@layouts/AppLayout.astro';
-import LessonCard from '@/components/lesson/LessonCard.astro';
-import { getLangFromPathname } from '@/utils/lang';
 import LessonDoc from '@/models/LessonDoc';
-
+import CourseCard from '@/components/common/CourseCard.astro';
 interface Props {
   lang: string;
 }
@@ -15,9 +13,13 @@ const title = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
 const description = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
 ---
 
-<AppLayout title={title} description={description} backgroudColor="colorful">
+<AppLayout title={title} description={description}>
   <div
     class="container max-w-screen-lg mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8">
-    {lessons.map((lesson) => <LessonCard lesson={lesson} />)}
+    {
+      lessons.map((lesson) => (
+        <CourseCard title={lesson.getTitle()} link={lesson.getLink()} />
+      ))
+    }
   </div>
 </AppLayout>

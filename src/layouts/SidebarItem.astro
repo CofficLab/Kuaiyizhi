@@ -1,0 +1,56 @@
+---
+import type { SidebarItem as SidebarItemType } from '@/models/SidebarItem';
+
+interface Props {
+  item: SidebarItemType;
+}
+
+const { item } = Astro.props;
+
+// 辅助函数：检查链接是否激活
+const isLinkActive = (link: string) => {
+  const currentPath = Astro.url.pathname;
+  return (
+    currentPath === link ||
+    currentPath + '/' === link ||
+    link + '/' === currentPath
+  );
+};
+---
+
+{
+  item.isNotGroup() ? (
+    <li>
+      <a
+        href={item.getLink()}
+        class:list={[
+          'hover:bg-base-300',
+          {
+            'menu-active': isLinkActive(item.getLink()),
+          },
+        ]}>
+        {item.getLabel()}
+      </a>
+    </li>
+  ) : (
+    <li>
+      <a
+        class:list={[
+          'flex items-center justify-between hover:bg-base-300',
+          {
+            'menu-active': isLinkActive(item.getLink()),
+          },
+        ]}
+        href={
+          item.getLink().length > 0 ? item.getLink() : 'javascript:void(0)'
+        }>
+        <span>{item.getLabel()}</span>
+      </a>
+      <ul>
+        {item.getItems().map((subItem) => (
+          <Astro.self item={subItem} />
+        ))}
+      </ul>
+    </li>
+  )
+}

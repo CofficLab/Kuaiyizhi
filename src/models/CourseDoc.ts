@@ -102,7 +102,7 @@ export default class CourseDoc {
         let childItems = await Promise.all(children.map(child => child.toSidebarItem()));
 
         if (this.isBook()) {
-            childItems = [selfItem, ...childItems]
+            childItems = [...childItems]
         }
 
         if (debug) {

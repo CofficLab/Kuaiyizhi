@@ -11,8 +11,6 @@ tags:
   - VitePress
 ---
 
-# Astro vs VitePress Technology Selection Guide
-
 ## Architecture Design Comparison
 
 ### 1. Core Architecture

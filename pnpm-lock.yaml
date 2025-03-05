@@ -35,6 +35,9 @@ importers:
       astro:
         specifier: ^5.4.1
         version: 5.4.1(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.34.9)(typescript@5.7.3)(yaml@2.7.0)
+      astro-i18n:
+        specifier: ^2.2.4
+        version: 2.2.4(esbuild@0.17.19)
       astro-pagefind:
         specifier: ^1.8.1
         version: 1.8.1(astro@5.4.1(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.34.9)(typescript@5.7.3)(yaml@2.7.0))
@@ -1178,6 +1181,12 @@ packages:
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
+
+  astro-i18n@2.2.4:
+    resolution: {integrity: sha512-vhvxBtStNLLghtl63aGhBEtU1DqlYz0D3ggz5Nh2QZok36s9Ss3v9b4txN3mH/OZ90JUwkII13CYQL9wozjXBQ==}
+    hasBin: true
+    peerDependencies:
+      esbuild: 0.x
 
   astro-pagefind@1.8.1:
     resolution: {integrity: sha512-pWQthi76aqdfGFifGNjzlMErZrnoSf5UGSuTWWdEaiDAt5VQCgQxoG4b1Dh5byi3Fr3fvbgHeWSzqEYPObgTEA==}
@@ -4145,6 +4154,10 @@ snapshots:
       printable-characters: 1.0.42
 
   astring@1.9.0: {}
+
+  astro-i18n@2.2.4(esbuild@0.17.19):
+    dependencies:
+      esbuild: 0.17.19
 
   astro-pagefind@1.8.1(astro@5.4.1(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.34.9)(typescript@5.7.3)(yaml@2.7.0)):
     dependencies:

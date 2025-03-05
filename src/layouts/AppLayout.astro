@@ -1,28 +1,30 @@
 ---
-import Footer from '@/components/footer/Footer.astro';
+import Footer from './Footer.astro';
 import '../app.css';
-import SmartHeader from './SmartHeader.astro';
+import SmartHeader from './Header.astro';
 import type { SidebarItem } from '@/models/SidebarItem';
 import type { Heading } from '@/models/Heading';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromPathname } from '@/utils/lang';
 import { isHome } from '@/utils/links';
+import { getFooterConfig } from '@/config/footer';
 
 interface Props {
   title: string;
   description: string;
   headings?: Heading[];
   sidebar?: SidebarItem | null | undefined;
-  hidePageTitle?: boolean;
-  backgroudColor?: 'base' | 'colorful';
 }
 
 const props = Astro.props as Props;
-const { title, description, backgroudColor } = props;
+const { title, description } = props;
 
 const locale = isHome(Astro.url.pathname)
   ? Astro.preferredLocale
   : getLangFromPathname(Astro.url.pathname);
+
+const lang = getLangFromPathname(Astro.url.pathname) as 'zh-cn' | 'en';
+const footerConfig = getFooterConfig(lang);
 ---
 
 <!doctype html>
@@ -35,18 +37,14 @@ const locale = isHome(Astro.url.pathname)
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body>
+  <body class="min-h-screen">
     <SmartHeader />
 
-    <div
-      class:list={[
-        'py-24 min-h-screen',
-        backgroudColor === 'base' ? 'bg-base-100/95' : '',
-      ]}>
+    <div class="py-24 min-h-screen pb-96">
       <slot />
     </div>
 
-    <Footer transition:persist />
+    <Footer config={footerConfig} lang={lang} />
     <ClientRouter />
   </body>
 </html>

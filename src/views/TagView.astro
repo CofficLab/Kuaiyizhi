@@ -1,8 +1,8 @@
 ---
-import BlogList from '@/components/blogs/BlogList.vue';
 import DocLayout from '@/layouts/DocLayout.astro';
 import BlogDB from '@/database/BlogDB';
 import Tag from '@/models/Tag';
+import BlogList from '@/components/common/BlogList.astro';
 
 interface Props {
   lang: string;
@@ -12,11 +12,18 @@ interface Props {
 const { lang, name } = Astro.props;
 const blogs = await BlogDB.getBlogsByTag(name, lang);
 const sidebarItem = await Tag.makeRootSidebarItem(lang);
+
+const emptyTitle = lang === 'zh' ? '暂无博客文章' : 'No blog posts yet';
+const emptyDescription = lang === 'zh' ? '稍后再来看看吧' : 'Check back later';
 ---
 
 <DocLayout
   title={`标签: ${name}`}
   description={`所有关于 ${name} 的文章`}
   sidebarItem={sidebarItem}>
-  <BlogList blogs={blogs} lang={lang} />
+  <BlogList
+    blogs={blogs}
+    emptyTitle={emptyTitle}
+    emptyDescription={emptyDescription}
+  />
 </DocLayout>

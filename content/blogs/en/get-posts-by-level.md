@@ -11,8 +11,6 @@ tags:
   - Starlight
 ---
 
-# Getting Posts by Level in Astro + Starlight
-
 In Astro + Starlight projects, articles are typically organized in a multi-level directory structure. Sometimes we need to retrieve posts from specific levels only. This article will introduce several methods to achieve this.
 
 ## Getting Top-Level Posts

@@ -120,7 +120,7 @@ export default class MetaDoc {
         return new SidebarItem({
             label: "了解我们",
             items: await this.getSiblingSidebarItems(),
-            link: this.getLink(),
+            link: '',
         });
     }
 }

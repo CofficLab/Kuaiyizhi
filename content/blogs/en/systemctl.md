@@ -10,8 +10,6 @@ tags:
   - Service Configuration
 ---
 
-# Complete Guide to Systemctl
-
 ## What is Systemctl?
 
 ### Key Features

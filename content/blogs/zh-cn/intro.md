@@ -11,8 +11,6 @@ tags:
   - 监控分析
 ---
 
-# Kong API Gateway 详细介绍
-
 ## 什么是 Kong？
 
 Kong 是一个云原生、开源的 API 网关，基于 OpenResty（Nginx + Lua）构建。它作为 API 管理层，位于客户端和微服务之间，提供了强大的流量管理、安全控制、监控分析等功能。Kong 不仅可以作为传统的 API 网关使用，还能完美融入现代云原生架构中。

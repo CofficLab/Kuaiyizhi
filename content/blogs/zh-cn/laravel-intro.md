@@ -10,8 +10,6 @@ tags:
   - Laravel
 ---
 
-# Laravel 入门完全指南
-
 ## 什么是 Laravel？
 
 Laravel 是当前最流行的 PHP 全栈开发框架，具有以下核心特性：

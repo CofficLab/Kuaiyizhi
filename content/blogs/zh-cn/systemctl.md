@@ -10,8 +10,6 @@ tags:
   - 服务配置
 ---
 
-# Systemctl 完全指南
-
 ## 什么是 Systemctl？
 
 ### 主要特点

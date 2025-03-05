@@ -3,8 +3,6 @@ title: Technology Stack
 description: Introduction to Our Core Technologies
 ---
 
-# Our Technology Stack
-
 In building modern web applications, we have carefully selected and integrated a series of advanced technologies and tools. Here's a detailed introduction to our core technology stack:
 
 ## Frontend Technologies

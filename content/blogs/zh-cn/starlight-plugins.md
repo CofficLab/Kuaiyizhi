@@ -10,8 +10,6 @@ tags:
   - Starlight
 ---
 
-# Starlight 插件扩展指南
-
 ## 插件系统概述
 
 Starlight 的插件系统基于 Astro 集成开发，允许通过模块化方式扩展文档站点的功能。所有插件都通过 npm 包分发，支持官方和社区插件。

@@ -11,8 +11,6 @@ tags:
   - Monitoring Analysis
 ---
 
-# Kong API Gateway In-Depth Introduction
-
 ## What is Kong?
 
 Kong is a cloud-native, open-source API gateway built on OpenResty (Nginx + Lua). It serves as an API management layer between clients and microservices, providing powerful traffic management, security control, monitoring, and analytics capabilities. Kong can function both as a traditional API gateway and seamlessly integrate into modern cloud-native architectures.

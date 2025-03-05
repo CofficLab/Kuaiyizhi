@@ -11,8 +11,6 @@ tags:
   - Starlight
 ---
 
-# Astro + Starlight 获取特定层级的文章
-
 在 Astro + Starlight 项目中，文章通常按照多级目录组织。有时我们只需要获取特定层级的文章，本文将介绍几种实现方法。
 
 ## 获取一级目录文章

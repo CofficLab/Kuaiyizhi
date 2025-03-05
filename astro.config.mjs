@@ -1,24 +1,22 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
 import path from 'path';
 import pagefind from 'astro-pagefind';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@astrojs/vue';
-
 import markdoc from '@astrojs/markdoc';
-
 import mdx from '@astrojs/mdx';
-
 import cloudflare from '@astrojs/cloudflare';
-
 import sitemap from '@astrojs/sitemap';
-
 import robotsTxt from 'astro-robots-txt';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://kuaiyizhi.cn',
+
+  i18n: {
+    defaultLocale: 'zh-cn',
+    locales: ['zh-cn', 'en'],
+  },
 
   prefetch: {
     prefetchAll: true,
@@ -68,7 +66,4 @@ export default defineConfig({
   ],
 
   adapter: cloudflare(),
-  // adapter: node({
-  //   mode: 'standalone',
-  // }),
 });

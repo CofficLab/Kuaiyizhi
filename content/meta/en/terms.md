@@ -2,8 +2,6 @@
 title: Terms
 ---
 
-# Terms of Service
-
 ## I. Confirmation and Acceptance of Service Terms
 
 Kuaiyizhi owns and operates <a href="https://www.kuaiyizhi.cn">Kuaiyizhi</a> and all related products and software. Kuaiyizhi reserves all rights to supervise, notify, inspect, correct, and penalize any activities on https://www.kuaiyizhi.cn. By completing the registration process, reading these terms of service, and clicking the "Agree" button, users indicate they have reached an agreement with Kuaiyizhi and voluntarily accept all contents of these terms of service. If users do not agree to the conditions in the terms of service, they cannot obtain the right to use Kuaiyizhi services or register as a Kuaiyizhi user.

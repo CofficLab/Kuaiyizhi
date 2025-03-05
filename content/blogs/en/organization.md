@@ -10,8 +10,6 @@ tags:
   - Access Control
 ---
 
-# GitHub Organization Features Explained
-
 ## What is a GitHub Organization
 
 GitHub Organizations are collaboration management features designed for enterprises and open-source projects, offering enhanced team management, access control, and project collaboration capabilities:

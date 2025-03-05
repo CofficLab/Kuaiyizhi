@@ -11,8 +11,6 @@ tags:
   - Starlight
 ---
 
-# Astro + Starlight 获取文章列表
-
 在使用 Astro + Starlight 构建文档或博客网站时，获取和展示文章列表是一个常见需求。本文将详细介绍如何实现这一功能。
 
 ## 使用 getCollection API
