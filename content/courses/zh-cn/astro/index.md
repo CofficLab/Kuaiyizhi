@@ -3,8 +3,6 @@ title: Astro 介绍
 description: 了解 Astro 的诞生背景、设计理念和核心特性
 ---
 
-# Astro 介绍
-
 Astro 诞生于 2021 年，是由 Skypack 的创始人 Fred K. Schott 和其团队开发的现代化静态网站生成器。它的出现主要是为了解决现代 Web 开发中的几个关键问题：
 
 1. **性能问题**：随着 JavaScript 框架的普及，许多网站变得越来越重，加载速度慢，影响用户体验。

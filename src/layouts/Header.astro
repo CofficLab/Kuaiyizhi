@@ -84,13 +84,12 @@ function generateLanguageUrl(langCode: string): string {
 ---
 
 <header
-  class="bg-gradient-to-r from-neutral-900/80 via-neutral-800/80 to-neutral-900/80
-    dark:from-neutral-800/80 dark:via-neutral-700/80 dark:to-neutral-800/80 backdrop-blur
+  class="bg-base-300/85 backdrop-blur
     flex flex-row justify-between
-    text-neutral-200 dark:text-neutral-300
+    text-base-content
     px-4
     rounded-lg h-12 mt-1 mx-4 fixed top-0 left-0 right-0 z-50
-    border border-white/5 dark:border-black/5">
+    border border-base-content/5">
   <div class="flex flex-row justify-start items-center">
     <Link href="/" transition:persist>
       <div class="h-8 w-8 flex flex-col items-center justify-center">
@@ -182,8 +181,7 @@ function generateLanguageUrl(langCode: string): string {
 
 <!-- 移动端菜单模态框 -->
 <dialog id="mobile_menu" class="modal">
-  <div
-    class="modal-box bg-neutral-900 dark:bg-neutral-800 text-neutral-200 dark:text-neutral-300">
+  <div class="modal-box bg-base-300 text-base-content">
     <h3 class="font-bold text-lg mb-4">
       {normalizedLocale === 'zh-cn' ? '菜单' : 'Menu'}
     </h3>
@@ -219,8 +217,7 @@ function generateLanguageUrl(langCode: string): string {
 
 <!-- 搜索模态框 -->
 <dialog id="my_modal_1" class="modal">
-  <div
-    class="modal-box bg-neutral-900 dark:bg-neutral-800 text-neutral-200 dark:text-neutral-300">
+  <div class="modal-box bg-base-300 text-base-content">
     <Search />
     <div class="modal-action">
       <form method="dialog">
@@ -238,9 +235,9 @@ function generateLanguageUrl(langCode: string): string {
 <style is:global>
   .pagefind-ui {
     --pagefind-ui-scale: 0.75;
-    --pagefind-ui-primary: navy;
-    --pagefind-ui-text: black;
-    --pagefind-ui-border: slategrey;
+    --pagefind-ui-primary: var(--p);
+    --pagefind-ui-text: var(--bc);
+    --pagefind-ui-border: var(--n);
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: 0.25rem;
     --pagefind-ui-font: sans-serif;
