@@ -12,7 +12,10 @@ const account = new Account(client);
 export const loginWithGitHub = async () => {
     const currentOrigin = window.location.origin;
     return account.createOAuth2Session(
-        OAuthProvider.Github
+        OAuthProvider.Github,
+        `${currentOrigin}/auth/callback`,  // Success URL
+        `${currentOrigin}/auth/error`,     // Failure URL
+        ['user', 'account']        // Request user profile and email access
     );
 };
 
