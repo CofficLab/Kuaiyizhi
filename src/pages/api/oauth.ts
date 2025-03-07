@@ -10,7 +10,7 @@ export const POST: APIRoute = async ({ redirect, url }) => {
   console.log('url -------------', url);
   const redirectUrl = await account.createOAuth2Token(
     OAuthProvider.Github,
-    `${url.origin}/oauth`,
+    `${url.origin}/zh-cn/auth/callback_ssr`,
     `${url.origin}/signin`
   );
 
