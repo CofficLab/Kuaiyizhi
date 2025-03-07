@@ -3,7 +3,9 @@ import type { SidebarItem } from '@/models/SidebarItem';
 import AppLayout from './AppLayout.astro';
 import Sidebar from '@layouts/Sidebar.astro';
 import TableOfContents from '@layouts/TableOfContents.astro';
+import DocActions from '@/components/DocActions.vue';
 import { RiMenuLine, RiListUnordered } from '@remixicon/vue';
+import { getLangFromPathname } from '@/utils/lang';
 
 interface Props {
   title: string;
@@ -13,6 +15,7 @@ interface Props {
 }
 
 const { title, description, sidebarItem, headings = [] } = Astro.props;
+const normalizedLocale = getLangFromPathname(Astro.url.pathname);
 
 const shouldShowSidebar = sidebarItem
   ? sidebarItem.getItems().length > 0
@@ -86,6 +89,7 @@ const hasTableOfContents = headings.length > 0;
             {
               hasTableOfContents && (
                 <aside class="hidden lg:block fixed right-4 top-24 w-64 h-[calc(100vh-8rem)] border-l border-base-200 dark:border-base-300 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:var(--tw-text-opacity)_transparent] hover:[scrollbar-color:var(--tw-text-opacity)_transparent]">
+                  <DocActions client:load lang={normalizedLocale} />
                   <TableOfContents headings={headings} />
                 </aside>
               )
@@ -125,6 +129,7 @@ const hasTableOfContents = headings.length > 0;
     <dialog id="toc_modal" class="modal">
       <div class="modal-box h-[80vh] max-w-[90vw] w-[400px] bg-base-100">
         <h3 class="font-bold text-lg mb-4">文章目录</h3>
+        <DocActions client:load lang={normalizedLocale} />
         <div class="overflow-y-auto max-h-[calc(80vh-8rem)]">
           <TableOfContents headings={headings} />
         </div>

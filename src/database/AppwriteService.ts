@@ -36,6 +36,20 @@ class AppwriteService {
 
     async logout(): Promise<void> {
         try {
+            // 先检查当前会话
+            try {
+                await this.account.get();
+            } catch (error) {
+                // 如果获取用户信息失败，说明已经退出登录
+                if (error instanceof Error && error.message.includes('Unauthorized')) {
+                    throw new Error(
+                        'Already signed out. No active session found.'
+                    );
+                }
+                // 如果是其他错误，继续尝试退出登录
+            }
+
+            // 执行退出登录
             await this.account.deleteSession('current');
         } catch (error) {
             console.error('Failed to logout:', error);

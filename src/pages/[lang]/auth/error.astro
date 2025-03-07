@@ -2,6 +2,17 @@
 import AuthErrorView from '@/views/AuthErrorView.astro';
 
 const { lang = 'en' } = Astro.params;
+export const prerender = true;
+export const getStaticPaths = async () => {
+  return [
+    {
+      params: { lang: 'zh-cn' },
+      props: {
+        lang: 'en',
+      },
+    },
+  ];
+};
 ---
 
 <AuthErrorView lang={lang} />
