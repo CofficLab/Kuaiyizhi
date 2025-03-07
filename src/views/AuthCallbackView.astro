@@ -1,0 +1,28 @@
+---
+import { account } from '@/lib/appwrite';
+import AppLayout from '@layouts/AppLayout.astro';
+import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/vue';
+import { Client, Account, OAuthProvider } from 'appwrite';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const title = lang === 'zh-cn' ? '登录验证' : 'Sign in Verification';
+const description = lang === 'zh-cn' ? '登录验证' : 'Sign in verification';
+
+// 获取URL参数，检查是否包含GitHub的code参数
+const hasAuthCode = Astro.url.searchParams.has('code');
+
+try {
+  console.log(account.get());
+  const session = await account.getSession('current');
+
+  console.log('获取session成功', session);
+} catch (error) {
+  console.error('获取session失败', error);
+}
+---
+
+<a href="/zh-cn/signin">登录</a>

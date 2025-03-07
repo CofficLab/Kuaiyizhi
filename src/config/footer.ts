@@ -1,5 +1,5 @@
-import type { LangCode } from '@/i18n/trans';
-import { makeMetaLink } from '@utils/links';
+import type { LangCode } from '@/models/Lang';
+import { makeMetaLink, makeSigninLink } from '@utils/links';
 import { RiGithubFill } from '@remixicon/vue';
 
 export interface FooterLink {
@@ -53,6 +53,12 @@ export const getFooterConfig = (lang: LangCode): FooterConfig => ({
                     href: 'https://github.com/CofficLab/FeedbackHub',
                     text: '反馈中心',
                     external: true,
+                },
+                {
+                    key: 'signin',
+                    href: makeSigninLink(lang),
+                    text: lang === 'zh-cn' ? '登录' : 'Signin',
+                    external: false,
                 },
             ],
         },

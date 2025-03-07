@@ -32,12 +32,12 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.0.9
         version: 4.0.9(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.7.0))
+      appwrite:
+        specifier: ^17.0.0
+        version: 17.0.0
       astro:
         specifier: ^5.4.1
         version: 5.4.1(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.34.9)(typescript@5.7.3)(yaml@2.7.0)
-      astro-i18n:
-        specifier: ^2.2.4
-        version: 2.2.4(esbuild@0.17.19)
       astro-pagefind:
         specifier: ^1.8.1
         version: 1.8.1(astro@5.4.1(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.34.9)(typescript@5.7.3)(yaml@2.7.0))
@@ -1159,6 +1159,9 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
+  appwrite@17.0.0:
+    resolution: {integrity: sha512-R5+jMh6dVsKC5BdcO9G3wQPxqlU048zxj/Hahq2SU86XIxb0jWThQqS7MtyLUg7tz27SrwO2JvpwUrT9SOStDA==}
+
   arg@5.0.2:
     resolution: {integrity: sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==}
 
@@ -1181,12 +1184,6 @@ packages:
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
-
-  astro-i18n@2.2.4:
-    resolution: {integrity: sha512-vhvxBtStNLLghtl63aGhBEtU1DqlYz0D3ggz5Nh2QZok36s9Ss3v9b4txN3mH/OZ90JUwkII13CYQL9wozjXBQ==}
-    hasBin: true
-    peerDependencies:
-      esbuild: 0.x
 
   astro-pagefind@1.8.1:
     resolution: {integrity: sha512-pWQthi76aqdfGFifGNjzlMErZrnoSf5UGSuTWWdEaiDAt5VQCgQxoG4b1Dh5byi3Fr3fvbgHeWSzqEYPObgTEA==}
@@ -4137,6 +4134,8 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
+  appwrite@17.0.0: {}
+
   arg@5.0.2: {}
 
   argparse@1.0.10:
@@ -4154,10 +4153,6 @@ snapshots:
       printable-characters: 1.0.42
 
   astring@1.9.0: {}
-
-  astro-i18n@2.2.4(esbuild@0.17.19):
-    dependencies:
-      esbuild: 0.17.19
 
   astro-pagefind@1.8.1(astro@5.4.1(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.34.9)(typescript@5.7.3)(yaml@2.7.0)):
     dependencies:

@@ -2,6 +2,10 @@ export function makeMetaLink(lang: string, id: string): string {
     return `/${normalizeLanguage(lang)}/meta/${id}`;
 }
 
+export function makeSigninLink(lang: string): string {
+    return `/${normalizeLanguage(lang)}/signin`;
+}
+
 /**
  * 生成博客文章链接
  * @param lang - 语言代码 (如 'zh-cn', 'en')
