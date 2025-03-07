@@ -63,6 +63,13 @@ const login = async () => {
                     {{ lang === 'zh-cn' ? '使用 GitHub 登录' : 'Continue with GitHub' }}
                 </button>
 
+                <form action="/api/oauth" method="POST">
+                    <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" type="submit">
+                        <RiGithubFill class="w-5 h-5" />
+                        {{ lang === 'zh-cn' ? '使用 GitHub SSR 登录' : 'Continue with GitHub SSR' }}
+                    </button>
+                </form>
+
                 <div class="divider text-xs text-base-content/50">
                     {{ lang === 'zh-cn' ? '快易知' : 'Kuaiyizhi' }}
                 </div>

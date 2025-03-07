@@ -1,7 +1,9 @@
 import { Client, Account, OAuthProvider } from "appwrite";
+
 import type { Models } from "appwrite";
 import { appwriteConfig } from "@/config/appwrite";
 import LinkDB from "@/database/LinkDB";
+import { createAdminClient } from "@/server/appwrite";
 
 class AppwriteService {
     private client: Client;
