@@ -12,6 +12,7 @@ import LinkDB from '@/database/LinkDB';
 import { getLangFromPathname } from '@/utils/lang';
 import ThemeItem from './ThemeItem.astro';
 import Link from '@/components/common/Link.vue';
+import UserInfo from '@/components/UserInfo.vue';
 
 const currentPath = Astro.url.pathname;
 const normalizedLocale = getLangFromPathname(Astro.url.pathname);
@@ -127,6 +128,7 @@ function generateLanguageUrl(langCode: string): string {
   </div>
 
   <div class="h-12 flex flex-row justify-end gap-2 items-center">
+    <UserInfo client:load lang={normalizedLocale} />
     <div class="dropdown dropdown-end">
       <div tabindex={0} role="button" class="btn btn-ghost btn-sm p-1">
         {currentLanguageName}

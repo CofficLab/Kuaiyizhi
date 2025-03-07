@@ -1,0 +1,9 @@
+---
+import AuthCallbackView from '@/views/AuthCallbackView.astro';
+
+export const prerender = false;
+
+const { lang = 'en' } = Astro.params;
+---
+
+<AuthCallbackView lang={lang} />

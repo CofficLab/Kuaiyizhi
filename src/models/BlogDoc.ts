@@ -1,7 +1,6 @@
 import BlogDB from "@/database/BlogDB";
-import { makeLink } from "@/utils/links";
 import { logger } from "@/utils/logger";
-import { render, type DataEntry, type RenderResult } from "astro:content";
+import { render, type RenderResult } from "astro:content";
 import { SidebarItem } from "./SidebarItem";
 import type { BlogEntry } from "@/database/BlogDB";
 import LinkDB from "@/database/LinkDB";

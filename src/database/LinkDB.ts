@@ -1,6 +1,15 @@
 import { logger } from "@/utils/logger";
 
 export default class LinkDB {
+    /**
+     * 规范化语言代码
+     * @param lang - 语言代码
+     * @returns 规范化后的语言代码
+     */
+    static normalizeLanguage(lang: string): string {
+        return lang.toLowerCase().replace('zh-CN', 'zh-cn');
+    }
+
     static getHomeLink(lang: string): string {
         return `/${lang}`;
     }
@@ -54,7 +63,85 @@ export default class LinkDB {
     }
 
     static getMetaLink(lang: string, slug: string): string {
-        return `/${lang}/meta/${slug}`;
+        return `/${this.normalizeLanguage(lang)}/meta/${slug}`;
+    }
+
+    static getSigninLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/signin`;
+    }
+
+    static getAuthCallbackLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/auth/callback`;
+    }
+
+    static getAuthErrorLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/auth/error`;
+    }
+
+    static getPrivacyLink(lang: string): string {
+        return this.getMetaLink(lang, 'privacy');
+    }
+
+    static getTermsLink(lang: string): string {
+        return this.getMetaLink(lang, 'terms');
+    }
+
+    static getAboutLink(lang: string): string {
+        return this.getMetaLink(lang, 'about');
+    }
+
+    /**
+     * 根据ID生成链接
+     * 
+     * 该函数根据文档ID生成对应的链接路径。
+     * 
+     * @param {string} id - 文档ID, 例如 'courses/zh-cn/supervisor/index.md'
+     * @returns {string} 返回生成的链接路径
+     * @example
+     * // 例如：
+     * // id=courses/zh-cn/supervisor/index.md，则返回/zh-cn/courses/supervisor
+     * // id=courses/en/supervisor/index.md，则返回/en/courses/supervisor
+     */
+    static getLink(id: string): string {
+        let category = id.split('/')[0];
+        let lang = id.split('/')[1];
+        let path = id.split('/').slice(2).join('/');
+
+        let link = `/${lang}/${category}/${path}`;
+        return link.replace(/\/+/g, '/');
+    }
+
+    /**
+     * 根据分类生成顶级链接
+     * 
+     * @param {string} category - 分类名称
+     * @param {string} lang - 语言代码，例如 'zh-cn', 'en'
+     * @returns {string} 返回生成的顶级链接路径
+     * @example
+     * // 例如：
+     * // category=courses, lang=zh-cn，则返回/zh-cn/courses
+     * // category=courses, lang=en，则返回/en/courses
+     */
+    static getTopLevelLink(category: string, lang: string): string {
+        return `/${lang}/${category}`;
+    }
+
+    /**
+     * 处理首页重定向
+     * @param locale - 语言代码
+     * @returns 规范化的语言代码
+     */
+    static homeRedirect(locale: string): string {
+        return locale || "en";
+    }
+
+    /**
+     * 检查是否为首页路径
+     * @param pathname - 路径
+     * @returns 是否为首页
+     */
+    static isHomePath(pathname: string): boolean {
+        return pathname === "/" || pathname === "";
     }
 
     static isHomeLink(path: string, lang: string): boolean {
