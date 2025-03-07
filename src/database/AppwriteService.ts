@@ -27,6 +27,16 @@ class AppwriteService {
         );
     }
 
+    async loginWithGitHub2(lang: string): Promise<string | void> {
+        const currentOrigin = window.location.origin;
+        return this.account.createOAuth2Token(
+            OAuthProvider.Github,
+            `${currentOrigin}${LinkDB.getAuthCallbackLink(lang)}`,  // Success URL
+            `${currentOrigin}${LinkDB.getAuthErrorLink(lang)}`,     // Failure URL
+            ['user', 'account']                // Request user profile and email access
+        );
+    }
+
     async getCurrentUser(): Promise<Models.User<Models.Preferences> | null> {
         try {
             return await this.account.get();

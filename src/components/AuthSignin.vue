@@ -28,6 +28,22 @@ const login = async () => {
         technicalError.value = err instanceof Error ? err.message : String(err);
     }
 }
+
+const loginToken = async () => {
+    console.log('loginToken');
+    error.value = null; // Reset error state before attempting login
+    technicalError.value = null; // Reset technical error
+
+    try {
+        await appwriteService.loginWithGitHub2(lang);
+    } catch (err) {
+        console.error('GitHub login failed:', err);
+        error.value = lang === 'zh-cn'
+            ? '登录失败，请稍后重试'
+            : 'Login failed, please try again later';
+        technicalError.value = err instanceof Error ? err.message : String(err);
+    }
+}
 </script>
 
 <template>
@@ -61,6 +77,11 @@ const login = async () => {
                 <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="login">
                     <RiGithubFill class="w-5 h-5" />
                     {{ lang === 'zh-cn' ? '使用 GitHub 登录' : 'Continue with GitHub' }}
+                </button>
+
+                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="loginToken">
+                    <RiGithubFill class="w-5 h-5" />
+                    {{ lang === 'zh-cn' ? '使用 GitHub Token 登录' : 'Continue with GitHub Token' }}
                 </button>
 
                 <form action="/api/oauth" method="POST">
