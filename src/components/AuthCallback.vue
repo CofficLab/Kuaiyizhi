@@ -8,10 +8,17 @@ const props = defineProps<{
 }>();
 
 try {
-    console.log(account.get());
-    const session = await account.getSession('current');
+    account.get().then(user => {
+        console.log('获取用户成功', user);
+    });
+} catch (error) {
+    console.error('获取用户失败', error);
+}
 
-    console.log('获取session成功', session);
+try {
+    account.getSession('current').then(session => {
+        console.log('获取session成功', session);
+    });
 } catch (error) {
     console.error('获取session失败', error);
 }
