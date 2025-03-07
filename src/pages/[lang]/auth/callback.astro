@@ -37,7 +37,7 @@ if (secret && userId) {
     path: '/',
   });
 
-  return new Response('Login successful');
+  return Astro.redirect('/zh-cn/auth/account');
 }
 ---
 

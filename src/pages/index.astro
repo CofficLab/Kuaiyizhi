@@ -10,9 +10,9 @@ const langCode = getLang(
   Astro.currentLocale ?? ''
 );
 
-const { account } = createSessionClient(Astro.request);
-const user = await account.get();
-console.log(user);
+// const { account } = createSessionClient(Astro.request);
+// const user = await account.get();
+// console.log(user);
 
 return Astro.redirect(`/${langCode}`);
 ---

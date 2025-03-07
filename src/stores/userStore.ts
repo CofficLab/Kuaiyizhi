@@ -51,6 +51,9 @@ class UserStore {
     }
 
     public setUser(user: Models.User<Models.Preferences> | null) {
+        console.log('setUser', user);
+        console.log('state', this.state.value);
+
         this.state.value.user = user;
         this.state.value.isLoggedIn = !!user;
 

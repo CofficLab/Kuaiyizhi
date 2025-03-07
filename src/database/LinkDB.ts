@@ -7,7 +7,12 @@ export default class LinkDB {
      * @returns 规范化后的语言代码
      */
     static normalizeLanguage(lang: string): string {
-        return lang.toLowerCase().replace('zh-CN', 'zh-cn');
+        const normalizedLang = lang.toLowerCase().replace('zh-CN', 'zh-cn');
+        if (normalizedLang.length == 0) {
+            console.error('lang is empty');
+            return 'en';
+        }
+        return normalizedLang;
     }
 
     static getHomeLink(lang: string): string {

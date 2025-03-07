@@ -34,6 +34,11 @@ const loginToken = async () => {
     error.value = null; // Reset error state before attempting login
     technicalError.value = null; // Reset technical error
 
+    if (lang.length == 0) {
+        console.error('lang is empty');
+        return;
+    }
+
     try {
         await appwriteService.loginWithGitHub2(lang);
     } catch (err) {
