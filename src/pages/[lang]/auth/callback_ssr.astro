@@ -1,6 +1,10 @@
 ---
 import AppLayout from '@/layouts/AppLayout.astro';
-import { createAdminClient, SESSION_COOKIE } from '@/server/appwrite';
+import {
+  createAdminClient,
+  createSessionClient,
+  SESSION_COOKIE,
+} from '@/server/appwrite';
 
 export const prerender = false;
 
@@ -32,6 +36,12 @@ cookies.set(SESSION_COOKIE, session.secret, {
   httpOnly: true,
   path: '/',
 });
+
+try {
+  const { account } = createSessionClient(Astro.request);
+  const user = await account.get();
+  console.log(user);
+} catch {}
 ---
 
 <AppLayout title="登录回调" description="这里是SSR OAuth登录的回调页面">

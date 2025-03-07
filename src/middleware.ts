@@ -11,11 +11,5 @@ export const onRequest: MiddlewareHandler = async ({ request, locals }, next) =>
         logger.info(`current path: ${request.url}`);
     }
 
-    try {
-        const { account } = createSessionClient(request);
-        locals.user = await account.get();
-    } catch { }
-
-
     return next();
 };
