@@ -4,8 +4,8 @@ import { RiGithubFill } from '@remixicon/vue';
 import { userStore } from '@/stores/userStore';
 import appwriteService from '@/database/AppwriteService';
 import LinkDB from '@/database/LinkDB';
-import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import SigninHintToast from '@/components/SigninHintToast.vue';
+import { useToast } from '@/composables/useToast';
+import { useConfirmDialog } from '@/composables/useConfirmDialog';
 
 const props = defineProps<{
     lang: string;
@@ -17,8 +17,9 @@ const isLoggingOut = ref(false);
 const showError = ref(false);
 const errorMessage = ref('');
 const errorDetails = ref('');
-const showSigninHint = ref(false);
 const isClient = ref(false);
+const { show: showToast } = useToast();
+const { show: showConfirmDialog } = useConfirmDialog();
 
 // 在组件挂载后设置 isClient
 onMounted(() => {
@@ -35,35 +36,27 @@ const isSigninPage = computed(() => {
 const handleSigninClick = (e: MouseEvent) => {
     if (isSigninPage.value) {
         e.preventDefault();
-        showSigninHint.value = true;
-        setTimeout(() => {
-            showSigninHint.value = false;
-        }, 3000);
+        showToast({
+            message: props.lang === 'zh-cn' ? '您已经在登录页面了' : 'You are already on the sign-in page',
+            type: 'info',
+            duration: 3000,
+            shake: true
+        });
     }
-};
-
-const showLogoutConfirm = () => {
-    const modal = document.getElementById('logout_confirm') as HTMLDialogElement;
-    if (modal) modal.showModal();
-};
-
-const hideLogoutConfirm = () => {
-    const modal = document.getElementById('logout_confirm') as HTMLDialogElement;
-    if (modal) modal.close();
-};
-
-const showErrorModal = () => {
-    const modal = document.getElementById('error_modal') as HTMLDialogElement;
-    if (modal) modal.showModal();
-};
-
-const hideErrorModal = () => {
-    const modal = document.getElementById('error_modal') as HTMLDialogElement;
-    if (modal) modal.close();
 };
 
 const handleLogout = async () => {
     if (isLoggingOut.value) return;
+
+    const confirmed = await showConfirmDialog({
+        title: props.lang === 'zh-cn' ? '确认退出' : 'Confirm Sign Out',
+        message: props.lang === 'zh-cn' ? '确定要退出登录吗？' : 'Are you sure you want to sign out?',
+        confirmText: props.lang === 'zh-cn' ? '确认退出' : 'Sign Out',
+        cancelText: props.lang === 'zh-cn' ? '取消' : 'Cancel',
+        type: 'error'
+    });
+
+    if (!confirmed) return;
 
     try {
         isLoggingOut.value = true;
@@ -87,11 +80,20 @@ const handleLogout = async () => {
         errorDetails.value = error instanceof Error
             ? `${error.name}: ${error.message}\n\nStack trace:\n${error.stack}`
             : String(error);
-        hideLogoutConfirm();
         showErrorModal();
     } finally {
         isLoggingOut.value = false;
     }
+};
+
+const showErrorModal = () => {
+    const modal = document.getElementById('error_modal') as HTMLDialogElement;
+    if (modal) modal.showModal();
+};
+
+const hideErrorModal = () => {
+    const modal = document.getElementById('error_modal') as HTMLDialogElement;
+    if (modal) modal.close();
 };
 </script>
 
@@ -105,18 +107,12 @@ const handleLogout = async () => {
                 </label>
                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-52">
                     <li>
-                        <button @click="showLogoutConfirm" class="text-error">
+                        <button @click="handleLogout" class="text-error">
                             {{ lang === 'zh-cn' ? '退出登录' : 'Sign out' }}
                         </button>
                     </li>
                 </ul>
             </div>
-
-            <!-- 登出确认对话框 -->
-            <ConfirmDialog id="logout_confirm" :title="lang === 'zh-cn' ? '确认退出' : 'Confirm Sign Out'"
-                :message="lang === 'zh-cn' ? '确定要退出登录吗？' : 'Are you sure you want to sign out?'"
-                :confirm-text="lang === 'zh-cn' ? '确认退出' : 'Sign Out'" :cancel-text="lang === 'zh-cn' ? '取消' : 'Cancel'"
-                :loading="isLoggingOut" type="error" @confirm="handleLogout" @cancel="hideLogoutConfirm" />
 
             <!-- 错误模态框 -->
             <dialog id="error_modal" class="modal">
@@ -148,7 +144,6 @@ const handleLogout = async () => {
             </dialog>
         </div>
         <div v-else>
-            <SigninHintToast :lang="lang" :show="showSigninHint" />
             <a :href="LinkDB.getSigninLink(lang)" class="btn btn-ghost btn-sm p-1" @click="handleSigninClick">
                 <RiGithubFill class="w-5 h-5" />
                 <span class="font-medium">{{ lang === 'zh-cn' ? '登录' : 'Sign in' }}</span>
