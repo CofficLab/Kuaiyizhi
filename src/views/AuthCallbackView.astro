@@ -1,9 +1,7 @@
 ---
-import { account } from '@/lib/appwrite';
 import AppLayout from '@layouts/AppLayout.astro';
 import AuthCallback from '@/components/AuthCallback.vue';
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/vue';
-import { Client, Account, OAuthProvider } from 'appwrite';
 
 interface Props {
   lang: string;
@@ -15,5 +13,36 @@ const description = lang === 'zh-cn' ? '登录验证' : 'Sign in verification';
 ---
 
 <AppLayout title={title} description={description}>
-  <AuthCallback lang={lang} client:load />
+  <h1>登录验证</h1>
 </AppLayout>
+
+<script>
+  import { account } from '@/lib/appwrite';
+
+  account
+    .get()
+    .then((user) => {
+      console.log('获取用户成功', user);
+    })
+    .catch((error) => {
+      console.error('获取用户失败', error);
+    });
+
+  account
+    .getSession('current')
+    .then((session) => {
+      console.log('获取session成功', session);
+    })
+    .catch((error) => {
+      console.error('获取session失败', error);
+    });
+
+  account
+    .listSessions()
+    .then((sessions) => {
+      console.log('获取session列表成功', sessions);
+    })
+    .catch((error) => {
+      console.error('获取session列表失败', error);
+    });
+</script>

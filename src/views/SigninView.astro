@@ -11,7 +11,7 @@ const title = lang === 'zh-cn' ? '登录' : 'Signin';
 const description = lang === 'zh-cn' ? '登录' : 'Signin';
 ---
 
-<AppLayout title={title} description={description}>
+<AppLayout title={title} description={description} client:load>
   <div class="min-h-screen flex items-center justify-center bg-base-200">
     <div class="card w-96 bg-base-100 shadow-xl">
       <div class="card-body items-center text-center space-y-6">

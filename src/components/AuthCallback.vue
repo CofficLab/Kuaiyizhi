@@ -23,6 +23,12 @@ try {
     console.error('获取session失败', error);
 }
 
+account.listSessions().then(sessions => {
+    console.log('获取session列表成功', sessions);
+}).catch(error => {
+    console.error('获取session列表失败', error);
+});
+
 const signinURL = makeSigninLink(props.lang);
 </script>
 
