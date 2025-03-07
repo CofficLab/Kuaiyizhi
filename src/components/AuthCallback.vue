@@ -2,7 +2,6 @@
 import { account } from '@/lib/appwrite';
 import { makeSigninLink } from '@/utils/links';
 
-
 const props = defineProps<{
     lang: string;
 }>();
