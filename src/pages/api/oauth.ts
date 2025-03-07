@@ -7,24 +7,24 @@ export const prerender = false;
 export const POST: APIRoute = async ({ redirect, url }) => {
   const { account } = createAdminClient();
 
+  console.log('url -------------', url);
   const redirectUrl = await account.createOAuth2Token(
     OAuthProvider.Github,
-    `${url.origin}/api/oauth`,
+    `${url.origin}/oauth`,
+    `${url.origin}/signin`
   );
 
-  console.log('redirectUrl', redirectUrl);
+  console.log('redirectUrl -------------', redirectUrl);
 
   return redirect(redirectUrl);
 };
 
 export const GET: APIRoute = async ({ cookies, redirect, url }) => {
-  console.log('url', url);
-  console.log('cookies', cookies);
-  console.log('redirect', redirect);
-
-
   const userId = url.searchParams.get("userId");
   const secret = url.searchParams.get("secret");
+
+  console.log('userId -------------', userId);
+  console.log('secret -------------', secret);
 
   if (!userId || !secret) {
     throw new Error("OAuth2 did not provide userId or secret");
@@ -38,12 +38,13 @@ export const GET: APIRoute = async ({ cookies, redirect, url }) => {
   }
 
   cookies.set(SESSION_COOKIE, session.secret, {
-    sameSite: "strict",
+    // sameSite: "strict",
     expires: new Date(session.expire),
-    secure: true,
+    // secure: true,
     httpOnly: true,
     path: "/",
   });
 
-  return redirect("/");
+  return redirect("/account");
+  // return new Response("Hello World");
 };
