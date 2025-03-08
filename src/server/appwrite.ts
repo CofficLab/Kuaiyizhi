@@ -3,13 +3,17 @@ import { Client, Account } from "node-appwrite";
 export const SESSION_COOKIE = "kuaiyizhi-session";
 
 export function createAdminClient() {
-  const endpoint = import.meta.env.PUBLIC_APPWRITE_ENDPOINT;
-  const project = import.meta.env.PUBLIC_APPWRITE_PROJECT;
-  const key = import.meta.env.APPWRITE_KEY;
+  const endpoint = process.env.PUBLIC_APPWRITE_ENDPOINT;
+  const project = process.env.PUBLIC_APPWRITE_PROJECT;
+  const key = process.env.APPWRITE_KEY;
 
   console.log('endpoint -------------', endpoint);
   console.log('project -------------', project);
   console.log('key -------------', key);
+
+  if (!endpoint || !project || !key) {
+    throw new Error("Missing Appwrite environment variables");
+  }
 
   const client = new Client()
     .setEndpoint(endpoint)
