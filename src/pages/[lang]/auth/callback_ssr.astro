@@ -23,36 +23,36 @@ if (!userId || !secret) {
   throw new Error('OAuth2 did not provide userId or secret');
 }
 
-const { account } = createAdminClient();
+// const { account } = createAdminClient();
 
-const session = await account.createSession(userId, secret);
-if (!session || !session.secret) {
-  throw new Error('Failed to create session from token');
-}
+// const session = await account.createSession(userId, secret);
+// if (!session || !session.secret) {
+//   throw new Error('Failed to create session from token');
+// }
 
-console.log('Success');
+// console.log('Success');
 
-cookies.set(SESSION_COOKIE, session.secret, {
-  // sameSite: "strict",
-  expires: new Date(session.expire),
-  // secure: true,
-  httpOnly: true,
-  path: '/',
-});
+// cookies.set(SESSION_COOKIE, session.secret, {
+//   // sameSite: "strict",
+//   expires: new Date(session.expire),
+//   // secure: true,
+//   httpOnly: true,
+//   path: '/',
+// });
 
-try {
-  const { account } = createSessionClient(Astro.request);
-  const user = await account.get();
-  console.log(user);
-} catch {
-  console.log('error');
-}
+// try {
+//   const { account } = createSessionClient(Astro.request);
+//   const user = await account.get();
+//   console.log(user);
+// } catch {
+//   console.log('error');
+// }
 
-const dashboardUrl = LinkDB.getDashboardUrl(lang!);
+// const dashboardUrl = LinkDB.getDashboardUrl(lang!);
 ---
 
 <AppLayout title="登录回调" description="这里是SSR OAuth登录的回调页面">
   <h2>callback</h2>
 
-  <a href={dashboardUrl}>Dashboard</a>
+  <!-- <a href={dashboardUrl}>Dashboard</a> -->
 </AppLayout>

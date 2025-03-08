@@ -2,20 +2,7 @@ import { Client, Account } from "node-appwrite";
 
 export const SESSION_COOKIE = "kuaiyizhi-session";
 
-export function createAdminClient() {
-  const isCloudflarePages = process.env.CF_PAGES;
-  const endpoint = process.env.PUBLIC_APPWRITE_ENDPOINT;
-  const project = process.env.PUBLIC_APPWRITE_PROJECT;
-  const key = process.env.APPWRITE_KEY;
-
-  console.log('isCloudflarePages -------------', isCloudflarePages);
-  console.log('endpoint -------------', endpoint);
-  console.log('project -------------', project);
-  console.log('key -------------', key);
-
-  if (!endpoint || !project || !key) {
-    throw new Error("Missing Appwrite environment variables");
-  }
+export function createAdminClient(endpoint: string, project: string, key: string) {
 
   const client = new Client()
     .setEndpoint(endpoint)

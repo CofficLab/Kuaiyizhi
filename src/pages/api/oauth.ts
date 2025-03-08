@@ -4,8 +4,21 @@ import { OAuthProvider } from "node-appwrite";
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ redirect, url }) => {
-  const { account } = createAdminClient();
+export const POST: APIRoute = async ({ redirect, url, locals }) => {
+  const endpoint = process.env.PUBLIC_APPWRITE_ENDPOINT;
+  const project = process.env.PUBLIC_APPWRITE_PROJECT;
+  const key = process.env.APPWRITE_KEY
+
+  console.log('endpoint -------------', endpoint);
+  console.log('project -------------', project);
+  console.log('key -------------', key);
+  console.log('locals -------------', locals);
+
+  if (!endpoint || !project || !key) {
+    throw new Error("Missing Appwrite environment variables");
+  }
+
+  const { account } = createAdminClient(endpoint, project, key);
 
   const successUrl = `${url.origin}/zh-cn/auth/callback_ssr`;
   const failedUrl = `${url.origin}/zh-cn/auth/failed`;
@@ -36,20 +49,20 @@ export const GET: APIRoute = async ({ cookies, redirect, url }) => {
     throw new Error("OAuth2 did not provide userId or secret");
   }
 
-  const { account } = createAdminClient();
+  // const { account } = createAdminClient();
 
-  const session = await account.createSession(userId, secret);
-  if (!session || !session.secret) {
-    throw new Error("Failed to create session from token");
-  }
+  // const session = await account.createSession(userId, secret);
+  // if (!session || !session.secret) {
+  //   throw new Error("Failed to create session from token");
+  // }
 
-  cookies.set(SESSION_COOKIE, session.secret, {
-    // sameSite: "strict",
-    expires: new Date(session.expire),
-    // secure: true,
-    httpOnly: true,
-    path: "/",
-  });
+  // cookies.set(SESSION_COOKIE, session.secret, {
+  //   // sameSite: "strict",
+  //   expires: new Date(session.expire),
+  //   // secure: true,
+  //   httpOnly: true,
+  //   path: "/",
+  // });
 
   return redirect("/account");
   // return new Response("Hello World");
