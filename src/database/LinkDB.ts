@@ -182,4 +182,16 @@ export default class LinkDB {
             || path === `/${lang}/blogs/`
             || path.startsWith(`/${lang}/blogs/`);
     }
+
+    static getOAuthSuccessLink(currentOrigin: string): string {
+        return `${currentOrigin}/api/callback_success`;
+    }
+
+    static getOAuthErrorLink(currentOrigin: string): string {
+        return `${currentOrigin}/api/callback_error`;
+    }
+
+    static getLoginLink(currentOrigin: string): string {
+        return `${currentOrigin}/api/login`;
+    }
 }

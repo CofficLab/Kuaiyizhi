@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RiGithubFill } from '@remixicon/vue';
-import appwriteService from '@/database/AppwriteService';
 import LinkDB from '@/database/LinkDB';
 import GlowCard from '@/components/GlowCard.vue';
 import { ref } from 'vue';
@@ -13,22 +12,6 @@ const { lang } = props;
 const error = ref<string | null>(null);
 const technicalError = ref<string | null>(null);
 
-const loginCookie = async () => {
-    console.log('loginCookie');
-    error.value = null; // Reset error state before attempting login
-    technicalError.value = null; // Reset technical error
-
-    try {
-        await appwriteService.loginWithGitHubCookie(lang);
-    } catch (err) {
-        console.error('GitHub login failed:', err);
-        error.value = lang === 'zh-cn'
-            ? '登录失败，请稍后重试'
-            : 'Login failed, please try again later';
-        technicalError.value = err instanceof Error ? err.message : String(err);
-    }
-}
-
 const loginToken = async () => {
     console.log('loginToken');
     error.value = null; // Reset error state before attempting login
@@ -39,15 +22,7 @@ const loginToken = async () => {
         return;
     }
 
-    try {
-        await appwriteService.loginWithGitHubToken(lang);
-    } catch (err) {
-        console.error('GitHub login failed:', err);
-        error.value = lang === 'zh-cn'
-            ? '登录失败，请稍后重试'
-            : 'Login failed, please try again later';
-        technicalError.value = err instanceof Error ? err.message : String(err);
-    }
+    window.location.href = LinkDB.getLoginLink(window.location.origin);
 }
 </script>
 
@@ -79,22 +54,10 @@ const loginToken = async () => {
                     {{ lang === 'zh-cn' ? '使用以下方式登录' : 'Sign in with' }}
                 </p>
 
-                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="loginCookie">
-                    <RiGithubFill class="w-5 h-5" />
-                    {{ lang === 'zh-cn' ? '使用 GitHub Cookie 登录' : 'Continue with GitHub Cookie' }}
-                </button>
-
                 <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="loginToken">
                     <RiGithubFill class="w-5 h-5" />
-                    {{ lang === 'zh-cn' ? '使用 GitHub Token 登录' : 'Continue with GitHub Token' }}
+                    {{ lang === 'zh-cn' ? '使用 GitHub SSR 登录' : 'Continue with GitHub SSR' }}
                 </button>
-
-                <form action="/api/oauth" method="POST">
-                    <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" type="submit">
-                        <RiGithubFill class="w-5 h-5" />
-                        {{ lang === 'zh-cn' ? '使用 GitHub SSR 登录' : 'Continue with GitHub SSR' }}
-                    </button>
-                </form>
 
                 <div class="divider text-xs text-base-content/50">
                     {{ lang === 'zh-cn' ? '快易知' : 'Kuaiyizhi' }}

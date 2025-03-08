@@ -2,7 +2,6 @@
 import { computed, ref, onMounted } from 'vue';
 import { RiGithubFill } from '@remixicon/vue';
 import { userStore } from '@/stores/userStore';
-import appwriteService from '@/database/AppwriteService';
 import LinkDB from '@/database/LinkDB';
 import { useToast } from '@/composables/useToast';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
@@ -14,7 +13,6 @@ const props = defineProps<{
 const user = computed(() => userStore.getUser());
 const isLoggedIn = computed(() => userStore.isLoggedIn());
 const isLoggingOut = ref(false);
-const showError = ref(false);
 const errorMessage = ref('');
 const errorDetails = ref('');
 const isClient = ref(false);
@@ -60,27 +58,10 @@ const handleLogout = async () => {
 
     try {
         isLoggingOut.value = true;
-        await appwriteService.logout();
         userStore.clearUser();
         window.location.href = LinkDB.getSigninLink(props.lang);
     } catch (error) {
         console.error('Logout failed:', error);
-
-        // 检查是否是已经退出登录的情况
-        if (error instanceof Error && error.message.includes('Already signed out')) {
-            // 如果已经退出登录，直接清除状态并跳转
-            userStore.clearUser();
-            window.location.href = LinkDB.getSigninLink(props.lang);
-            return;
-        }
-
-        errorMessage.value = props.lang === 'zh-cn'
-            ? '退出登录失败'
-            : 'Failed to sign out';
-        errorDetails.value = error instanceof Error
-            ? `${error.name}: ${error.message}\n\nStack trace:\n${error.stack}`
-            : String(error);
-        showErrorModal();
     } finally {
         isLoggingOut.value = false;
     }
