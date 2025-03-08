@@ -38,5 +38,7 @@ export const GET: APIRoute = async ({ url, cookies }) => {
         path: '/',
     });
 
+    console.log('cookies set');
+
     return Response.redirect(url.origin, 307);
 };
