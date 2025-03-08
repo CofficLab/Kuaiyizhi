@@ -7,11 +7,17 @@ export const prerender = false;
 export const POST: APIRoute = async ({ redirect, url }) => {
   const { account } = createAdminClient();
 
+  const successUrl = `${url.origin}/zh-cn/auth/callback_ssr`;
+  const failedUrl = `${url.origin}/zh-cn/auth/failed`;
   console.log('url -------------', url);
+  console.log('url.origin -------------', url.origin);
+  console.log('successUrl -------------', successUrl);
+  console.log('failedUrl -------------', failedUrl);
+
   const redirectUrl = await account.createOAuth2Token(
     OAuthProvider.Github,
-    `${url.origin}/zh-cn/auth/callback_ssr`,
-    `${url.origin}/signin`
+    successUrl,
+    failedUrl
   );
 
   console.log('redirectUrl -------------', redirectUrl);
