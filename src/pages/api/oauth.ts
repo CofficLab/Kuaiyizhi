@@ -13,14 +13,14 @@ export const POST: APIRoute = async ({ redirect, url, locals }) => {
   const project2 = import.meta.env.PUBLIC_APPWRITE_PROJECT;
   const key2 = import.meta.env.APPWRITE_KEY;
 
-  console.log('endpoint -------------', endpoint);
-  console.log('project -------------', project);
-  console.log('key -------------', key);
-  console.log('locals -------------', locals);
-  console.log('endpoint2 -------------', endpoint2);
-  console.log('project2 -------------', project2);
-  console.log('key2 -------------', key2);
-  console.log('getSecret -------------', getSecret('APPWRITE_KEY'));
+  console.log('endpoint ------------', endpoint);
+  console.log('project ------------', project);
+  console.log('key ------------', key);
+  console.log('locals ------------', locals);
+  console.log('endpoint2 ------------', endpoint2);
+  console.log('project2 ------------', project2);
+  console.log('key2 ------------', key2);
+  console.log('getSecret ------------', getSecret('APPWRITE_KEY'));
 
   if (!endpoint || !project || !key) {
     throw new Error("Missing Appwrite environment variables");
