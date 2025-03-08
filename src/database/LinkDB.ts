@@ -84,6 +84,10 @@ export default class LinkDB {
     }
 
     static getAuthAccountLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/auth/account`;
+    }
+
+    static getDashboardUrl(lang: string): string {
         return `/${this.normalizeLanguage(lang)}/auth/dashboard`;
     }
 
