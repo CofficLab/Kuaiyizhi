@@ -1,10 +1,11 @@
 import { appConfig } from "@/config/app";
 import { appwriteConfig } from "@/service/appwrite-config";
-import LinkDB from "@/database/LinkDB";
 import { createAdminClient, getKeyFromRuntime } from "@/service/appwrite-server";
 import type { APIRoute } from "astro";
 
-export const GET: APIRoute = async ({ request, url, cookies }) => {
+export const prerender = false;
+
+export const GET: APIRoute = async ({ url, cookies }) => {
     const endpoint = appwriteConfig.endpoint;
     const project = appwriteConfig.projectId;
     const key = getKeyFromRuntime();
@@ -15,11 +16,6 @@ export const GET: APIRoute = async ({ request, url, cookies }) => {
 
     const userId = url.searchParams.get('userId');
     const secret = url.searchParams.get('secret');
-
-    console.log('完整URL:', url.toString());
-    console.log('搜索参数:', url.searchParams.toString());
-    console.log('userId:', userId);
-    console.log('secret:', secret);
 
     if (!userId || !secret) {
         throw new Error('OAuth2 did not provide userId or secret');
@@ -42,5 +38,5 @@ export const GET: APIRoute = async ({ request, url, cookies }) => {
         path: '/',
     });
 
-    return Response.redirect(LinkDB.getDashboardUrl('zh-cn'));
+    return Response.redirect(url.origin, 307);
 };
