@@ -3,10 +3,18 @@ import { Client, Account } from "node-appwrite";
 export const SESSION_COOKIE = "kuaiyizhi-session";
 
 export function createAdminClient() {
+  const endpoint = import.meta.env.PUBLIC_APPWRITE_ENDPOINT;
+  const project = import.meta.env.PUBLIC_APPWRITE_PROJECT;
+  const key = import.meta.env.APPWRITE_KEY;
+
+  console.log('endpoint -------------', endpoint);
+  console.log('project -------------', project);
+  console.log('key -------------', key);
+
   const client = new Client()
-    .setEndpoint(import.meta.env.PUBLIC_APPWRITE_ENDPOINT)
-    .setProject(import.meta.env.PUBLIC_APPWRITE_PROJECT)
-    .setKey(import.meta.env.APPWRITE_KEY);
+    .setEndpoint(endpoint)
+    .setProject(project)
+    .setKey(key);
 
   return {
     get account() {
