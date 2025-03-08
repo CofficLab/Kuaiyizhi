@@ -1,13 +1,10 @@
 ---
-import AuthCallback from '@/components/AuthCallback.vue';
-import AppLayout from '@/layouts/AppLayout.astro';
+import LinkDB from '@/database/LinkDB';
 import { createAdminClient, SESSION_COOKIE } from '@/server/appwrite';
 
 export const prerender = false;
 
 const { lang = 'en' } = Astro.params;
-const title = lang === 'zh-cn' ? '登录验证' : 'Sign in Verification';
-const description = lang === 'zh-cn' ? '登录验证' : 'Sign in verification';
 
 // 当前链接是这样的格式：xxx?secret=xxx&userId=xxx
 const url = Astro.url;
@@ -37,10 +34,8 @@ if (secret && userId) {
     path: '/',
   });
 
-  return Astro.redirect('/zh-cn/auth/account');
+  console.log('redirect to', LinkDB.getAuthAccountLink(lang));
+
+  return Astro.redirect(LinkDB.getAuthAccountLink(lang), 302);
 }
 ---
-
-<AppLayout title={title} description={description}>
-  <AuthCallback lang={lang} client:load />
-</AppLayout>

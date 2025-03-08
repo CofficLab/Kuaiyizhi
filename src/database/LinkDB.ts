@@ -75,8 +75,16 @@ export default class LinkDB {
         return `/${this.normalizeLanguage(lang)}/signin`;
     }
 
-    static getAuthCallbackLink(lang: string): string {
-        return `/${this.normalizeLanguage(lang)}/auth/callback`;
+    static getAuthCallbackCookieLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/auth/callback_cookie`;
+    }
+
+    static getAuthCallbackTokenLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/auth/callback_token`;
+    }
+
+    static getAuthAccountLink(lang: string): string {
+        return `/${this.normalizeLanguage(lang)}/auth/dashboard`;
     }
 
     static getAuthErrorLink(lang: string): string {

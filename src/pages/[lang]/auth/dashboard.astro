@@ -6,6 +6,8 @@ import AccountInfo from '@/components/AccountInfo.vue';
 export const prerender = false;
 const { account } = createSessionClient(Astro.request);
 
+console.log('account page');
+
 let user;
 try {
   user = await account.get();

@@ -17,22 +17,25 @@ class AppwriteService {
         this.account = new Account(this.client);
     }
 
-    async loginWithGitHub(lang: string): Promise<string | void> {
+    async loginWithGitHubCookie(lang: string): Promise<string | void> {
         const currentOrigin = window.location.origin;
         return this.account.createOAuth2Session(
             OAuthProvider.Github,
-            `${currentOrigin}${LinkDB.getAuthCallbackLink(lang)}`,  // Success URL
+            `${currentOrigin}${LinkDB.getAuthCallbackCookieLink(lang)}`,  // Success URL
             `${currentOrigin}${LinkDB.getAuthErrorLink(lang)}`,     // Failure URL
             ['user', 'account']                // Request user profile and email access
         );
     }
 
-    async loginWithGitHub2(lang: string): Promise<string | void> {
+    async loginWithGitHubToken(lang: string): Promise<string | void> {
         const currentOrigin = window.location.origin;
+        const successUrl = `${currentOrigin}${LinkDB.getAuthCallbackTokenLink(lang)}`;
+        const failureUrl = `${currentOrigin}${LinkDB.getAuthErrorLink(lang)}`;
+
         return this.account.createOAuth2Token(
             OAuthProvider.Github,
-            `${currentOrigin}${LinkDB.getAuthCallbackLink(lang)}`,  // Success URL
-            `${currentOrigin}${LinkDB.getAuthErrorLink(lang)}`,     // Failure URL
+            successUrl,
+            failureUrl,
             ['user', 'account']                // Request user profile and email access
         );
     }

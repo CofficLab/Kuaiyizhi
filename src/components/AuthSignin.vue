@@ -13,13 +13,13 @@ const { lang } = props;
 const error = ref<string | null>(null);
 const technicalError = ref<string | null>(null);
 
-const login = async () => {
-    console.log('login');
+const loginCookie = async () => {
+    console.log('loginCookie');
     error.value = null; // Reset error state before attempting login
     technicalError.value = null; // Reset technical error
 
     try {
-        await appwriteService.loginWithGitHub(lang);
+        await appwriteService.loginWithGitHubCookie(lang);
     } catch (err) {
         console.error('GitHub login failed:', err);
         error.value = lang === 'zh-cn'
@@ -40,7 +40,7 @@ const loginToken = async () => {
     }
 
     try {
-        await appwriteService.loginWithGitHub2(lang);
+        await appwriteService.loginWithGitHubToken(lang);
     } catch (err) {
         console.error('GitHub login failed:', err);
         error.value = lang === 'zh-cn'
@@ -79,9 +79,9 @@ const loginToken = async () => {
                     {{ lang === 'zh-cn' ? '使用以下方式登录' : 'Sign in with' }}
                 </p>
 
-                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="login">
+                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="loginCookie">
                     <RiGithubFill class="w-5 h-5" />
-                    {{ lang === 'zh-cn' ? '使用 GitHub 登录' : 'Continue with GitHub' }}
+                    {{ lang === 'zh-cn' ? '使用 GitHub Cookie 登录' : 'Continue with GitHub Cookie' }}
                 </button>
 
                 <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="loginToken">
