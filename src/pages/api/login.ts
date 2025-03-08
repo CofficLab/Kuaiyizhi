@@ -4,6 +4,8 @@ import { OAuthProvider } from "node-appwrite";
 import { appwriteConfig } from "@/service/appwrite-config";
 import LinkDB from "@/database/LinkDB";
 
+export const prerender = false;
+
 /**
  * 生成 OAuth2 的授权链接
  * 
