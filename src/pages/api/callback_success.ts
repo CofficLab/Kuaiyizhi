@@ -30,15 +30,16 @@ export const GET: APIRoute = async ({ url, cookies }) => {
 
     console.log('Success');
 
-    cookies.set(appConfig.session_key, session.secret, {
-        // sameSite: "strict",
-        expires: new Date(session.expire),
-        // secure: true,
-        httpOnly: true,
-        path: '/',
+    // 创建新的 Response 对象，并在创建时就设置 cookie
+    const response = new Response(null, {
+        status: 307,
+        headers: {
+            'Location': url.origin,
+            'Set-Cookie': `${appConfig.session_key}=${session.secret}; HttpOnly; Path=/; Expires=${new Date(session.expire).toUTCString()}`
+        }
     });
 
     console.log('cookies set');
 
-    return Response.redirect(url.origin, 307);
+    return response;
 };
