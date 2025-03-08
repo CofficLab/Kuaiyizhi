@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { createAdminClient, SESSION_COOKIE } from "../../server/appwrite";
 import { OAuthProvider } from "node-appwrite";
+import { getSecret } from "astro:env/server";
 
 export const prerender = false;
 
@@ -19,6 +20,7 @@ export const POST: APIRoute = async ({ redirect, url, locals }) => {
   console.log('endpoint2 -------------', endpoint2);
   console.log('project2 -------------', project2);
   console.log('key2 -------------', key2);
+  console.log('getSecret -------------', getSecret('APPWRITE_KEY'));
 
   if (!endpoint || !project || !key) {
     throw new Error("Missing Appwrite environment variables");
