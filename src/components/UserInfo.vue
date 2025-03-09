@@ -22,6 +22,7 @@ const { show: showConfirmDialog } = useConfirmDialog();
 // 在组件挂载后设置 isClient
 onMounted(() => {
     isClient.value = true;
+    fetchUserInfo();
 });
 
 // 检查当前是否在登录页面
@@ -58,12 +59,39 @@ const handleLogout = async () => {
 
     try {
         isLoggingOut.value = true;
+        // 调用新的登出 API
+        const response = await fetch('/api/logout');
+        if (!response.ok) {
+            throw new Error('Logout failed');
+        }
         userStore.clearUser();
         window.location.href = LinkDB.getSigninLink(props.lang);
     } catch (error) {
         console.error('Logout failed:', error);
+        showToast({
+            message: props.lang === 'zh-cn' ? '退出登录失败' : 'Failed to sign out',
+            type: 'error',
+            duration: 3000
+        });
     } finally {
         isLoggingOut.value = false;
+    }
+};
+
+// 添加获取用户信息的函数
+const fetchUserInfo = async () => {
+    try {
+        const response = await fetch('/api/whoami');
+        if (!response.ok) {
+            throw new Error('Failed to fetch user info');
+        }
+        const userData = await response.json();
+        userStore.setUser(userData);
+    } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        errorMessage.value = props.lang === 'zh-cn' ? '获取用户信息失败' : 'Failed to fetch user information';
+        errorDetails.value = error instanceof Error ? error.message : String(error);
+        showErrorModal();
     }
 };
 
@@ -132,11 +160,3 @@ const hideErrorModal = () => {
         </div>
     </div>
 </template>
-
-<style scoped>
-.toast {
-    position: fixed;
-    z-index: 9999;
-    pointer-events: none;
-}
-</style>

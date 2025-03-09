@@ -1,5 +1,6 @@
 import { Client, Account } from "node-appwrite";
 import { getSecret } from "astro:env/server";
+import { appConfig } from "@/config/app";
 
 export function createAdminClient(endpoint: string, project: string, key: string) {
   const client = new Client()
@@ -12,6 +13,35 @@ export function createAdminClient(endpoint: string, project: string, key: string
       return new Account(client);
     },
   };
+}
+
+export function createSessionClient(request: Request) {
+  const client = new Client()
+    .setEndpoint(import.meta.env.PUBLIC_APPWRITE_ENDPOINT)
+    .setProject(import.meta.env.PUBLIC_APPWRITE_PROJECT);
+
+  const cookies = parseCookies(request.headers.get("cookie") ?? "");
+  const session = cookies.get(appConfig.session_key);
+  if (!session) {
+    throw new Error("No session");
+  }
+
+  client.setSession(session);
+
+  return {
+    get account() {
+      return new Account(client);
+    },
+  };
+}
+
+function parseCookies(cookies: string): Map<string, string | null> {
+  const map = new Map<string, string | null>();
+  for (const cookie of cookies.split(";")) {
+    const [name, value] = cookie.split("=");
+    map.set(name.trim(), value ?? null);
+  }
+  return map;
 }
 
 

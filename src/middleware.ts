@@ -4,7 +4,7 @@ import { logger } from './utils/logger';
 /**
  * @type {import("astro").MiddlewareHandler}
  */
-export const onRequest: MiddlewareHandler = async ({ request }, next) => {
+export const onRequest: MiddlewareHandler = async ({ request, locals }, next) => {
     const debug = false;
     if (debug) {
         logger.info(`current path: ${request.url}`);
