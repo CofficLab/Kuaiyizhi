@@ -82,11 +82,13 @@ const handleLogout = async () => {
 const fetchUserInfo = async () => {
     try {
         const response = await fetch('/api/whoami');
-        if (!response.ok) {
-            throw new Error('Failed to fetch user info');
-        }
         const userData = await response.json();
-        userStore.setUser(userData);
+
+        if (userData.user === null) {
+            userStore.clearUser();
+        } else {
+            userStore.setUser(userData);
+        }
     } catch (error) {
         console.error('Failed to fetch user info:', error);
         errorMessage.value = props.lang === 'zh-cn' ? '获取用户信息失败' : 'Failed to fetch user information';

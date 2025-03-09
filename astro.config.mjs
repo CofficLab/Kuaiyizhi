@@ -20,6 +20,7 @@ export default defineConfig({
       en: 'zh-cn',
     },
     routing: {
+      prefixDefaultLocale: true,
       fallbackType: 'rewrite',
     },
   },
@@ -38,14 +39,6 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': path.resolve('./src'),
-        '@components': path.resolve('./src/components'),
-        '@utils': path.resolve('./src/utils'),
-        '@paths': path.resolve('./src/paths'),
-        '@database': path.resolve('./src/database'),
-        '@models': path.resolve('./src/models'),
-        '@layouts': path.resolve('./src/layouts'),
-        '@interface': path.resolve('./src/interface'),
-        '@assets': path.resolve('./src/assets'),
       },
     },
 

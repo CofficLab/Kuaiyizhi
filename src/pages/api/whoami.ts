@@ -54,13 +54,9 @@ export const GET: APIRoute = async ({ request }) => {
     } catch (error) {
         return new Response(
             JSON.stringify({
-                error: {
-                    code: 'UNAUTHORIZED',
-                    message: 'User is not authenticated'
-                }
+                user: null
             }),
             {
-                status: 401,
                 headers: {
                     'Content-Type': 'application/json'
                 }
