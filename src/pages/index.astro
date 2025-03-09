@@ -1,5 +1,4 @@
 ---
-import { createSessionClient } from '@/service/appwrite-server';
 import { getLang } from '@utils/lang';
 
 // 不要预渲染，因为这是一个动态页面（动态获取当前语言）
@@ -9,10 +8,6 @@ const langCode = getLang(
   Astro.preferredLocale ?? '',
   Astro.currentLocale ?? ''
 );
-
-// const { account } = createSessionClient(Astro.request);
-// const user = await account.get();
-// console.log(user);
 
 return Astro.redirect(`/${langCode}`);
 ---
