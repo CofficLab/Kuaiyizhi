@@ -1,15 +1,51 @@
 ---
-import CourseView from '@/views/CourseView.astro';
+import DocLayout from '@layouts/DocLayout.astro';
+import AppLayout from '@layouts/AppLayout.astro';
 import CourseDB from '@/database/CourseDB';
+import { logger } from '@/utils/logger';
+import type { MarkdownHeading } from 'astro';
+import CourseNotFound from '@/components/course/CourseNotFound.vue';
 
 // 全部预渲染
-export const prerender = true;
+export const prerender = false;
 export async function getStaticPaths() {
   return CourseDB.getStaticPaths();
 }
 
 const { lang, slug } = Astro.params;
 const id = `${lang}/${slug}`;
+
+let doc = await CourseDB.find(id);
+let title = '';
+let description = '';
+let sidebarItem = null;
+let headings: MarkdownHeading[] = [];
+let Content = null;
+
+if (!doc) {
+  logger.error(`课程不存在,课程ID: ${id}`);
+  title = '404 - 课程未找到';
+  description = '抱歉，您要查看的课程暂时不存在';
+} else {
+  ({ Content, headings } = await doc.render());
+  sidebarItem = await doc.getTopSidebarItem();
+  title = doc.getTitle();
+  description = doc.getDescription();
+}
 ---
 
-<CourseView id={id} />
+{
+  doc && Content ? (
+    <DocLayout
+      title={title}
+      description={description}
+      sidebarItem={sidebarItem}
+      headings={headings}>
+      <Content />
+    </DocLayout>
+  ) : (
+    <AppLayout title={title} description={description}>
+      <CourseNotFound lang={lang || 'zh-cn'} client:load />
+    </AppLayout>
+  )
+}
