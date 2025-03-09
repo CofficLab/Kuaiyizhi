@@ -9,23 +9,53 @@ export const prerender = false;
 /**
  * 生成 OAuth2 的授权链接
  * 
- * @returns Redirect to the OAuth2 provider
+ * @returns 授权链接
  */
-export const GET: APIRoute = async ({ redirect, url }) => {
-  const endpoint = appwriteConfig.endpoint;
-  const project = appwriteConfig.projectId;
-  const key = getKeyFromRuntime();
+export const GET: APIRoute = async ({ url }) => {
+	const endpoint = appwriteConfig.endpoint;
+	const project = appwriteConfig.projectId;
+	const key = getKeyFromRuntime();
+	const providerCode = url.searchParams.get('provider');
+	let provider: OAuthProvider;
+	switch (providerCode) {
+		case 'github':
+			provider = OAuthProvider.Github;
+			break;
+		case 'google':
+			provider = OAuthProvider.Google;
+			break;
+		default:
+			return new Response('Invalid provider code', { status: 400 });
+	}
 
-  if (!endpoint || !project || !key) {
-    throw new Error("Missing Appwrite environment variables");
-  }
+	if (!endpoint || !project || !key) {
+		throw new Error("Missing Appwrite environment variables");
+	}
 
-  const { account } = createAdminClient(endpoint, project, key);
-  const redirectUrl = await account.createOAuth2Token(
-    OAuthProvider.Github,
-    LinkDB.getOAuthSuccessLink(url.origin),
-    LinkDB.getOAuthErrorLink(url.origin)
-  );
+	const { account } = createAdminClient(endpoint, project, key);
 
-  return redirect(redirectUrl);
+	try {
+		const redirectUrl = await account.createOAuth2Token(
+			provider,
+			LinkDB.getOAuthSuccessLink(url.origin),
+			LinkDB.getOAuthErrorLink(url.origin)
+		);
+
+		return new Response(redirectUrl);
+	} catch (error) {
+		return new Response(
+			JSON.stringify({
+				error: {
+					code: 'LOGIN_FAILED',
+					message: error instanceof Error ? error.message : String(error)
+				}
+			}),
+			{
+				status: 500,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}
+		);
+	}
 };

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { RiGithubFill } from '@remixicon/vue';
+import { RiGithubFill, RiGoogleFill } from '@remixicon/vue';
 import LinkDB from '@/database/LinkDB';
 import GlowCard from '@/components/GlowCard.vue';
+import CodeBlock from '@/components/CodeBlock.vue';
 import { ref } from 'vue';
+import axios from 'axios';
 
 const props = defineProps<{
     lang: string;
@@ -11,18 +13,49 @@ const props = defineProps<{
 const { lang } = props;
 const error = ref<string | null>(null);
 const technicalError = ref<string | null>(null);
+const loadingProvider = ref<string | null>(null); // 跟踪正在加载的供应商
 
-const loginToken = async () => {
+const login = async (provider: string) => {
+    // 如果正在处理任何登录请求，直接返回
+    if (loadingProvider.value) return;
+
     console.log('loginToken');
-    error.value = null; // Reset error state before attempting login
-    technicalError.value = null; // Reset technical error
+    error.value = null;
+    technicalError.value = null;
+    loadingProvider.value = provider; // 设置当前正在处理的供应商
 
     if (lang.length == 0) {
         console.error('lang is empty');
         return;
     }
 
-    window.location.href = LinkDB.getLoginLink(window.location.origin);
+    try {
+        const loginLink = LinkDB.getLoginLink(window.location.origin);
+        const response = await axios.get(`${loginLink}?provider=${provider}`, {
+            validateStatus: (status) => status === 200,
+        });
+
+        window.location.href = response.data;
+    } catch (err) {
+        console.error('Error:', err);
+
+        error.value = lang === 'zh-cn' ?
+            '登录过程中发生错误' :
+            'An error occurred during login';
+
+        if (axios.isAxiosError(err)) {
+            if (err.response?.data?.error) {
+                technicalError.value = JSON.stringify(err.response.data.error, null, 2);
+            } else {
+                technicalError.value = err.message;
+            }
+        } else {
+            technicalError.value = err instanceof Error ? err.message : String(err);
+        }
+
+        // 发生错误时重置加载状态
+        loadingProvider.value = null;
+    }
 }
 </script>
 
@@ -35,18 +68,20 @@ const loginToken = async () => {
                     {{ lang === 'zh-cn' ? '欢迎回来' : 'Welcome Back' }}
                 </h2>
 
-                <div v-if="error" class="w-full space-y-2">
-                    <div class="alert alert-error text-sm">
-                        <span>{{ error }}</span>
+                <div v-if="error" class="w-full space-y-3">
+                    <div class="alert alert-error shadow-lg bg-error/90">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="text-error-content font-medium">{{ error }}</span>
                     </div>
-                    <div v-if="technicalError" class="collapse bg-base-200">
-                        <input type="checkbox" />
-                        <div class="collapse-title text-xs text-left">
-                            {{ lang === 'zh-cn' ? '查看技术详情' : 'View technical details' }}
-                        </div>
-                        <div class="collapse-content">
-                            <pre class="text-xs text-left whitespace-pre-wrap break-words">{{ technicalError }}</pre>
-                        </div>
+
+                    <div v-if="technicalError" class="bg-base-200 rounded-lg shadow-md border-error border-2">
+                        <CodeBlock :code="technicalError" language="json"
+                            :title="lang === 'zh-cn' ? '错误详情' : 'Error Details'" collapsible
+                            :default-open="technicalError.length < 100" />
                     </div>
                 </div>
 
@@ -54,9 +89,30 @@ const loginToken = async () => {
                     {{ lang === 'zh-cn' ? '使用以下方式登录' : 'Sign in with' }}
                 </p>
 
-                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform" @click="loginToken">
-                    <RiGithubFill class="w-5 h-5" />
-                    {{ lang === 'zh-cn' ? '使用 GitHub SSR 登录' : 'Continue with GitHub SSR' }}
+                <!-- GitHub 登录按钮 -->
+                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform"
+                    :class="{ 'btn-disabled': loadingProvider !== null }" @click="login('github')">
+                    <span class="flex items-center gap-2">
+                        <RiGithubFill class="w-5 h-5" />
+                        <span v-if="loadingProvider === 'github'" class="loading loading-spinner loading-sm"></span>
+                        {{ lang === 'zh-cn' ?
+                            (loadingProvider === 'github' ? '正在处理...' : '使用 GitHub 登录') :
+                            (loadingProvider === 'github' ? 'Processing...' : 'Continue with GitHub')
+                        }}
+                    </span>
+                </button>
+
+                <!-- Google 登录按钮 -->
+                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform"
+                    :class="{ 'btn-disabled': loadingProvider !== null }" @click="login('google')">
+                    <span class="flex items-center gap-2">
+                        <RiGoogleFill class="w-5 h-5" />
+                        <span v-if="loadingProvider === 'google'" class="loading loading-spinner loading-sm"></span>
+                        {{ lang === 'zh-cn' ?
+                            (loadingProvider === 'google' ? '正在处理...' : '使用 Google 登录') :
+                            (loadingProvider === 'google' ? 'Processing...' : 'Continue with Google')
+                        }}
+                    </span>
                 </button>
 
                 <div class="divider text-xs text-base-content/50">
@@ -81,3 +137,16 @@ const loginToken = async () => {
         </GlowCard>
     </div>
 </template>
+
+<style scoped>
+/* 添加按钮禁用时的样式 */
+.btn-disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* 保持 hover 效果在禁用状态下不生效 */
+.btn-disabled:hover {
+    transform: none !important;
+}
+</style>

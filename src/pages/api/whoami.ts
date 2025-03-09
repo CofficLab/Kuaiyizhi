@@ -34,23 +34,38 @@ export const prerender = false;
  *             "userId": "67cba9e0448beaa49568",
  *             "providerId": null,
  *             "providerType": "email",
- *             "identifier": "nooks@qq.com",
+ *             "identifier": "nobody@qq.com",
  *             "expired": false
  *         }
  *     ],
  *     "accessedAt": "2025-03-09T05:05:23.860+00:00"
  * }
  */
-export const GET: APIRoute = async ({ locals, request }) => {
+export const GET: APIRoute = async ({ request }) => {
     try {
         const { account } = createSessionClient(request);
-        locals.user = await account.get();
+        const user = await account.get();
 
-        console.log('locals.user -------------', locals.user);
+        return new Response(JSON.stringify(user), {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     } catch (error) {
         console.error('whoami error', error);
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+        return new Response(
+            JSON.stringify({
+                error: {
+                    code: 'UNAUTHORIZED',
+                    message: 'User is not authenticated'
+                }
+            }),
+            {
+                status: 401,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
     }
-
-    return new Response(JSON.stringify(locals.user));
 };

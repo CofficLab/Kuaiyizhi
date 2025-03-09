@@ -5,7 +5,7 @@ import type { APIRoute } from "astro";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ url, cookies }) => {
+export const GET: APIRoute = async ({ url }) => {
     const endpoint = appwriteConfig.endpoint;
     const project = appwriteConfig.projectId;
     const key = getKeyFromRuntime();
@@ -28,8 +28,6 @@ export const GET: APIRoute = async ({ url, cookies }) => {
         throw new Error('Failed to create session from token');
     }
 
-    console.log('Success');
-
     // 创建新的 Response 对象，并在创建时就设置 cookie
     const response = new Response(null, {
         status: 307,
@@ -38,8 +36,6 @@ export const GET: APIRoute = async ({ url, cookies }) => {
             'Set-Cookie': `${appConfig.session_key}=${session.secret}; HttpOnly; Path=/; Expires=${new Date(session.expire).toUTCString()}`
         }
     });
-
-    console.log('cookies set');
 
     return response;
 };

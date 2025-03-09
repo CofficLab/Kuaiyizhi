@@ -34,7 +34,7 @@ const { isVisible, options, loading, confirm, cancel } = useConfirmDialog();
                 </form>
             </div>
         </div>
-        <form method="dialog" class="modal-backdrop">
+        <form method="dialog" class="modal-backdrop bg-base-200/80 backdrop-blur-sm">
             <button @click="cancel">{{ options.cancelText }}</button>
         </form>
     </dialog>
