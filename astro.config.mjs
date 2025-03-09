@@ -16,6 +16,10 @@ export default defineConfig({
   i18n: {
     defaultLocale: 'zh-cn',
     locales: ['zh-cn', 'en'],
+    fallbackLocale: 'zh-cn',
+    routing: {
+      fallbackType: 'rewrite',
+    },
   },
 
   prefetch: {
