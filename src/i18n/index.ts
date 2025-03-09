@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue';
-import type { SupportedLocale } from './types';
+import type { SupportedLocale, TranslationKey } from './types';
+import { keys } from './types';
 import { translations } from './translations';
 
 // 获取嵌套对象的属性值，支持点号路径
@@ -23,7 +24,7 @@ export function useI18n(initialLocale: SupportedLocale = 'zh-cn') {
     });
 
     // 翻译函数
-    function t(key: string, fallback: string = ''): string {
+    function t(key: TranslationKey, fallback: string = ''): string {
         const value = getNestedValue(currentTranslations.value, key);
         return value !== undefined ? value : fallback;
     }
@@ -32,6 +33,7 @@ export function useI18n(initialLocale: SupportedLocale = 'zh-cn') {
         t,
         locale,
         setLocale,
+        keys,
         availableLocales: Object.keys(translations) as SupportedLocale[]
     };
 } 

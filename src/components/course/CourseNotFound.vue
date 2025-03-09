@@ -15,14 +15,14 @@ const safeLang = computed<SupportedLocale>(() => {
         : 'zh-cn';
 });
 
-const { t } = useI18n(safeLang.value);
+const { t, keys } = useI18n(safeLang.value);
 
 const coursesLink = computed(() => `/${props.lang}/courses`);
 
 const messages = {
-    title: t('course.notFound.title', '😅 哎呀，课程去旅行了'),
-    description: t('course.notFound.description', '抱歉，您要查看的课程暂时不存在'),
-    backToList: t('course.notFound.backToList', '返回课程列表')
+    title: t(keys.course.notFound.title, '😅 哎呀，课程去旅行了'),
+    description: t(keys.course.notFound.description, '抱歉，您要查看的课程暂时不存在'),
+    backToList: t(keys.course.notFound.backToList, '返回课程列表')
 };
 </script>
 
