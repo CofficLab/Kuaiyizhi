@@ -1,6 +1,7 @@
 ---
 import DocLayout from '@layouts/DocLayout.astro';
 import CourseDB from '@/database/CourseDB';
+import { logger } from '@/utils/logger';
 
 export interface Props {
   id: string;
@@ -11,6 +12,7 @@ const { id } = Astro.props;
 const doc = await CourseDB.find(id);
 
 if (!doc) {
+  logger.error(`课程不存在，重定向到404页面，课程ID: ${id}`);
   return Astro.redirect(404);
 }
 

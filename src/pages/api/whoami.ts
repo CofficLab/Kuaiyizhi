@@ -52,7 +52,6 @@ export const GET: APIRoute = async ({ request }) => {
             }
         });
     } catch (error) {
-        console.error('whoami error', error);
         return new Response(
             JSON.stringify({
                 error: {

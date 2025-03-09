@@ -14,16 +14,18 @@ export default defineConfig({
   site: 'https://kuaiyizhi.cn',
 
   i18n: {
-    defaultLocale: 'zh-cn',
     locales: ['zh-cn', 'en'],
-    fallbackLocale: 'zh-cn',
+    defaultLocale: 'zh-cn',
+    fallback: {
+      en: 'zh-cn',
+    },
     routing: {
       fallbackType: 'rewrite',
     },
   },
 
   prefetch: {
-    prefetchAll: true,
+    prefetchAll: false,
   },
 
   vite: {
