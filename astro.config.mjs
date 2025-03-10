@@ -8,8 +8,8 @@ import mdx from '@astrojs/mdx';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
-
 import expressiveCode from 'astro-expressive-code';
+import { pluginColorChips } from 'expressive-code-color-chips';
 
 // https://astro.build/config
 export default defineConfig({
@@ -58,10 +58,21 @@ export default defineConfig({
         },
       ],
     }),
-    expressiveCode(),
+    expressiveCode({
+      plugins: [pluginColorChips()],
+      shiki: {
+        langAlias: {
+          caddyfile: 'nginx',
+          env: 'ini',
+          conf: 'nginx',
+        },
+      },
+    }),
     markdoc(),
     mdx(),
   ],
 
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'cloudflare',
+  }),
 });

@@ -3,6 +3,7 @@
         "appwrite",
         "astrojs",
         "beian",
+        "caddyfile",
         "Cisum",
         "coffic",
         "frontmatter",
@@ -13,6 +14,7 @@
         "pagefind",
         "remixicon",
         "seti",
+        "shiki",
         "Yueyi"
     ]
 }

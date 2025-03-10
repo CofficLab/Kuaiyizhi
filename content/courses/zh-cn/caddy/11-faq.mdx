@@ -32,7 +32,8 @@ caddy run --config /etc/caddy/Caddyfile --debug
 **问题**: 无法自动获取 HTTPS 证书。
 
 **解决方案**:
-```caddyfile
+
+```nginx
 example.com {
     # 使用特定的 ACME 服务器
     tls {

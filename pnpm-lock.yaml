@@ -50,6 +50,9 @@ importers:
       axios:
         specifier: ^1.8.2
         version: 1.8.2
+      expressive-code-color-chips:
+        specifier: ^0.1.2
+        version: 0.1.2(@expressive-code/core@0.40.2)
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
@@ -1685,6 +1688,11 @@ packages:
   expand-template@2.0.3:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
+
+  expressive-code-color-chips@0.1.2:
+    resolution: {integrity: sha512-6vGCN1KjZQhHAd4U5kxvoBgBRB8kjcdY5bjJgzzJ29mlGpSp4tt5eI8zvLzSUIxwHmu65fATdGW82tNQM2befw==}
+    peerDependencies:
+      '@expressive-code/core': ^0.37.1
 
   expressive-code@0.40.2:
     resolution: {integrity: sha512-1zIda2rB0qiDZACawzw2rbdBQiWHBT56uBctS+ezFe5XMAaFaHLnnSYND/Kd+dVzO9HfCXRDpzH3d+3fvOWRcw==}
@@ -4904,6 +4912,10 @@ snapshots:
   exit-hook@2.2.1: {}
 
   expand-template@2.0.3: {}
+
+  expressive-code-color-chips@0.1.2(@expressive-code/core@0.40.2):
+    dependencies:
+      '@expressive-code/core': 0.40.2
 
   expressive-code@0.40.2:
     dependencies:

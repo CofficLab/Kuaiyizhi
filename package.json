@@ -25,6 +25,7 @@
     "astro-pagefind": "^1.8.1",
     "astro-robots-txt": "^1.0.0",
     "axios": "^1.8.2",
+    "expressive-code-color-chips": "^0.1.2",
     "html-to-image": "^1.11.13",
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
