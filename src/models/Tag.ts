@@ -1,4 +1,4 @@
-import BlogDB from "@/database/BlogDB";
+import blogDB from "@/database/BlogDB";
 import { SidebarItem } from "@/models/SidebarItem";
 import { type TagStaticPath } from "@/interface/StaticPath";
 import LinkUtil from "@/utils/link";
@@ -29,7 +29,7 @@ export class Tag {
     }
 
     static async makeRootSidebarItem(lang: string): Promise<SidebarItem> {
-        const tags = await BlogDB.getTagsByLang(lang);
+        const tags = await blogDB.getTagsByLang(lang);
 
         return new SidebarItem({
             label: 'Tags',

@@ -54,12 +54,6 @@ export const getFooterConfig = (lang: LangCode): FooterConfig => ({
                     text: '反馈中心',
                     external: true,
                 },
-                {
-                    key: 'signin',
-                    href: LinkUtil.getSigninLink(lang),
-                    text: lang === 'zh-cn' ? '登录' : 'Signin',
-                    external: false,
-                },
             ],
         },
         {

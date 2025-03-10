@@ -4,7 +4,7 @@ import { logger } from "@/utils/logger";
 import { type CollectionEntry } from "astro:content";
 import BaseDB from "./BaseDB";
 
-const COLLECTION_NAME = 'blogs' as const;
+export const COLLECTION_NAME = 'blogs' as const;
 export type BlogEntry = CollectionEntry<typeof COLLECTION_NAME>;
 
 /**

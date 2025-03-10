@@ -4,9 +4,10 @@ import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { Heading } from "./Heading";
 import LinkUtil from "@/utils/link";
-import BaseDoc from "./BaseDoc";
+import { HierarchicalDoc } from "./BaseDoc";
+import { COLLECTION_NAME } from "@/database/LessonDB";
 
-export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
+export default class LessonDoc extends HierarchicalDoc<typeof COLLECTION_NAME, LessonEntry> {
     constructor(entry: LessonEntry) {
         super(entry);
     }
@@ -15,23 +16,13 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
         return this.entry.id.split('/').length === 2;
     }
 
-    getParentId(): string | null {
-        const parts = this.entry.id.split('/');
-        return parts.length > 1 ? parts[parts.length - 2] : null;
-    }
-
-    getBookId(): string {
-        const parts = this.entry.id.split('/');
-        return parts[0] + '/' + parts[1];
+    async getBookId(): Promise<string> {
+        return await this.getTopDocId();
     }
 
     async getBook(): Promise<LessonDoc | null> {
-        const bookId = this.getBookId();
+        const bookId = await this.getBookId();
         return await lessonDB.find(bookId);
-    }
-
-    getLevel(): number {
-        return this.entry.id.split('/').length;
     }
 
     getLink(): string {
@@ -53,7 +44,7 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
      * 
      * @returns 语言
      */
-    getLang(): string {
+    override getLang(): string {
         const debug = false;
 
         const parts = this.entry.id.split('/');
@@ -87,7 +78,7 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
     }
 
     async getTopDoc(): Promise<LessonDoc | null> {
-        const bookId = this.getBookId();
+        const bookId = await this.getBookId();
         return await lessonDB.find(bookId);
     }
 
@@ -99,7 +90,7 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
         return await lessonDB.getDescendantDocs(this.entry.id);
     }
 
-    async toSidebarItem(): Promise<SidebarItem> {
+    override async toSidebarItem(): Promise<SidebarItem> {
         const debug = false;
 
         const selfItem = new SidebarItem({

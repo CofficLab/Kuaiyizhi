@@ -3,8 +3,7 @@ import { logger } from "@/utils/logger";
 import { type CollectionEntry } from "astro:content";
 import BaseDB from "./BaseDB";
 
-const COLLECTION_NAME = 'meta' as const;
-
+export const COLLECTION_NAME = 'meta' as const;
 export type MetaEntry = CollectionEntry<typeof COLLECTION_NAME>;
 
 /**
@@ -31,14 +30,18 @@ class MetaDB extends BaseDB<typeof COLLECTION_NAME, MetaEntry, MetaDoc> {
 
     /**
      * 获取指定文档的兄弟文档
-     * 例如：对于 'zh-cn/about'，会返回 'zh-cn' 下的其他文档
+     * 例如：对于 'zh-cn/about'，会返回 'zh-cn' 下的文档
      * 
      * @param targetId - 目标文档ID
-     * @returns 返回兄弟文档数组（不包括目标文档本身）
+     * @returns 返回兄弟文档数组（包括目标文档本身）
      */
     async getSiblings(targetId: string): Promise<MetaDoc[]> {
+        const target = await this.find(targetId);
+        if (!target) {
+            return [];
+        }
         const docs = await this.getDocsByDepth(2);
-        return docs.filter(doc => doc.getId() !== targetId);
+        return docs.filter(doc => doc.getLang() === target.getLang());
     }
 
     /**

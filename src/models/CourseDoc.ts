@@ -3,9 +3,10 @@ import { SidebarItem } from "./SidebarItem";
 import type { CourseEntry } from "@/database/CourseDB";
 import courseDB from "@/database/CourseDB";
 import LinkUtil from "@/utils/link";
-import BaseDoc from "./BaseDoc";
+import { HierarchicalDoc } from "./BaseDoc";
+import { COLLECTION_NAME } from "@/database/CourseDB";
 
-export default class CourseDoc extends BaseDoc<'courses', CourseEntry> {
+export default class CourseDoc extends HierarchicalDoc<typeof COLLECTION_NAME, CourseEntry> {
     constructor(entry: CourseEntry) {
         super(entry);
     }
@@ -19,7 +20,7 @@ export default class CourseDoc extends BaseDoc<'courses', CourseEntry> {
     }
 
     async getTopDoc(): Promise<CourseDoc | null> {
-        const id = await this.getTopCourseId();
+        const id = await this.getTopDocId();
         const doc = await courseDB.find(id);
         return doc;
     }
@@ -28,7 +29,7 @@ export default class CourseDoc extends BaseDoc<'courses', CourseEntry> {
         return await courseDB.getChildren(this.entry.id);
     }
 
-    async toSidebarItem(): Promise<SidebarItem> {
+    override async toSidebarItem(): Promise<SidebarItem> {
         const debug = false;
 
         let selfItem = new SidebarItem({

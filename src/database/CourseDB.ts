@@ -2,7 +2,7 @@ import CourseDoc from "@/models/CourseDoc";
 import { getCollection, type CollectionEntry } from "astro:content";
 import BaseDB from "./BaseDB";
 
-const COLLECTION_NAME = 'courses' as const;
+export const COLLECTION_NAME = 'courses' as const;
 export type CourseEntry = CollectionEntry<typeof COLLECTION_NAME>;
 
 /**

@@ -3,7 +3,7 @@ import BaseDB from './BaseDB';
 import LessonDoc from '@/models/LessonDoc';
 import { logger } from '@/utils/logger';
 
-const COLLECTION_NAME = 'lessons' as const;
+export const COLLECTION_NAME = 'lessons' as const;
 export type LessonEntry = CollectionEntry<typeof COLLECTION_NAME>;
 
 /**
@@ -59,7 +59,7 @@ class LessonDB extends BaseDB<typeof COLLECTION_NAME, LessonEntry, LessonDoc> {
     }
 
     /**
-     * 获取用于 Astro 静态路由生成的路径参数，专门配合 [lang]/lessons/[...slug].astro 使用
+     * 获取用于 Astro 静态路由生成的路径参数
      * 
      * @returns 返回路径参数数组
      */
