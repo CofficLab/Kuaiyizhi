@@ -58,7 +58,6 @@ const hasTableOfContents = headings.length > 0;
       <div class="container mx-auto px-4 pb-16 overflow-hidden">
         {/* 主内容 */}
         <main class="transition-all duration-300 w-full overflow-hidden">
-          <h1 class="text-4xl font-bold mb-4">{title}</h1>
           <div class="lg:flex justify-center overflow-hidden">
             <div
               class:list={[
@@ -72,7 +71,7 @@ const hasTableOfContents = headings.length > 0;
                 class="max-w-4xl mx-auto p-4 overflow-hidden">
                 <div
                   class="prose prose-slate dark:prose-invert w-full max-w-none overflow-hidden">
-                  <slot />
+                  <h1 class="text-4xl font-bold mb-4">{title}</h1><slot />
                 </div>
               </div>
             </div>
