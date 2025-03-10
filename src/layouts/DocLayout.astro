@@ -48,15 +48,7 @@ const hasTableOfContents = headings.length > 0;
     }
 
     {/* 桌面端侧边栏 */}
-    {
-      shouldShowSidebar && sidebarItem && (
-        <aside class="hidden lg:block fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-base-200 dark:border-base-300 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:var(--tw-text-opacity)_transparent] hover:[scrollbar-color:var(--tw-text-opacity)_transparent]">
-          <div class="h-full px-4 py-6">
-            <Sidebar item={sidebarItem} />
-          </div>
-        </aside>
-      )
-    }
+    {shouldShowSidebar && sidebarItem && <Sidebar item={sidebarItem} />}
 
     <div
       class:list={[
