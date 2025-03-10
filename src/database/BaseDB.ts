@@ -134,7 +134,7 @@ export default abstract class BaseDB<
      * @returns 返回指定语言的顶级文档数组
      */
     async allTopLevelDocsByLang(lang: string): Promise<Doc[]> {
-        const debug = true;
+        const debug = false;
         const docs = await this.getDocsByDepth(2);
 
         if (debug) {
