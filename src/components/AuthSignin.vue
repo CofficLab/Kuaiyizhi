@@ -102,19 +102,6 @@ const login = async (provider: string) => {
                     </span>
                 </button>
 
-                <!-- Google 登录按钮 -->
-                <button class="btn btn-neutral w-full gap-2 hover:scale-105 transition-transform"
-                    :class="{ 'btn-disabled': loadingProvider !== null }" @click="login('google')">
-                    <span class="flex items-center gap-2">
-                        <RiGoogleFill class="w-5 h-5" />
-                        <span v-if="loadingProvider === 'google'" class="loading loading-spinner loading-sm"></span>
-                        {{ lang === 'zh-cn' ?
-                            (loadingProvider === 'google' ? '正在处理...' : '使用 Google 登录') :
-                            (loadingProvider === 'google' ? 'Processing...' : 'Continue with Google')
-                        }}
-                    </span>
-                </button>
-
                 <div class="divider text-xs text-base-content/50">
                     {{ lang === 'zh-cn' ? '快易知' : 'Kuaiyizhi' }}
                 </div>
