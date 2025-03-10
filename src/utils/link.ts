@@ -1,6 +1,6 @@
 import { logger } from "@/utils/logger";
 
-export default class LinkDB {
+export default class LinkUtil {
     /**
      * 规范化语言代码
      * @param lang - 语言代码

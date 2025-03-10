@@ -2,7 +2,7 @@
 import { computed, ref, onMounted } from 'vue';
 import { RiGithubFill } from '@remixicon/vue';
 import { userStore } from '@/stores/userStore';
-import LinkDB from '@/database/LinkDB';
+import LinkUtil from '@/utils/link';
 import { useToast } from '@/composables/useToast';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 
@@ -29,7 +29,7 @@ onMounted(() => {
 const isSigninPage = computed(() => {
     if (!isClient.value) return false;
     const currentPath = window.location.pathname;
-    return currentPath === LinkDB.getSigninLink(props.lang);
+    return currentPath === LinkUtil.getSigninLink(props.lang);
 });
 
 const handleSigninClick = (e: MouseEvent) => {
@@ -65,7 +65,7 @@ const handleLogout = async () => {
             throw new Error('Logout failed');
         }
         userStore.clearUser();
-        window.location.href = LinkDB.getSigninLink(props.lang);
+        window.location.href = LinkUtil.getSigninLink(props.lang);
     } catch (error) {
         console.error('Logout failed:', error);
         showToast({
@@ -155,7 +155,7 @@ const hideErrorModal = () => {
             </dialog>
         </div>
         <div v-else>
-            <a :href="LinkDB.getSigninLink(lang)" class="btn btn-ghost btn-sm p-1" @click="handleSigninClick">
+            <a :href="LinkUtil.getSigninLink(lang)" class="btn btn-ghost btn-sm p-1" @click="handleSigninClick">
                 <RiGithubFill class="w-5 h-5" />
                 <span class="font-medium">{{ lang === 'zh-cn' ? '登录' : 'Sign in' }}</span>
             </a>

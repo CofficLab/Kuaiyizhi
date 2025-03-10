@@ -1,3 +1,11 @@
+import { type CollectionEntry } from 'astro:content';
+import BaseDB from './BaseDB';
+import LessonDoc from '@/models/LessonDoc';
+import { logger } from '@/utils/logger';
+
+const COLLECTION_NAME = 'lessons' as const;
+export type LessonEntry = CollectionEntry<typeof COLLECTION_NAME>;
+
 /**
  * 课程数据库类，用于管理课程内容集合。
  * 继承自 BaseDB，提供课程章节相关的特定功能。
@@ -45,16 +53,8 @@
  * - 每个语言版本包含完整的课程内容
  * - 课程目录可以作为 git 子模块独立管理
  */
-
-import { type CollectionEntry } from 'astro:content';
-import BaseDB from './BaseDB';
-import LessonDoc from '@/models/LessonDoc';
-import { logger } from '@/utils/logger';
-
-export type LessonEntry = CollectionEntry<'lessons'>;
-
-export default class LessonDB extends BaseDB<'lessons', LessonEntry, LessonDoc> {
-    protected collectionName = 'lessons' as const;
+export default class LessonDB extends BaseDB<typeof COLLECTION_NAME, LessonEntry, LessonDoc> {
+    protected collectionName = COLLECTION_NAME;
 
     protected createDoc(entry: LessonEntry): LessonDoc {
         return new LessonDoc(entry);

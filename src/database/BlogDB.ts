@@ -4,7 +4,8 @@ import { logger } from "@/utils/logger";
 import { getCollection, getEntry, type CollectionEntry } from "astro:content";
 import BaseDB from "./BaseDB";
 
-const collectionName = 'blogs';
+const COLLECTION_NAME = 'blogs' as const;
+export type BlogEntry = CollectionEntry<typeof COLLECTION_NAME>;
 
 /**
  * 博客数据库类，用于管理博客内容集合。
@@ -36,10 +37,8 @@ const collectionName = 'blogs';
  *     └── ...
  * ```
  */
-export type BlogEntry = CollectionEntry<'blogs'>;
-
-export default class BlogDB extends BaseDB<'blogs', BlogEntry, BlogDoc> {
-    protected collectionName = 'blogs' as const;
+export default class BlogDB extends BaseDB<typeof COLLECTION_NAME, BlogEntry, BlogDoc> {
+    protected collectionName = COLLECTION_NAME;
 
     protected createDoc(entry: BlogEntry): BlogDoc {
         return BlogDoc.fromEntry(entry);
@@ -52,14 +51,14 @@ export default class BlogDB extends BaseDB<'blogs', BlogEntry, BlogDoc> {
      * @returns {Promise<BlogDoc[]>} 返回文档集合
      */
     static async getDocsByDepth(depth: number): Promise<BlogDoc[]> {
-        const entries = await getCollection(collectionName, ({ id }) => id.split('/').length === depth);
+        const entries = await getCollection(COLLECTION_NAME, ({ id }) => id.split('/').length === depth);
         return entries
             .map(entry => BlogDoc.fromEntry(entry))
             .sort((a, b) => b.getDate().getTime() - a.getDate().getTime());
     }
 
     static async find(id: string): Promise<BlogDoc | null> {
-        const entry = await getEntry(collectionName, id);
+        const entry = await getEntry(COLLECTION_NAME, id);
         return entry ? new BlogDoc(entry) : null;
     }
 
@@ -73,7 +72,7 @@ export default class BlogDB extends BaseDB<'blogs', BlogEntry, BlogDoc> {
         const parentLevel = parentId.split('/').length;
         const childrenLevel = parentLevel + 1;
 
-        const entries = await getCollection(collectionName,
+        const entries = await getCollection(COLLECTION_NAME,
             ({ id }) => id.startsWith(parentId) && id.split('/').length === childrenLevel);
         return entries.map(entry => BlogDoc.fromEntry(entry));
     }
@@ -85,7 +84,7 @@ export default class BlogDB extends BaseDB<'blogs', BlogEntry, BlogDoc> {
      * @returns {Promise<BlogDoc[]>} 返回后代文档集合
      */
     static async getDescendantDocs(parentId: string): Promise<BlogDoc[]> {
-        const entries = await getCollection(collectionName, ({ id }) => id.startsWith(parentId));
+        const entries = await getCollection(COLLECTION_NAME, ({ id }) => id.startsWith(parentId));
         return entries.map(entry => BlogDoc.fromEntry(entry));
     }
 

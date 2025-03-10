@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { createAdminClient, getKeyFromRuntime } from "@/service/appwrite-server";
 import { OAuthProvider } from "node-appwrite";
 import { appwriteConfig } from "@/service/appwrite-config";
-import LinkDB from "@/database/LinkDB";
+import LinkUtil from "@/utils/link";
 
 export const prerender = false;
 
@@ -37,8 +37,8 @@ export const GET: APIRoute = async ({ url }) => {
 	try {
 		const redirectUrl = await account.createOAuth2Token(
 			provider,
-			LinkDB.getOAuthSuccessLink(url.origin),
-			LinkDB.getOAuthErrorLink(url.origin)
+			LinkUtil.getOAuthSuccessLink(url.origin),
+			LinkUtil.getOAuthErrorLink(url.origin)
 		);
 
 		return new Response(redirectUrl);

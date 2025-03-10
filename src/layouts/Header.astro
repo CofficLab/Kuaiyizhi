@@ -8,7 +8,7 @@ import {
   RiSunCloudyLine,
 } from '@remixicon/vue';
 import Search from 'astro-pagefind/components/Search';
-import LinkDB from '@/database/LinkDB';
+import LinkUtil from '@/utils/link';
 import ThemeItem from './ThemeItem.astro';
 import Link from '@/components/common/Link.vue';
 import UserInfo from '@/components/UserInfo.vue';
@@ -47,24 +47,24 @@ const currentLanguageName =
 
 const navItems = [
   {
-    href: LinkDB.getHomeLink(normalizedLocale),
+    href: LinkUtil.getHomeLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? '首页' : 'Home',
-    match: (path: string) => LinkDB.isHomeLink(path, normalizedLocale),
+    match: (path: string) => LinkUtil.isHomeLink(path, normalizedLocale),
   },
   {
-    href: LinkDB.getCoursesLink(normalizedLocale),
+    href: LinkUtil.getCoursesLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? '课程' : 'Courses',
-    match: (path: string) => LinkDB.isCoursesLink(path, normalizedLocale),
+    match: (path: string) => LinkUtil.isCoursesLink(path, normalizedLocale),
   },
   {
-    href: LinkDB.getLessonsLink(normalizedLocale),
+    href: LinkUtil.getLessonsLink(normalizedLocale),
     label: 'Build Your Own X',
-    match: (path: string) => LinkDB.isLessonsLink(path, normalizedLocale),
+    match: (path: string) => LinkUtil.isLessonsLink(path, normalizedLocale),
   },
   {
-    href: LinkDB.getBlogsLink(normalizedLocale),
+    href: LinkUtil.getBlogsLink(normalizedLocale),
     label: normalizedLocale === 'zh-cn' ? '博客' : 'Blogs',
-    match: (path: string) => LinkDB.isBlogsLink(path, normalizedLocale),
+    match: (path: string) => LinkUtil.isBlogsLink(path, normalizedLocale),
   },
 ];
 

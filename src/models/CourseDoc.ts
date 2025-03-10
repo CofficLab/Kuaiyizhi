@@ -2,7 +2,7 @@ import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { CourseEntry } from "@/database/CourseDB";
 import CourseDB from "@/database/CourseDB";
-import LinkDB from "@/database/LinkDB";
+import LinkUtil from "@/utils/link";
 import BaseDoc from "./BaseDoc";
 
 export default class CourseDoc extends BaseDoc<'courses', CourseEntry> {
@@ -15,7 +15,7 @@ export default class CourseDoc extends BaseDoc<'courses', CourseEntry> {
     }
 
     getLink(): string {
-        return LinkDB.getCourseLink(this.entry.id);
+        return LinkUtil.getCourseLink(this.entry.id);
     }
 
     async getTopDoc(): Promise<CourseDoc | null> {

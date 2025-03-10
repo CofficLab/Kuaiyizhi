@@ -1,7 +1,7 @@
 ---
 import AppLayout from '@layouts/AppLayout.astro';
 import { RiErrorWarningFill } from '@remixicon/vue';
-import LinkDB from '@/database/LinkDB';
+import LinkUtil from '@/utils/link';
 interface Props {
   lang: string;
 }
@@ -26,7 +26,7 @@ const description = lang === 'zh-cn' ? '登录失败' : 'Sign in failed';
               : 'An error occurred during authentication'
           }
         </p>
-        <a href={LinkDB.getSigninLink(lang)} class="btn btn-primary">
+        <a href={LinkUtil.getSigninLink(lang)} class="btn btn-primary">
           {lang === 'zh-cn' ? '返回登录' : 'Back to Sign in'}
         </a>
       </div>

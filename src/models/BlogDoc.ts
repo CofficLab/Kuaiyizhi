@@ -2,7 +2,7 @@ import BlogDB from "@/database/BlogDB";
 import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { BlogEntry } from "@/database/BlogDB";
-import LinkDB from "@/database/LinkDB";
+import LinkUtil from "@/utils/link";
 import Tag from "./Tag";
 import BaseDoc from "./BaseDoc";
 
@@ -16,7 +16,7 @@ export default class BlogDoc extends BaseDoc<'blogs', BlogEntry> {
     }
 
     getLink(): string {
-        return LinkDB.getBlogLink(this.entry.id, this.getLang());
+        return LinkUtil.getBlogLink(this.entry.id, this.getLang());
     }
 
     getTags(): Tag[] {

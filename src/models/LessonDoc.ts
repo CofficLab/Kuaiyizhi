@@ -4,7 +4,7 @@ import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { Heading } from "./Heading";
 import { type RenderResult } from "astro:content";
-import LinkDB from "@/database/LinkDB";
+import LinkUtil from "@/utils/link";
 import BaseDoc from "./BaseDoc";
 
 export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
@@ -63,7 +63,7 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
     getLink(): string {
         const debug = false;
         const lang = this.getLang();
-        let link = LinkDB.getLessonLink(lang, this.getId());
+        let link = LinkUtil.getLessonLink(lang, this.getId());
 
         if (debug) {
             logger.info(`获取 ${this.entry.id} 的链接: ${link}`);

@@ -1,4 +1,4 @@
-import LinkDB from '@/database/LinkDB';
+import LinkUtil from '@/utils/link';
 import type { LangCode } from '@/i18n/Language';
 import { RiGithubFill } from '@remixicon/vue';
 
@@ -45,9 +45,9 @@ export const getFooterConfig = (lang: LangCode): FooterConfig => ({
         {
             titleKey: lang === 'zh-cn' ? '关于我们' : 'About Us',
             links: [
-                { key: 'privacy', href: LinkDB.getMetaLink(lang, 'privacy'), text: '隐私政策', external: false },
-                { key: 'terms', href: LinkDB.getMetaLink(lang, 'terms'), text: '服务条款', external: false },
-                { key: 'about', href: LinkDB.getMetaLink(lang, 'about'), text: '关于我们', external: false },
+                { key: 'privacy', href: LinkUtil.getMetaLink(lang, 'privacy'), text: '隐私政策', external: false },
+                { key: 'terms', href: LinkUtil.getMetaLink(lang, 'terms'), text: '服务条款', external: false },
+                { key: 'about', href: LinkUtil.getMetaLink(lang, 'about'), text: '关于我们', external: false },
                 {
                     key: 'githubComments',
                     href: 'https://github.com/CofficLab/FeedbackHub',
@@ -56,7 +56,7 @@ export const getFooterConfig = (lang: LangCode): FooterConfig => ({
                 },
                 {
                     key: 'signin',
-                    href: LinkDB.getSigninLink(lang),
+                    href: LinkUtil.getSigninLink(lang),
                     text: lang === 'zh-cn' ? '登录' : 'Signin',
                     external: false,
                 },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RiGithubFill, RiGoogleFill } from '@remixicon/vue';
-import LinkDB from '@/database/LinkDB';
+import LinkUtil from '@/utils/link';
 import GlowCard from '@/components/GlowCard.vue';
 import CodeBlock from '@/components/CodeBlock.vue';
 import { ref } from 'vue';
@@ -30,7 +30,7 @@ const login = async (provider: string) => {
     }
 
     try {
-        const loginLink = LinkDB.getLoginLink(window.location.origin);
+        const loginLink = LinkUtil.getLoginLink(window.location.origin);
         const response = await axios.get(`${loginLink}?provider=${provider}`, {
             validateStatus: (status) => status === 200,
         });
@@ -109,15 +109,17 @@ const login = async (provider: string) => {
                 <div class="text-sm text-base-content/60 space-y-1">
                     <p v-if="lang === 'zh-cn'" class="flex flex-wrap justify-center gap-x-1">
                         <span>登录即表示您同意我们的</span>
-                        <a :href="LinkDB.getTermsLink(lang)" class="link link-primary font-medium">服务条款</a>
+                        <a :href="LinkUtil.getTermsLink(lang)" class="link link-primary font-medium">服务条款</a>
                         <span>和</span>
-                        <a :href="LinkDB.getPrivacyLink(lang)" class="link link-primary font-medium">隐私政策</a>
+                        <a :href="LinkUtil.getPrivacyLink(lang)" class="link link-primary font-medium">隐私政策</a>
                     </p>
                     <p v-else class="flex flex-wrap justify-center gap-x-1">
                         <span>By signing in, you agree to our</span>
-                        <a :href="LinkDB.getTermsLink(lang)" class="link link-primary font-medium">Terms of Service</a>
+                        <a :href="LinkUtil.getTermsLink(lang)" class="link link-primary font-medium">Terms of
+                            Service</a>
                         <span>and</span>
-                        <a :href="LinkDB.getPrivacyLink(lang)" class="link link-primary font-medium">Privacy Policy</a>
+                        <a :href="LinkUtil.getPrivacyLink(lang)" class="link link-primary font-medium">Privacy
+                            Policy</a>
                     </p>
                 </div>
             </div>

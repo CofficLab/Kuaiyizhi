@@ -1,7 +1,7 @@
 import BlogDB from "@/database/BlogDB";
 import { SidebarItem } from "@/models/SidebarItem";
 import { type TagStaticPath } from "@/interface/StaticPath";
-import LinkDB from "@/database/LinkDB";
+import LinkUtil from "@/utils/link";
 
 export class Tag {
     name: string;
@@ -17,7 +17,7 @@ export class Tag {
     toSidebarItem(lang: string): SidebarItem {
         return new SidebarItem({
             label: this.name,
-            link: LinkDB.getTagLink(lang, this.name),
+            link: LinkUtil.getTagLink(lang, this.name),
         });
     }
 
@@ -33,7 +33,7 @@ export class Tag {
 
         return new SidebarItem({
             label: 'Tags',
-            link: LinkDB.getTagLink(lang, ''),
+            link: LinkUtil.getTagLink(lang, ''),
             items: tags.map((tag: Tag) => tag.toSidebarItem(lang)),
         });
     }

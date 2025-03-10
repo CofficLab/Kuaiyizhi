@@ -1,6 +1,8 @@
 import CourseDoc from "@/models/CourseDoc";
 import { type CollectionEntry } from "astro:content";
 import BaseDB from "./BaseDB";
+const COLLECTION_NAME = 'courses' as const;
+export type CourseEntry = CollectionEntry<typeof COLLECTION_NAME>;
 
 /**
  * 课程数据库类，用于管理课程内容集合。
@@ -33,10 +35,8 @@ import BaseDB from "./BaseDB";
  *     └── ...
  * ```
  */
-export type CourseEntry = CollectionEntry<'courses'>;
-
-export default class CourseDB extends BaseDB<'courses', CourseEntry, CourseDoc> {
-    protected collectionName = 'courses' as const;
+export default class CourseDB extends BaseDB<typeof COLLECTION_NAME, CourseEntry, CourseDoc> {
+    protected collectionName = COLLECTION_NAME;
 
     protected createDoc(entry: CourseEntry): CourseDoc {
         return new CourseDoc(entry);

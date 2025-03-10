@@ -2,7 +2,7 @@ import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { MetaEntry } from "@/database/MetaDB";
 import MetaDB from "@/database/MetaDB";
-import LinkDB from "@/database/LinkDB";
+import LinkUtil from "@/utils/link";
 import BaseDoc from "./BaseDoc";
 
 export default class MetaDoc extends BaseDoc<'meta', MetaEntry> {
@@ -15,7 +15,7 @@ export default class MetaDoc extends BaseDoc<'meta', MetaEntry> {
     }
 
     getLink(): string {
-        return LinkDB.getMetaLink(this.getLang(), this.getSlug());
+        return LinkUtil.getMetaLink(this.getLang(), this.getSlug());
     }
 
     getLang(): string {

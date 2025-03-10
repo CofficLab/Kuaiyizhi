@@ -1,3 +1,12 @@
+import MetaDoc from "@/models/MetaDoc";
+import { logger } from "@/utils/logger";
+import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import BaseDB from "./BaseDB";
+
+const COLLECTION_NAME = 'meta' as const;
+
+export type MetaEntry = CollectionEntry<typeof COLLECTION_NAME>;
+
 /**
  * 元数据数据库类，用于管理网站的元数据内容集合（如"关于我们"等页面）。
  * 继承自 BaseDB，提供元数据页面的特定功能。
@@ -38,18 +47,8 @@
  * - 支持多语言版本的内容管理
  * - 适用于网站的静态页面和元数据内容
  */
-
-import MetaDoc from "@/models/MetaDoc";
-import { logger } from "@/utils/logger";
-import { getCollection, getEntry, type CollectionEntry } from "astro:content";
-import BaseDB from "./BaseDB";
-
-const collectionName = 'meta';
-
-export type MetaEntry = CollectionEntry<'meta'>;
-
-export default class MetaDB extends BaseDB<'meta', MetaEntry, MetaDoc> {
-    protected collectionName = 'meta' as const;
+export default class MetaDB extends BaseDB<typeof COLLECTION_NAME, MetaEntry, MetaDoc> {
+    protected collectionName = COLLECTION_NAME;
 
     protected createDoc(entry: MetaEntry): MetaDoc {
         return new MetaDoc(entry);
@@ -62,7 +61,7 @@ export default class MetaDB extends BaseDB<'meta', MetaEntry, MetaDoc> {
      * @returns {Promise<LessonEntry[]>} 返回文档集合
      */
     static async getDocsByDepth(depth: number): Promise<MetaDoc[]> {
-        const entries = await getCollection(collectionName, ({ id }) => id.split('/').length === depth);
+        const entries = await getCollection(COLLECTION_NAME, ({ id }) => id.split('/').length === depth);
         return entries.map(entry => MetaDoc.fromEntry(entry));
     }
 
@@ -73,7 +72,7 @@ export default class MetaDB extends BaseDB<'meta', MetaEntry, MetaDoc> {
             logger.info(`MetaDB: 获取元数据文档: ${id}`);
         }
 
-        const entry = await getEntry(collectionName, id);
+        const entry = await getEntry(COLLECTION_NAME, id);
         return entry ? new MetaDoc(entry) : null;
     }
 
@@ -87,7 +86,7 @@ export default class MetaDB extends BaseDB<'meta', MetaEntry, MetaDoc> {
         const parentLevel = parentId.split('/').length;
         const childrenLevel = parentLevel + 1;
 
-        const entries = await getCollection(collectionName,
+        const entries = await getCollection(COLLECTION_NAME,
             ({ id }) => id.startsWith(parentId) && id.split('/').length === childrenLevel);
         return entries.map(entry => MetaDoc.fromEntry(entry));
     }
@@ -116,7 +115,7 @@ export default class MetaDB extends BaseDB<'meta', MetaEntry, MetaDoc> {
      * @returns {Promise<CourseDoc[]>} 返回后代文档集合
      */
     static async getDescendantDocs(parentId: string): Promise<MetaDoc[]> {
-        const entries = await getCollection(collectionName, ({ id }) => id.startsWith(parentId));
+        const entries = await getCollection(COLLECTION_NAME, ({ id }) => id.startsWith(parentId));
         return entries.map(entry => MetaDoc.fromEntry(entry));
     }
 
