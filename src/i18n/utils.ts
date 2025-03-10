@@ -1,3 +1,15 @@
+import { ui, defaultLang } from './ui';
+
+export function getLangFromUrl(url: URL) {
+    const [, lang] = url.pathname.split('/');
+    if (lang in ui) return lang as keyof typeof ui;
+    return defaultLang;
+}
+
+export function t(key: keyof typeof ui[typeof defaultLang]) {
+    return ui[defaultLang][key];
+}
+
 export const normalizeLang = (lang: string) => {
     if (lang === 'zh-CN') {
         return 'zh-cn';

@@ -1,14 +1,14 @@
 export type LangCode = 'zh-cn' | 'en';
 
-export default class Lang {
+export default class Language {
     code: LangCode;
 
     constructor(code: LangCode) {
         this.code = code;
     }
 
-    static fromString(lang: string): Lang {
-        return new Lang(lang as LangCode);
+    static fromString(lang: string): Language {
+        return new Language(lang as LangCode);
     }
 
     isChinese(): boolean {

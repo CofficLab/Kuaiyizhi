@@ -5,11 +5,10 @@ import SmartHeader from './Header.astro';
 import type { SidebarItem } from '@/models/SidebarItem';
 import type { Heading } from '@/models/Heading';
 import { ClientRouter } from 'astro:transitions';
-import { getLangFromPathname } from '@/utils/lang';
-import LinkDB from '@/database/LinkDB';
 import { getFooterConfig } from '@/config/footer';
 import GlobalConfirmDialog from '@/components/GlobalConfirmDialog.vue';
 import GlobalToast from '@/components/GlobalToast.vue';
+import { getLangFromUrl } from '@/i18n/utils';
 
 interface Props {
   title: string;
@@ -21,16 +20,12 @@ interface Props {
 const props = Astro.props as Props;
 const { title, description } = props;
 
-const locale = LinkDB.isHomePath(Astro.url.pathname)
-  ? Astro.preferredLocale
-  : getLangFromPathname(Astro.url.pathname);
-
-const lang = getLangFromPathname(Astro.url.pathname) as 'zh-cn' | 'en';
+const lang = getLangFromUrl(Astro.url);
 const footerConfig = getFooterConfig(lang);
 ---
 
 <!doctype html>
-<html lang={locale} class="scroll-smooth">
+<html lang={lang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

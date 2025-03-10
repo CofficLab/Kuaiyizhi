@@ -2,10 +2,10 @@
 import AppLayout from '@layouts/AppLayout.astro';
 import CourseCard from '@components/common/CourseCard.astro';
 import CourseDB from '@/database/CourseDB';
-import Lang from '@/i18n/Lang';
+import Language from '@/i18n/Language';
 
 export interface Props {
-  lang: Lang;
+  lang: Language;
 }
 
 const { lang } = Astro.props;

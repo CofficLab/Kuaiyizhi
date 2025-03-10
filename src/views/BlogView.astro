@@ -2,7 +2,7 @@
 import DocLayout from '@layouts/DocLayout.astro';
 import BlogDB from '@/database/BlogDB';
 import Tag from '@/models/Tag';
-import { getLangFromPathname } from '@/utils/lang';
+import { getLangFromUrl } from '@/i18n/utils';
 
 export interface Props {
   id: string;
@@ -11,7 +11,7 @@ export interface Props {
 const { id } = Astro.props;
 
 const doc = await BlogDB.find(id);
-const lang = getLangFromPathname(Astro.url.pathname);
+const lang = getLangFromUrl(Astro.url);
 
 if (!doc) {
   return Astro.redirect(404);

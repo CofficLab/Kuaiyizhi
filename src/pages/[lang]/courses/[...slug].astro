@@ -6,8 +6,8 @@ import { logger } from '@/utils/logger';
 import type { MarkdownHeading } from 'astro';
 import CourseNotFound from '@/components/course/CourseNotFound.vue';
 
-// 全部预渲染
-export const prerender = false;
+// 全部预渲染，看构建好的dist目录就明白了
+export const prerender = true;
 export async function getStaticPaths() {
   return CourseDB.getStaticPaths();
 }

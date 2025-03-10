@@ -1,7 +1,7 @@
 ---
 import { RiListOrdered } from '@remixicon/vue';
 import type { Heading } from '@/models/Heading';
-import { getLangFromPathname } from '@/utils/lang';
+import { getLangFromUrl } from '@/i18n/utils';
 
 interface Props {
   headings: Heading[];
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { headings, showDebugBorders = false } = Astro.props;
-const lang = getLangFromPathname(Astro.url.pathname);
+const lang = getLangFromUrl(Astro.url);
 
 // 只显示 h2 和 h3 标题
 const filteredHeadings = headings.filter(

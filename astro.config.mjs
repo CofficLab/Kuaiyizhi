@@ -9,6 +9,8 @@ import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
 
+import expressiveCode from 'astro-expressive-code';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://kuaiyizhi.cn',
@@ -44,8 +46,6 @@ export default defineConfig({
   integrations: [
     pagefind(),
     vue(),
-    markdoc(),
-    mdx(),
     sitemap({
       filter: (page) => page !== 'https://kuaiyizhi.cn/auth/login',
     }),
@@ -58,6 +58,9 @@ export default defineConfig({
         },
       ],
     }),
+    expressiveCode(),
+    markdoc(),
+    mdx(),
   ],
 
   adapter: cloudflare(),

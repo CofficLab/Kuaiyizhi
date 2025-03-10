@@ -5,7 +5,7 @@ import Sidebar from '@layouts/Sidebar.astro';
 import TableOfContents from '@layouts/TableOfContents.astro';
 import DocActions from '@/components/DocActions.vue';
 import { RiMenuLine, RiListUnordered } from '@remixicon/vue';
-import { getLangFromPathname } from '@/utils/lang';
+import { getLangFromUrl } from '@/i18n/utils';
 
 interface Props {
   title: string;
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { title, description, sidebarItem, headings = [] } = Astro.props;
-const normalizedLocale = getLangFromPathname(Astro.url.pathname);
+const normalizedLocale = getLangFromUrl(Astro.url);
 
 const shouldShowSidebar = sidebarItem
   ? sidebarItem.getItems().length > 0

@@ -1,28 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RiEmotionSadLine, RiArrowLeftLine } from '@remixicon/vue';
-import { useI18n } from '@/i18n';
-import type { SupportedLocale } from '@/i18n/types';
 
 const props = defineProps<{
     lang: string;
 }>();
 
-// 确保语言是支持的语言
-const safeLang = computed<SupportedLocale>(() => {
-    return (props.lang === 'en' || props.lang === 'zh-cn')
-        ? props.lang as SupportedLocale
-        : 'zh-cn';
-});
-
-const { t, keys } = useI18n(safeLang.value);
-
 const coursesLink = computed(() => `/${props.lang}/courses`);
 
 const messages = {
-    title: t(keys.course.notFound.title, '😅 哎呀，课程去旅行了'),
-    description: t(keys.course.notFound.description, '抱歉，您要查看的课程暂时不存在'),
-    backToList: t(keys.course.notFound.backToList, '返回课程列表')
+    title: props.lang === 'en' ? '😅 Oops, the course is on vacation' : '😅 哎呀，课程去旅行了',
+    description: props.lang === 'en' ? 'Sorry, the course you are looking for does not exist' : '抱歉，您要查看的课程暂时不存在',
+    backToList: props.lang === 'en' ? 'Back to course list' : '返回课程列表'
 };
 </script>
 

@@ -1,5 +1,5 @@
 import LinkDB from '@/database/LinkDB';
-import type { LangCode } from '@/i18n/Lang';
+import type { LangCode } from '@/i18n/Language';
 import { RiGithubFill } from '@remixicon/vue';
 
 export interface FooterLink {
