@@ -107,33 +107,13 @@ export default abstract class BaseDB<
     }
 
     /**
-     * 获取所有顶级文档（深度为2的文档）
-     * 通常用于获取各个语言版本的根文档
-     * 例如：
-     * - "zh-cn/index.md"
-     * - "en/index.md"
-     * 
-     * @returns 返回所有顶级文档数组
-     */
-    async allTopLevelDocs(): Promise<Doc[]> {
-        const debug = false;
-        const entries = await this.getDocsByDepth(2);
-
-        if (debug) {
-            logger.array('所有顶级文档', entries);
-        }
-
-        return entries;
-    }
-
-    /**
      * 获取指定语言的顶级文档
      * 通过检查文档ID是否以指定语言代码开头来筛选
      * 
      * @param lang - 语言代码（如 'zh-cn', 'en'）
      * @returns 返回指定语言的顶级文档数组
      */
-    async allTopLevelDocsByLang(lang: string): Promise<Doc[]> {
+    async allDocsByLang(lang: string): Promise<Doc[]> {
         const debug = false;
         const docs = await this.getDocsByDepth(2);
 

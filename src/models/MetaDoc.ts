@@ -1,9 +1,9 @@
 import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { MetaEntry } from "@/database/MetaDB";
-import MetaDB from "@/database/MetaDB";
 import LinkUtil from "@/utils/link";
 import BaseDoc from "./BaseDoc";
+import metaDB from "@/database/MetaDB";
 
 export default class MetaDoc extends BaseDoc<'meta', MetaEntry> {
     constructor(entry: MetaEntry) {
@@ -44,18 +44,15 @@ export default class MetaDoc extends BaseDoc<'meta', MetaEntry> {
 
     async getTopDoc(): Promise<MetaDoc | null> {
         const id = await this.getTopCourseId();
-        const db = MetaDB.getInstance();
-        return await db.find(id);
+        return await metaDB.find(id);
     }
 
     async getChildren(): Promise<MetaDoc[]> {
-        const db = MetaDB.getInstance();
-        return await db.getChildren(this.entry.id);
+        return await metaDB.getChildren(this.entry.id);
     }
 
     async getSiblingDocs(): Promise<MetaDoc[]> {
-        const db = MetaDB.getInstance();
-        return await db.getSiblingDocs(this.entry.id);
+        return await metaDB.getSiblings(this.entry.id);
     }
 
     async toSidebarItem(): Promise<SidebarItem> {

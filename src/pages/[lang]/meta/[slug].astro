@@ -1,10 +1,10 @@
 ---
 import MetaView from '@/views/MetaView.astro';
-import MetaDB from '@/database/MetaDB';
+import metaDB from '@/database/MetaDB';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  return MetaDB.getStaticPaths();
+  return metaDB.getStaticPaths();
 }
 
 const { lang, slug } = Astro.params;

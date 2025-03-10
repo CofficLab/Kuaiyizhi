@@ -1,10 +1,10 @@
 ---
 import LessonView from '@/views/LessonView.astro';
-import LessonDB from '@/database/LessonDB';
+import lessonDB from '@/database/LessonDB';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  return LessonDB.getStaticPaths();
+  return lessonDB.getStaticPaths();
 }
 
 /**

@@ -1,7 +1,7 @@
 import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { CourseEntry } from "@/database/CourseDB";
-import CourseDB from "@/database/CourseDB";
+import courseDB from "@/database/CourseDB";
 import LinkUtil from "@/utils/link";
 import BaseDoc from "./BaseDoc";
 
@@ -20,12 +20,12 @@ export default class CourseDoc extends BaseDoc<'courses', CourseEntry> {
 
     async getTopDoc(): Promise<CourseDoc | null> {
         const id = await this.getTopCourseId();
-        const doc = await CourseDB.getInstance().find(id);
+        const doc = await courseDB.find(id);
         return doc;
     }
 
     async getChildren(): Promise<CourseDoc[]> {
-        return await CourseDB.getInstance().getChildren(this.entry.id);
+        return await courseDB.getChildren(this.entry.id);
     }
 
     async toSidebarItem(): Promise<SidebarItem> {

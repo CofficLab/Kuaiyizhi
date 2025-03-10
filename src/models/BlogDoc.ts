@@ -1,13 +1,11 @@
-import BlogDB from "@/database/BlogDB";
-import { logger } from "@/utils/logger";
-import { SidebarItem } from "./SidebarItem";
+import blogDB from "@/database/BlogDB";
 import type { BlogEntry } from "@/database/BlogDB";
 import LinkUtil from "@/utils/link";
 import Tag from "./Tag";
 import BaseDoc from "./BaseDoc";
 
 export default class BlogDoc extends BaseDoc<'blogs', BlogEntry> {
-    constructor(entry: BlogEntry) {
+    private constructor(entry: BlogEntry) {
         super(entry);
     }
 
@@ -55,11 +53,11 @@ export default class BlogDoc extends BaseDoc<'blogs', BlogEntry> {
 
     async getTopDoc(): Promise<BlogDoc | null> {
         const id = await this.getTopCourseId();
-        const doc = await BlogDB.find(id);
+        const doc = await blogDB.find(id);
         return doc;
     }
 
     async getChildren(): Promise<BlogDoc[]> {
-        return await BlogDB.getChildren(this.entry.id);
+        return await blogDB.getChildren(this.entry.id);
     }
 } 

@@ -1,40 +1,14 @@
 import type { LessonEntry } from "@/database/LessonDB";
-import LessonDB from "@/database/LessonDB";
+import lessonDB from "@/database/LessonDB";
 import { logger } from "@/utils/logger";
 import { SidebarItem } from "./SidebarItem";
 import type { Heading } from "./Heading";
-import { type RenderResult } from "astro:content";
 import LinkUtil from "@/utils/link";
 import BaseDoc from "./BaseDoc";
 
 export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
     constructor(entry: LessonEntry) {
         super(entry);
-    }
-
-    static async allTopDocs(): Promise<LessonDoc[]> {
-        const db = LessonDB.getInstance();
-        return await db.allTopLevelDocs();
-    }
-
-    static async all(): Promise<LessonDoc[]> {
-        const db = LessonDB.getInstance();
-        return await db.allTopLevelDocs();
-    }
-
-    static async allByDepth(depth: number): Promise<LessonDoc[]> {
-        const db = LessonDB.getInstance();
-        return await db.getDocsByDepth(depth);
-    }
-
-    static async allByDepthAndLang(depth: number, lang: string): Promise<LessonDoc[]> {
-        const db = LessonDB.getInstance();
-        return await db.getEntriesByDepthAndLang(depth, lang);
-    }
-
-    static async find(id: string): Promise<LessonDoc | null> {
-        const db = LessonDB.getInstance();
-        return await db.find(id);
     }
 
     isBook(): boolean {
@@ -53,7 +27,7 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
 
     async getBook(): Promise<LessonDoc | null> {
         const bookId = this.getBookId();
-        return await LessonDoc.find(bookId);
+        return await lessonDB.find(bookId);
     }
 
     getLevel(): number {
@@ -114,17 +88,15 @@ export default class LessonDoc extends BaseDoc<'lessons', LessonEntry> {
 
     async getTopDoc(): Promise<LessonDoc | null> {
         const bookId = this.getBookId();
-        return await LessonDoc.find(bookId);
+        return await lessonDB.find(bookId);
     }
 
     async getChildren(): Promise<LessonDoc[]> {
-        const db = LessonDB.getInstance();
-        return await db.getChildren(this.entry.id);
+        return await lessonDB.getChildren(this.entry.id);
     }
 
     async getDescendants(): Promise<LessonDoc[]> {
-        const db = LessonDB.getInstance();
-        return await db.getDescendantDocs(this.entry.id);
+        return await lessonDB.getDescendantDocs(this.entry.id);
     }
 
     async toSidebarItem(): Promise<SidebarItem> {

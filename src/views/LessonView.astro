@@ -1,7 +1,7 @@
 ---
 import DocLayout from '@layouts/DocLayout.astro';
 import LessonNotFound from '@components/lesson/LessonNotFound.astro';
-import LessonDoc from '@/models/LessonDoc';
+import lessonDB from '@/database/LessonDB';
 import { type RenderResult } from 'astro:content';
 import type { Heading } from '@/models/Heading';
 
@@ -10,7 +10,7 @@ export interface Props {
 }
 
 const { id } = Astro.props;
-const lesson = await LessonDoc.find(id);
+const lesson = await lessonDB.find(id);
 const title = lesson?.getTitle() || '没有找到课程';
 const description = lesson?.getDescription() || '没有找到课程';
 const sidebarItem = (await (await lesson?.getBook())?.toSidebarItem()) || null;

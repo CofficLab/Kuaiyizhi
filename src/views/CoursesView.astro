@@ -1,14 +1,14 @@
 ---
 import AppLayout from '@layouts/AppLayout.astro';
 import CourseCard from '@components/common/CourseCard.astro';
-import CourseDB from '@/database/CourseDB';
+import courseDB from '@/database/CourseDB';
 
 interface Props {
   lang: string;
 }
 
 const { lang } = Astro.props;
-const courses = await CourseDB.allTopLevelDocsByLang(lang);
+const courses = await courseDB.allCoursesByLang(lang);
 const title = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 ---
@@ -16,6 +16,10 @@ const description = lang === 'zh-cn' ? '课程列表' : 'Courses List';
 <AppLayout title={title} description={description}>
   <div
     class="container max-w-screen-lg mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8">
-    {courses.map((course) => <CourseCard title={course.getTitle()} link={course.getLink()} />)}
+    {
+      courses.map((course) => (
+        <CourseCard title={course.getTitle()} link={course.getLink()} />
+      ))
+    }
   </div>
 </AppLayout>

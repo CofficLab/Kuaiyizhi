@@ -1,7 +1,7 @@
 ---
 import DocLayout from '@layouts/DocLayout.astro';
 import AppLayout from '@layouts/AppLayout.astro';
-import CourseDB from '@/database/CourseDB';
+import courseDB from '@/database/CourseDB';
 import { logger } from '@/utils/logger';
 import type { MarkdownHeading } from 'astro';
 import CourseNotFound from '@/components/course/CourseNotFound.vue';
@@ -9,13 +9,13 @@ import CourseNotFound from '@/components/course/CourseNotFound.vue';
 // 全部预渲染，看构建好的dist目录就明白了
 export const prerender = true;
 export async function getStaticPaths() {
-  return CourseDB.getStaticPaths();
+  return courseDB.getStaticPaths();
 }
 
 const { lang, slug } = Astro.params;
 const id = `${lang}/${slug}`;
 
-let doc = await CourseDB.find(id);
+let doc = await courseDB.find(id);
 let title = '';
 let description = '';
 let sidebarItem = null;
