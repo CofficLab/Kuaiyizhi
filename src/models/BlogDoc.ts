@@ -1,16 +1,14 @@
 import BlogDB from "@/database/BlogDB";
 import { logger } from "@/utils/logger";
-import { render, type RenderResult } from "astro:content";
 import { SidebarItem } from "./SidebarItem";
 import type { BlogEntry } from "@/database/BlogDB";
 import LinkDB from "@/database/LinkDB";
 import Tag from "./Tag";
+import BaseDoc from "./BaseDoc";
 
-export default class BlogDoc {
-    entry: BlogEntry;
-
+export default class BlogDoc extends BaseDoc<'blogs', BlogEntry> {
     constructor(entry: BlogEntry) {
-        this.entry = entry;
+        super(entry);
     }
 
     static fromEntry(entry: BlogEntry) {
@@ -21,50 +19,6 @@ export default class BlogDoc {
         return LinkDB.getBlogLink(this.entry.id, this.getLang());
     }
 
-    /**
-     * 获取博客的 ID
-     *
-     * ID是根据博客的目录结构生成的，例如：
-     *  目录结构：
-     *  blogs/
-     *    zh-cn/
-     *      supervisor/
-     *        index.md
-     *    en/
-     *      supervisor/
-     *        index.md
-     *
-     *  ID: zh-cn/supervisor 的 ID 为 zh-cn/supervisor
-     *  ID: en/supervisor 的 ID 为 en/supervisor
-     *
-     * @returns 
-     */
-    getId(): string {
-        return this.entry.id;
-    }
-
-    getTitle(): string {
-        return this.entry.data.title as string;
-    }
-
-    getLang(): string {
-        return this.entry.id.split('/')[0];
-    }
-
-    /**
-     * 获取课程的 slug，slug = pages目录中定义的slug
-     *
-     * 例如：
-     *  ID: zh-cn/supervisor 的 slug 为 supervisor
-     *  ID: en/supervisor 的 slug 为 supervisor
-     *
-     * @returns 
-     */
-    getSlug(): string {
-        // 从 ID 中获取 slug，即删除以/分割后的第一个元素
-        return this.getId().split('/').slice(1).join('/');
-    }
-
     getTags(): Tag[] {
         const tags = this.entry.data.tags as string[];
 
@@ -73,10 +27,6 @@ export default class BlogDoc {
         }
 
         return tags.map(tag => new Tag(tag, 0, this.getLang()));
-    }
-
-    getDescription(): string {
-        return this.entry.data.description as string;
     }
 
     getDate(): Date {
@@ -103,16 +53,6 @@ export default class BlogDoc {
         }
     }
 
-    async render(): Promise<RenderResult> {
-        return await render(this.entry);
-    }
-
-    async getTopCourseId(): Promise<string> {
-        const id = this.entry.id;
-        const parts = id.split('/');
-        return parts[0] + '/' + parts[1];
-    }
-
     async getTopDoc(): Promise<BlogDoc | null> {
         const id = await this.getTopCourseId();
         const doc = await BlogDB.find(id);
@@ -122,35 +62,4 @@ export default class BlogDoc {
     async getChildren(): Promise<BlogDoc[]> {
         return await BlogDB.getChildren(this.entry.id);
     }
-
-    async toSidebarItem(): Promise<SidebarItem> {
-        const debug = false;
-
-        const children = await this.getChildren();
-        const childItems = await Promise.all(children.map(child => child.toSidebarItem()));
-
-        if (debug) {
-            logger.info(`${this.entry.id} 的侧边栏项目`);
-            console.log(childItems);
-        }
-
-        return new SidebarItem({
-            label: this.getTitle(),
-            items: childItems,
-            link: this.getLink(),
-        });
-    }
-
-    async getTopSidebarItem(): Promise<SidebarItem> {
-        const topDoc = await this.getTopDoc();
-        if (topDoc) {
-            return await topDoc.toSidebarItem();
-        }
-
-        return new SidebarItem({
-            label: this.getTitle(),
-            items: [],
-            link: this.getLink(),
-        });
-    }
-}
+} 

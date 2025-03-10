@@ -2,12 +2,13 @@
 import AppLayout from '@layouts/AppLayout.astro';
 import LessonDoc from '@/models/LessonDoc';
 import CourseCard from '@/components/common/CourseCard.astro';
+import LessonDB from '@/database/LessonDB';
 interface Props {
   lang: string;
 }
 
 const { lang } = Astro.props;
-const lessons = await LessonDoc.allTopDocsByLang(lang);
+const lessons = await LessonDB.allLessons(lang);
 
 const title = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
 const description = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';

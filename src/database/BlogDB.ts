@@ -2,12 +2,49 @@ import BlogDoc from "@/models/BlogDoc";
 import type Tag from "@/models/Tag";
 import { logger } from "@/utils/logger";
 import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import BaseDB from "./BaseDB";
 
 const collectionName = 'blogs';
 
+/**
+ * 博客数据库类，用于管理博客内容集合。
+ * 继承自 BaseDB，提供博客和标签相关的特定功能。
+ * 
+ * 使用方法：
+ * ```typescript
+ * // 获取数据库实例
+ * const db = BlogDB.getInstance();
+ * 
+ * // 获取所有中文标签
+ * const tags = await db.getTagsByLang('zh-cn');
+ * 
+ * // 获取指定标签的博客文章
+ * const posts = await db.getBlogsByTag('typescript', 'zh-cn');
+ * ```
+ * 
+ * 目录结构：
+ * ```
+ * blogs/
+ * ├── zh-cn/
+ * │   ├── typescript-intro/
+ * │   │   ├── index.md      # 文章内容
+ * │   │   └── images/       # 文章相关图片
+ * │   └── web-performance/
+ * │       ├── index.md
+ * │       └── ...
+ * └── en/
+ *     └── ...
+ * ```
+ */
 export type BlogEntry = CollectionEntry<'blogs'>;
 
-export default class BlogDB {
+export default class BlogDB extends BaseDB<'blogs', BlogEntry, BlogDoc> {
+    protected collectionName = 'blogs' as const;
+
+    protected createDoc(entry: BlogEntry): BlogDoc {
+        return BlogDoc.fromEntry(entry);
+    }
+
     /**
      * 获取指定深度的文档
      * 
@@ -93,12 +130,112 @@ export default class BlogDB {
         return paths;
     }
 
-    static async getTagsStaticPaths() {
-        const debug = false;
-        const tags = await BlogDB.getTags();
+    /**
+     * 获取所有博客标签
+     * 标签会根据语言和名称去重，使用复合键 "lang:name" 确保唯一性
+     * 
+     * @returns 返回所有标签数组
+     * @example
+     * ```typescript
+     * const tags = await db.getTags();
+     * // 返回格式：
+     * // [
+     * //   { name: 'typescript', lang: 'zh-cn', count: 5 },
+     * //   { name: 'javascript', lang: 'en', count: 3 }
+     * // ]
+     * ```
+     */
+    async getTags(): Promise<Tag[]> {
+        const tagsMap = new Map<string, Tag>();
+        const posts = await this.allTopLevelDocs();
 
-        // DocId 的格式为 courses/zh-cn/supervisor/index.md
-        // 需要转换为 /zh-cn/courses/supervisor/index.md
+        posts.forEach(post => {
+            post.getTags().forEach(tag => {
+                const key = `${tag.lang}:${tag.name}`;
+                if (!tagsMap.has(key)) {
+                    tagsMap.set(key, tag);
+                }
+            });
+        });
+
+        return Array.from(tagsMap.values());
+    }
+
+    /**
+     * 获取指定语言的博客标签
+     * 
+     * @param lang - 语言代码（如 'zh-cn', 'en'）
+     * @returns 返回指定语言的标签数组
+     * @example
+     * ```typescript
+     * const tags = await db.getTagsByLang('zh-cn');
+     * // 返回该语言下的所有唯一标签
+     * ```
+     */
+    async getTagsByLang(lang: string): Promise<Tag[]> {
+        const debug = false;
+        const tagsMap = new Map<string, Tag>();
+        const posts = await this.allTopLevelDocsByLang(lang);
+
+        if (debug) {
+            logger.array("posts", posts);
+        }
+
+        if (posts.length === 0) {
+            return [];
+        }
+
+        posts.forEach(post => {
+            post.getTags().forEach(tag => {
+                const key = `${tag.lang}:${tag.name}`;
+                if (!tagsMap.has(key)) {
+                    tagsMap.set(key, tag);
+                }
+            });
+        });
+
+        if (debug) {
+            logger.array("tags", Array.from(tagsMap.values()));
+        }
+
+        return Array.from(tagsMap.values());
+    }
+
+    /**
+     * 获取指定标签和语言的博客文章
+     * 
+     * @param tag - 标签名称
+     * @param lang - 语言代码
+     * @returns 返回匹配的博客文档数组
+     * @example
+     * ```typescript
+     * const posts = await db.getBlogsByTag('typescript', 'zh-cn');
+     * // 返回所有包含 'typescript' 标签的中文博客
+     * ```
+     */
+    async getBlogsByTag(tag: string, lang: string): Promise<BlogDoc[]> {
+        const posts = await this.allTopLevelDocsByLang(lang);
+        return posts.filter(post => post.getTags().some(t => t.name === tag));
+    }
+
+    /**
+     * 获取标签的静态路径参数
+     * 用于生成标签页面的路由
+     * 
+     * @returns 返回所有标签的路径参数数组
+     * @example
+     * ```typescript
+     * const paths = await db.getTagsStaticPaths();
+     * // 返回格式：
+     * // [
+     * //   { params: { lang: 'zh-cn', name: 'typescript' } },
+     * //   { params: { lang: 'en', name: 'javascript' } }
+     * // ]
+     * ```
+     */
+    async getTagsStaticPaths() {
+        const debug = false;
+        const tags = await this.getTags();
 
         let paths = tags.map((tag) => {
             return {
@@ -116,67 +253,42 @@ export default class BlogDB {
         return paths;
     }
 
-    static async getTags(): Promise<Tag[]> {
-        // 使用复合键"lang:name"来确保标签的唯一性
-        const tagsMap = new Map<string, Tag>();
-        const posts = await BlogDB.allTopLevelDocs();
+    // 静态工厂方法
+    private static instance: BlogDB | null = null;
 
-        posts.forEach(post => {
-            post.getTags().forEach(tag => {
-                const key = `${tag.lang}:${tag.name}`;
-                if (!tagsMap.has(key)) {
-                    tagsMap.set(key, tag);
-                }
-            });
-        });
-
-        return Array.from(tagsMap.values());
+    /**
+     * 获取 BlogDB 的单例实例
+     * @returns BlogDB 实例
+     */
+    static getInstance(): BlogDB {
+        if (!BlogDB.instance) {
+            BlogDB.instance = new BlogDB();
+        }
+        return BlogDB.instance;
     }
 
     /**
-     * 获取博客标签
+     * 获取指定标签和语言的博客文章
+     * 静态方法版本，内部使用单例实例
      * 
-     * 该函数获取博客的标签。
-     * 
-     * @param {string} lang - 语言代码，例如 'zh-cn', 'en'
-     * @returns {Promise<Tag[]>} 返回博客标签数组
+     * @param tag - 标签名称
+     * @param lang - 语言代码
+     * @returns 返回匹配的博客文档数组
      */
-    static async getTagsByLang(lang: string): Promise<Tag[]> {
-        const debug = false
-        // 使用Map，以"lang:name"作为键，确保语言和名称都相同才视为同一标签
-        const tagsMap = new Map<string, Tag>();
-        const posts = await BlogDB.allTopLevelDocsByLang(lang);
-
-        if (debug) {
-            logger.array("posts", posts);
-        }
-
-        if (posts.length === 0) {
-            return [];
-        }
-
-        posts.forEach(post => {
-            post.getTags().forEach(tag => {
-                // 创建复合键，同时包含语言和名称
-                const key = `${tag.lang}:${tag.name}`;
-                // 只有当Map中不存在该复合键的tag时，才添加
-                if (!tagsMap.has(key)) {
-                    tagsMap.set(key, tag);
-                }
-            });
-        });
-
-        if (debug) {
-            logger.array("tags", Array.from(tagsMap.values()));
-        }
-
-        return Array.from(tagsMap.values());
+    static async getBlogsByTag(tag: string, lang: string): Promise<BlogDoc[]> {
+        const db = BlogDB.getInstance();
+        return await db.getBlogsByTag(tag, lang);
     }
 
-    static async getBlogsByTag(tag: string, lang: string): Promise<BlogDoc[]> {
-        const debug = false
-        const posts = await BlogDB.allTopLevelDocsByLang(lang);
-
-        return posts.filter(post => post.getTags().some(t => t.name === tag));
+    /**
+     * 获取指定语言的博客标签
+     * 静态方法版本，内部使用单例实例
+     * 
+     * @param lang - 语言代码
+     * @returns 返回指定语言的标签数组
+     */
+    static async getTagsByLang(lang: string): Promise<Tag[]> {
+        const db = BlogDB.getInstance();
+        return await db.getTagsByLang(lang);
     }
 }

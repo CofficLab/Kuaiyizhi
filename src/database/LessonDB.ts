@@ -1,164 +1,141 @@
 /**
- * 课程数据库模块
+ * 课程数据库类，用于管理课程内容集合。
+ * 继承自 BaseDB，提供课程章节相关的特定功能。
  * 
- * 课程集合的目录结构：
+ * 使用方法：
+ * ```typescript
+ * // 获取数据库实例
+ * const db = LessonDB.getInstance();
  * 
- * - lessons/
- *   - build_your_own_web_toolbox/
- *     - images
- *     - components
- *     - en/
- *       - index.mdx
- *       - 1.mdx
- *       - 2.mdx
- *     - zh-cn/
- *       - index.mdx
- *       - 1.mdx
- *       - 2.mdx
- *   - learn_astro/
- *     - en/
- *       - index.mdx
- *       - 1.mdx
- *       - 2.mdx
- *     - zh-cn/
- *       - index.mdx
- *       - 1.mdx
- *       - 2.mdx
+ * // 获取所有课程ID
+ * const ids = await db.getLessonIds();
  * 
- * 其中 build_your_own_web_toolbox 是一个课程，ID为 build_your_own_web_toolbox。
- * 一个课程包含了多个语言的版本，每个语言的版本又包含了多个章节。
- * 一个课程目录是一个相对独立的项目，可作为git子项目独立存储。
+ * // 获取指定深度和语言的课程
+ * const lessons = await db.getEntriesByDepthAndLang(2, 'zh-cn');
+ * ```
  * 
- * @module database/courses
+ * 目录结构：
+ * ```
+ * lessons/
+ * ├── build_your_own_web_toolbox/      # 课程目录
+ * │   ├── images/                      # 课程图片资源
+ * │   ├── components/                  # 课程组件
+ * │   ├── en/                         # 英文版本
+ * │   │   ├── index.mdx               # 课程首页
+ * │   │   ├── 1.mdx                   # 第一章
+ * │   │   └── 2.mdx                   # 第二章
+ * │   └── zh-cn/                      # 中文版本
+ * │       ├── index.mdx               # 课程首页
+ * │       ├── 1.mdx                   # 第一章
+ * │       └── 2.mdx                   # 第二章
+ * └── learn_astro/                    # 另一个课程
+ *     ├── en/
+ *     │   ├── index.mdx
+ *     │   ├── 1.mdx
+ *     │   └── 2.mdx
+ *     └── zh-cn/
+ *         ├── index.mdx
+ *         ├── 1.mdx
+ *         └── 2.mdx
+ * ```
+ * 
+ * 说明：
+ * - 每个课程（如 build_your_own_web_toolbox）是一个独立的目录
+ * - 课程目录可以包含多语言版本（en, zh-cn 等）
+ * - 每个语言版本包含完整的课程内容
+ * - 课程目录可以作为 git 子模块独立管理
  */
 
-import { getCollection, type CollectionEntry, getEntry } from 'astro:content';
+import { type CollectionEntry } from 'astro:content';
+import BaseDB from './BaseDB';
+import LessonDoc from '@/models/LessonDoc';
 import { logger } from '@/utils/logger';
 
 export type LessonEntry = CollectionEntry<'lessons'>;
 
-const collectionName = 'lessons';
+export default class LessonDB extends BaseDB<'lessons', LessonEntry, LessonDoc> {
+    protected collectionName = 'lessons' as const;
 
-export default class LessonDB {
-    /**
-     * 获取文档集合，即lessons目录下的所有文件
-     * 
-     * @returns {Promise<LessonEntry[]>} 返回文档集合
-     */
-    static async getEntries(): Promise<LessonEntry[]> {
-        return await getCollection(collectionName);
-    }
-
-    static async getEntry(id: string): Promise<LessonEntry | null> {
-        const entry = await getEntry(collectionName, id);
-        return entry || null;
-    }
-
-    /**
-     * 获取指定文档的子文档, 不包括孙子文档
-     * 
-     * @param {string} parentId - 父文档ID
-     * @returns {Promise<LessonEntry[]>} 返回子文档集合
-     */
-    static async getChildrenEntries(parentId: string): Promise<LessonEntry[]> {
-        const parentLevel = parentId.split('/').length;
-        const childrenLevel = parentLevel + 1;
-
-        return await getCollection(collectionName,
-            ({ id }) => id.startsWith(parentId) && id.split('/').length === childrenLevel);
-    }
-
-    /**
-     * 获取指定文档的所有后代文档
-     * 
-     * @param {string} parentId - 父文档ID
-     * @returns {Promise<LessonEntry[]>} 返回后代文档集合
-     */
-    static async getDescendantEntries(parentId: string): Promise<LessonEntry[]> {
-        return await getCollection(collectionName, ({ id }) => id.startsWith(parentId));
-    }
-
-    /**
-     * 获取指定深度的文档
-     * 
-     * @param {number} depth - 深度
-     * @returns {Promise<LessonEntry[]>} 返回文档集合
-     */
-    static async getEntriesByDepth(depth: number): Promise<LessonEntry[]> {
-        return await getCollection(collectionName, ({ id }) => id.split('/').length === depth);
+    protected createDoc(entry: LessonEntry): LessonDoc {
+        return new LessonDoc(entry);
     }
 
     /**
      * 获取指定深度和语言的文档
      * 
      * @param {number} depth - 深度
-     * @param {string} lang - 语言
-     * @returns {Promise<LessonEntry[]>} 返回文档集合
+     * @param {string} lang - 语言代码
+     * @returns {Promise<LessonDoc[]>} 返回文档集合
      */
-    static async getEntriesByDepthAndLang(depth: number, lang: string): Promise<LessonEntry[]> {
-        return await getCollection(collectionName, ({ id }) => id.split('/').length === depth && id.endsWith(lang));
+    async getEntriesByDepthAndLang(depth: number, lang: string): Promise<LessonDoc[]> {
+        const docs = await this.getDocsByDepth(depth);
+        return docs.filter(doc => doc.getId().startsWith(lang));
     }
 
     /**
-     * 获取指定文档的所有后代文档, 不包括孙子文档
+     * 获取所有课程ID
      * 
-     * @param {string} parentId - 父文档ID
-     * @param {number} depth - 深度
-     * @returns {Promise<LessonEntry[]>} 返回后代文档集合
+     * @returns {Promise<string[]>} 返回课程ID集合
      */
-    static async getDescendantEntriesByDepth(parentId: string, depth: number): Promise<LessonEntry[]> {
-        return await getCollection(collectionName, ({ id }) => id.startsWith(parentId) && id.split('/').length === depth);
+    async getLessonIds(): Promise<string[]> {
+        const docs = await this.allTopLevelDocs();
+        return docs.map(doc => doc.getId());
     }
 
-    /**
-     * 获取所有课程的ID
-     * 
-     * 例如：
-     * 
-     * - lessons/
-     *   - build_your_own_web_toolbox/
-     *   - learn_astro/
-     * 
-     * 会返回：
-     * 
-     * ['build_your_own_web_toolbox', 'learn_astro']
-     * 
-     * @returns {Promise<string[]>} 返回一级文件夹名称数组
-     */
-    static async getLessonIds(): Promise<string[]> {
+    // 静态工厂方法
+    private static instance: LessonDB | null = null;
+
+    static getInstance(): LessonDB {
+        if (!LessonDB.instance) {
+            LessonDB.instance = new LessonDB();
+        }
+        return LessonDB.instance;
+    }
+
+    static async allTopLevelDocs(): Promise<LessonDoc[]> {
+        const db = LessonDB.getInstance();
+        return await db.allTopLevelDocs();
+    }
+
+    static async allLessons(lang: string): Promise<LessonDoc[]> {
+        const db = LessonDB.getInstance();
+        const docs = await db.allTopLevelDocs();
+
+        return docs.filter(doc => doc.getId().endsWith(lang));
+    }
+
+    static async getStaticPaths() {
         const debug = false;
+        const db = LessonDB.getInstance();
+        const docs = await db.getEntries();
+
         if (debug) {
-            logger.info(`getLessonIds`);
+            logger.array('所有文档', docs);
         }
 
-        // 不必遍历所有文档，只需获取部分较浅的文档
-        //  - build_your_own_web_toolbox/zh-cn
-        //  - build_your_own_web_toolbox/en
-        //  - learn_astro/zh-cn
-        //  - learn_astro/en
-        //  - ...
-        // 因为从这样的文档中，可以获取到课程ID，如：build_your_own_web_toolbox
-        const lowLevelEntries = await getCollection(collectionName, (entry) => {
-            return entry.id.split('/').length <= 2;
-        });
+        const paths = docs.map((doc) => {
+            const id = doc.id;
+            const lang = id.split('/')[1];
 
-        // 创建一个集合来存储课程ID
-        const ids = new Set<string>();
-
-        // 遍历所有较浅的课程文档
-        lowLevelEntries.forEach(entry => {
-            const parts = entry.id.split('/');
-            if (parts.length > 0) {
-                // 添加第一级目录名到集合中
-                ids.add(parts[0]);
+            let slug = '';
+            if (id.endsWith(lang)) {
+                slug = id.replace(`${lang}`, '');
+            } else {
+                slug = id.replace(`${lang}/`, '');
             }
+
+            return {
+                params: {
+                    lang: lang,
+                    slug: slug,
+                },
+            };
         });
 
         if (debug) {
-            logger.array('LessonDB.getLessonIds', Array.from(ids));
+            logger.array('所有文档的路径', paths);
         }
 
-        // 将集合转换为数组并返回
-        return Array.from(ids);
+        return paths;
     }
 }

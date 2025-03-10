@@ -6,7 +6,7 @@ import BlogDB from '@/database/BlogDB';
 export const prerender = true;
 
 export async function getStaticPaths() {
-  return await BlogDB.getTagsStaticPaths();
+  return await BlogDB.getInstance().getTagsStaticPaths();
 }
 
 const { lang, name } = Astro.params;

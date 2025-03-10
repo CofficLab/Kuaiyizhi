@@ -1,15 +1,13 @@
 import { logger } from "@/utils/logger";
-import { render, type RenderResult } from "astro:content";
 import { SidebarItem } from "./SidebarItem";
 import type { MetaEntry } from "@/database/MetaDB";
 import MetaDB from "@/database/MetaDB";
 import LinkDB from "@/database/LinkDB";
+import BaseDoc from "./BaseDoc";
 
-export default class MetaDoc {
-    entry: MetaEntry;
-
+export default class MetaDoc extends BaseDoc<'meta', MetaEntry> {
     constructor(entry: MetaEntry) {
-        this.entry = entry;
+        super(entry);
     }
 
     static fromEntry(entry: MetaEntry) {
@@ -18,32 +16,6 @@ export default class MetaDoc {
 
     getLink(): string {
         return LinkDB.getMetaLink(this.getLang(), this.getSlug());
-    }
-
-    /**
-     * 获取课程的 ID
-     *
-     * ID是根据课程的目录结构生成的，例如：
-     *  目录结构：
-     *  courses/
-     *    zh-cn/
-     *      supervisor/
-     *        index.md
-     *    en/
-     *      supervisor/
-     *        index.md
-     *
-     *  ID: zh-cn/supervisor 的 ID 为 zh-cn/supervisor
-     *  ID: en/supervisor 的 ID 为 en/supervisor
-     *
-     * @returns 
-     */
-    getId(): string {
-        return this.entry.id;
-    }
-
-    getTitle(): string {
-        return this.entry.data.title as string;
     }
 
     getLang(): string {
@@ -64,14 +36,6 @@ export default class MetaDoc {
         return this.getId().split('/').slice(1).join('/');
     }
 
-    getDescription(): string {
-        return this.entry.data.description as string;
-    }
-
-    async render(): Promise<RenderResult> {
-        return await render(this.entry);
-    }
-
     async getTopCourseId(): Promise<string> {
         const id = this.entry.id;
         const parts = id.split('/');
@@ -80,16 +44,18 @@ export default class MetaDoc {
 
     async getTopDoc(): Promise<MetaDoc | null> {
         const id = await this.getTopCourseId();
-        const doc = await MetaDB.find(id);
-        return doc;
+        const db = MetaDB.getInstance();
+        return await db.find(id);
     }
 
     async getChildren(): Promise<MetaDoc[]> {
-        return await MetaDB.getChildren(this.entry.id);
+        const db = MetaDB.getInstance();
+        return await db.getChildren(this.entry.id);
     }
 
     async getSiblingDocs(): Promise<MetaDoc[]> {
-        return await MetaDB.getSiblingDocs(this.entry.id);
+        const db = MetaDB.getInstance();
+        return await db.getSiblingDocs(this.entry.id);
     }
 
     async toSidebarItem(): Promise<SidebarItem> {
@@ -116,7 +82,7 @@ export default class MetaDoc {
         return siblingItems;
     }
 
-    async getTopSidebarItem(): Promise<SidebarItem> {
+    override async getTopSidebarItem(): Promise<SidebarItem> {
         return new SidebarItem({
             label: "了解我们",
             items: await this.getSiblingSidebarItems(),
