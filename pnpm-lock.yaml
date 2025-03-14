@@ -26,6 +26,9 @@ importers:
       '@astrojs/vue':
         specifier: ^5.0.7
         version: 5.0.7(astro@5.4.2(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0))(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(vue@3.5.13(typescript@5.7.3))(yaml@2.7.0)
+      '@coffic/cosy-ui':
+        specifier: ^0.1.27
+        version: 0.1.27(astro@5.4.2(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0))(daisyui@5.0.0)(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0)
       '@remixicon/vue':
         specifier: ^4.6.0
         version: 4.6.0(vue@3.5.13(typescript@5.7.3))
@@ -327,6 +330,12 @@ packages:
 
   '@cloudflare/workers-types@4.20250303.0':
     resolution: {integrity: sha512-O7F7nRT4bbmwHf3gkRBLfJ7R6vHIJ/oZzWdby6obOiw2yavUfp/AIwS7aO2POu5Cv8+h3TXS3oHs3kKCZLraUA==}
+
+  '@coffic/cosy-ui@0.1.27':
+    resolution: {integrity: sha512-PUugNgKv86r43n8dm/6TK/HIhJc052/25YWl7bIJOKd9lK0a1TxsNMhHF4z0OPpJX7ScNUjDwsfqMWYvculVWA==}
+    peerDependencies:
+      astro: ^5.0.0
+      daisyui: ^5.0.3
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -3610,6 +3619,31 @@ snapshots:
     optional: true
 
   '@cloudflare/workers-types@4.20250303.0': {}
+
+  '@coffic/cosy-ui@0.1.27(astro@5.4.2(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0))(daisyui@5.0.0)(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0)':
+    dependencies:
+      '@astrojs/vue': 5.0.7(astro@5.4.2(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0))(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(vue@3.5.13(typescript@5.7.3))(yaml@2.7.0)
+      '@remixicon/vue': 4.6.0(vue@3.5.13(typescript@5.7.3))
+      astro: 5.4.2(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.35.0)(typescript@5.7.3)(yaml@2.7.0)
+      daisyui: 5.0.0
+      prismjs: 1.29.0
+      vue: 3.5.13(typescript@5.7.3)
+    transitivePeerDependencies:
+      - '@nuxt/kit'
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - rollup
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - typescript
+      - yaml
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:

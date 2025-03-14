@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@source "../node_modules/@coffic/cosy-ui";
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, lemonade, pastel, cupcake, nord,

@@ -1,14 +1,15 @@
 ---
-import Footer from './Footer.astro';
 import '../app.css';
 import SmartHeader from './Header.astro';
 import type { SidebarItem } from '@/models/SidebarItem';
 import type { Heading } from '@/models/Heading';
 import { ClientRouter } from 'astro:transitions';
-import { getFooterConfig } from '@/config/footer';
 import GlobalConfirmDialog from '@/components/GlobalConfirmDialog.vue';
 import GlobalToast from '@/components/GlobalToast.vue';
 import { getLangFromUrl } from '@/i18n/utils';
+import { Footer } from '@coffic/cosy-ui';
+import LinkUtil from '@/utils/link';
+import { RiGithubFill } from '@remixicon/vue';
 
 interface Props {
   title: string;
@@ -21,7 +22,6 @@ const props = Astro.props as Props;
 const { title, description } = props;
 
 const lang = getLangFromUrl(Astro.url);
-const footerConfig = getFooterConfig(lang);
 ---
 
 <!doctype html>
@@ -41,7 +41,28 @@ const footerConfig = getFooterConfig(lang);
       <slot />
     </div>
 
-    <Footer config={footerConfig} lang={lang} />
+    <Footer
+      siteName={lang === 'zh-cn' ? '快易知' : 'KuaiYiZhi'}
+      homeLink={lang === 'zh-cn' ? '/zh-cn/' : '/en/'}
+      slogan={lang === 'zh-cn'
+        ? '精彩软件，有爱创造'
+        : 'Wonderful Software, Built with Love'}
+      company={lang === 'zh-cn'
+        ? '青岛岳亿网络科技有限公司'
+        : 'Qingdao Yueyi Network Technology Co., Ltd.'}
+      copyright={lang === 'zh-cn' ? '版权所有' : 'All rights reserved'}
+      inspirationalSlogan={lang === 'zh-cn'
+        ? '也许，这是一番成就的开始'
+        : 'Perhaps, this is the beginning of achievement'}
+      icp={lang === 'zh-cn'
+        ? '鲁ICP备2022009149号-2'
+        : 'ICP License: 2022009149-2'}
+      aboutLink={LinkUtil.getMetaLink(lang, 'about')}
+      contactLink={LinkUtil.getMetaLink(lang, 'contact')}
+      termsLink={LinkUtil.getMetaLink(lang, 'terms')}
+      privacyLink={LinkUtil.getMetaLink(lang, 'privacy')}
+      socialLinks={['https://github.com/CofficLab']}
+    />
     <GlobalConfirmDialog client:load />
     <GlobalToast client:load />
     <ClientRouter />
