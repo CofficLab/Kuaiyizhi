@@ -57,8 +57,11 @@ const lang = getLangFromUrl(Astro.url);
         ? '鲁ICP备2022009149号-2'
         : 'ICP License: 2022009149-2'}
       aboutLink={LinkUtil.getMetaLink(lang, 'about')}
-      contactLink={LinkUtil.getMetaLink(lang, 'contact')}
+      contactLink="https://github.com/CofficLab/FeedbackHub"
       termsLink={LinkUtil.getMetaLink(lang, 'terms')}
+      techStackLink={LinkUtil.getMetaLink(lang, 'tech-stack')}
+      historyLink={LinkUtil.getMetaLink(lang, 'our-story')}
+      blogLink={LinkUtil.getBlogsLink(lang)}
       privacyLink={LinkUtil.getMetaLink(lang, 'privacy')}
       socialLinks={['https://github.com/CofficLab']}
       products={[
