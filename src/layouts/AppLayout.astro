@@ -9,7 +9,6 @@ import GlobalToast from '@/components/GlobalToast.vue';
 import { getLangFromUrl } from '@/i18n/utils';
 import { Footer } from '@coffic/cosy-ui';
 import LinkUtil from '@/utils/link';
-import { RiGithubFill } from '@remixicon/vue';
 
 interface Props {
   title: string;
@@ -62,6 +61,38 @@ const lang = getLangFromUrl(Astro.url);
       termsLink={LinkUtil.getMetaLink(lang, 'terms')}
       privacyLink={LinkUtil.getMetaLink(lang, 'privacy')}
       socialLinks={['https://github.com/CofficLab']}
+      products={[
+        {
+          name: 'Cisum',
+          href: 'https://coffic.zone.id/cisum',
+          external: true,
+        },
+        {
+          name: 'GitOk',
+          href: 'https://coffic.zone.id/gitok',
+          external: true,
+        },
+        {
+          name: 'TravelMode',
+          href: 'https://coffic.zone.id/travelmode',
+          external: true,
+        },
+        {
+          name: 'Netto',
+          href: 'https://coffic.zone.id/netto',
+          external: true,
+        },
+        {
+          name: 'CosyUI',
+          href: 'https://cofficlab.github.io/cosy-ui',
+          external: true,
+        },
+        {
+          name: '菲克与象彩彩',
+          href: 'https://feekoo.zone.id',
+          external: true,
+        },
+      ]}
     />
     <GlobalConfirmDialog client:load />
     <GlobalToast client:load />

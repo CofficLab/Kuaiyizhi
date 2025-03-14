@@ -4,8 +4,6 @@ declare module '*.vue' {
     export default component
 }
 
-/// <reference types="astro/client" />
-
 type Models = import("node-appwrite").Models;
 
 declare namespace App {
