@@ -1,0 +1,158 @@
+---
+title: Safari ITP 影响实验 - 第一部分
+description: 测试 Safari ITP 对第三方 Cookie 和 localStorage 的影响
+pubDate: 2024-03-14
+---
+
+# 测试第三方 Cookie 和 localStorage
+
+在本实验的第一部分，我们将创建一个简单的测试应用程序来演示 Safari ITP 如何影响第三方 Cookie 和 localStorage。
+
+## 测试应用
+
+下面是一个交互式测试应用程序，它将帮助我们理解 ITP 的行为：
+
+```html
+<div class="test-container">
+  <div class="test-section">
+    <h3>第三方 Cookie 测试</h3>
+    <button id="setThirdPartyCookie">设置第三方 Cookie</button>
+    <button id="readThirdPartyCookie">读取第三方 Cookie</button>
+    <div id="thirdPartyCookieResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>localStorage 测试</h3>
+    <button id="setLocalStorage">设置 localStorage 项</button>
+    <button id="readLocalStorage">读取 localStorage 项</button>
+    <div id="localStorageResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>跨站点请求测试</h3>
+    <button id="makeCrossSiteRequest">发送跨站点请求</button>
+    <div id="crossSiteRequestResult"></div>
+  </div>
+</div>
+
+<script>
+  // 第三方 Cookie 测试
+  document.getElementById('setThirdPartyCookie').addEventListener('click', () => {
+    try {
+      document.cookie = "testCookie=value; domain=.example.com; path=/";
+      document.getElementById('thirdPartyCookieResult').textContent = 
+        "Cookie 设置成功。请检查 Safari 的开发者工具以查看是否被阻止。";
+    } catch (e) {
+      document.getElementById('thirdPartyCookieResult').textContent = 
+        "设置 Cookie 时出错：" + e.message;
+    }
+  });
+
+  document.getElementById('readThirdPartyCookie').addEventListener('click', () => {
+    const cookies = document.cookie;
+    document.getElementById('thirdPartyCookieResult').textContent = 
+      "当前 Cookie：" + cookies;
+  });
+
+  // localStorage 测试
+  document.getElementById('setLocalStorage').addEventListener('click', () => {
+    try {
+      localStorage.setItem('testKey', 'testValue');
+      document.getElementById('localStorageResult').textContent = 
+        "localStorage 项设置成功";
+    } catch (e) {
+      document.getElementById('localStorageResult').textContent = 
+        "设置 localStorage 时出错：" + e.message;
+    }
+  });
+
+  document.getElementById('readLocalStorage').addEventListener('click', () => {
+    try {
+      const value = localStorage.getItem('testKey');
+      document.getElementById('localStorageResult').textContent = 
+        "localStorage 值：" + value;
+    } catch (e) {
+      document.getElementById('localStorageResult').textContent = 
+        "读取 localStorage 时出错：" + e.message;
+    }
+  });
+
+  // 跨站点请求测试
+  document.getElementById('makeCrossSiteRequest').addEventListener('click', async () => {
+    try {
+      const response = await fetch('https://api.example.com/test', {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      document.getElementById('crossSiteRequestResult').textContent = 
+        "请求成功。请检查网络面板以查看详细信息。";
+    } catch (e) {
+      document.getElementById('crossSiteRequestResult').textContent = 
+        "发送请求时出错：" + e.message;
+    }
+  });
+</script>
+
+<style>
+  .test-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .test-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  #thirdPartyCookieResult,
+  #localStorageResult,
+  #crossSiteRequestResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+</style>
+```
+
+## 如何使用
+
+1. 打开 Safari 的开发者工具（开发 > 显示 Web 检查器）
+2. 转到存储面板以监控 Cookie 和 localStorage
+3. 转到网络面板以监控跨站点请求
+4. 点击按钮执行不同的测试
+5. 观察 ITP 如何影响每个操作
+
+## 需要注意什么
+
+1. 第三方 Cookie 测试：
+   - 检查 Cookie 是否成功设置
+   - 查看控制台中是否有警告
+   - 检查 Cookie 是否被分区
+
+2. localStorage 测试：
+   - 验证 localStorage 操作是否有效
+   - 检查数据是否在页面重新加载后保持
+   - 查找任何存储访问错误
+
+3. 跨站点请求测试：
+   - 监控请求头
+   - 检查是否包含凭证
+   - 查找任何 CORS 或 ITP 相关错误
+
+## 下一步
+
+[继续第二部分](/experiments/safari_itp/zh-cn/2) 

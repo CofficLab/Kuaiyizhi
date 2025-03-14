@@ -57,6 +57,11 @@ const navItems = [
     match: (path: string) => LinkDB.isCoursesLink(path, normalizedLocale),
   },
   {
+    href: LinkDB.getExperimentsLink(normalizedLocale),
+    label: normalizedLocale === 'zh-cn' ? '实验' : 'Experiments',
+    match: (path: string) => LinkDB.isExperimentsLink(path, normalizedLocale),
+  },
+  {
     href: LinkDB.getLessonsLink(normalizedLocale),
     label: 'Build Your Own X',
     match: (path: string) => LinkDB.isLessonsLink(path, normalizedLocale),

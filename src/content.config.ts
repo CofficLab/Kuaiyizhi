@@ -50,4 +50,16 @@ export const collections = {
 			})).optional(),
 		}),
 	}),
+
+	experiments: defineCollection({
+		loader: glob({
+			pattern: '**/*.{md,mdx}',
+			base: './content/experiments',
+		}),
+		schema: z.object({
+			title: z.string(),
+			description: z.string().optional(),
+			pubDate: z.date().optional(),
+		}),
+	}),
 };

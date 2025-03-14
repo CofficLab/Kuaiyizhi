@@ -1,0 +1,141 @@
+---
+title: Safari ITP Impact Experiment - Part 3
+description: Summary of findings and best practices for handling ITP
+pubDate: 2024-03-14
+---
+
+# Results and Best Practices
+
+In this final part of the experiment, we'll summarize our findings and provide recommendations for handling Safari ITP in web applications.
+
+## Key Findings
+
+### 1. Third-Party Cookies
+
+- ITP effectively blocks third-party cookies by default
+- First-party cookies are partitioned to prevent cross-site tracking
+- Cookie access is restricted in cross-site contexts
+- Cookie expiration is modified to prevent long-term tracking
+
+### 2. localStorage and sessionStorage
+
+- Storage access is restricted in cross-site contexts
+- Data persistence is limited
+- Storage operations may fail silently
+- Partitioned storage is implemented
+
+### 3. Fingerprinting Prevention
+
+- Canvas fingerprinting is modified
+- WebGL information is restricted
+- Audio fingerprinting is limited
+- Font detection is affected
+
+## Impact on Web Applications
+
+### 1. Analytics and Tracking
+
+- Third-party analytics may not work as expected
+- User tracking across sites is limited
+- Custom tracking solutions need to be ITP-aware
+
+### 2. Authentication and Sessions
+
+- Cross-site authentication may be affected
+- Session management needs to be adapted
+- OAuth flows may require modifications
+
+### 3. User Experience
+
+- Some features may break or behave differently
+- Performance may be affected
+- User privacy is enhanced
+
+## Best Practices
+
+### 1. Cookie Management
+
+```javascript
+// Instead of
+document.cookie = "user=123; domain=.example.com";
+
+// Use
+document.cookie = "user=123; SameSite=Strict; Secure";
+```
+
+### 2. Storage Handling
+
+```javascript
+// Check storage availability
+function isStorageAvailable() {
+  try {
+    const storage = window.localStorage;
+    const x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+// Use with fallback
+if (isStorageAvailable()) {
+  localStorage.setItem('key', 'value');
+} else {
+  // Fallback to session storage or cookies
+}
+```
+
+### 3. Cross-Site Requests
+
+```javascript
+// Include credentials properly
+fetch('https://api.example.com/data', {
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+```
+
+### 4. Fingerprinting Alternatives
+
+```javascript
+// Instead of canvas fingerprinting
+// Use server-side session management
+const sessionId = generateUniqueId();
+storeSession(sessionId, userData);
+```
+
+## Recommendations
+
+1. **Privacy-First Approach**
+   - Design applications with privacy in mind
+   - Minimize data collection
+   - Be transparent about tracking
+
+2. **Graceful Degradation**
+   - Implement fallbacks for restricted features
+   - Test with ITP enabled and disabled
+   - Provide alternative solutions
+
+3. **User Communication**
+   - Inform users about privacy features
+   - Explain why certain features may be limited
+   - Provide clear privacy policies
+
+4. **Technical Implementation**
+   - Use SameSite cookie attributes
+   - Implement proper CORS headers
+   - Consider using Privacy Sandbox APIs
+
+## Conclusion
+
+Safari ITP significantly impacts how web applications handle user tracking and privacy. While it may present challenges for some applications, it ultimately benefits user privacy and security. By following these best practices and recommendations, developers can create applications that work well with ITP while respecting user privacy.
+
+## Additional Resources
+
+- [Safari ITP Documentation](https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/)
+- [Privacy Sandbox](https://privacysandbox.com/)
+- [Web.dev Privacy Guide](https://web.dev/privacy-sandbox/) 

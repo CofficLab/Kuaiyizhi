@@ -23,6 +23,19 @@ export default class LinkUtil {
         return `/${lang}/lessons`;
     }
 
+    static getExperimentsLink(lang: string): string {
+        return `/${lang}/experiments`;
+    }
+
+    static getExperimentLink(lang: string, experimentId: string): string {
+        if (experimentId.endsWith(lang)) {
+            return `/${lang}/experiments/${experimentId.replace(`${lang}`, '')}`;
+        } else {
+            const idWithoutLang = experimentId.replace(`${lang}/`, '');
+            return `/${lang}/experiments/${idWithoutLang}`;
+        }
+    }
+
     static getCoursesLink(lang: string): string {
         return `/${lang}/courses`;
     }
@@ -169,6 +182,12 @@ export default class LinkUtil {
         return path === `/${lang}/lessons` ||
             path === `/${lang}/lessons/` ||
             path.startsWith(`/${lang}/lessons/`);
+    }
+
+    static isExperimentsLink(path: string, lang: string): boolean {
+        return path === `/${lang}/experiments` ||
+            path === `/${lang}/experiments/` ||
+            path.startsWith(`/${lang}/experiments/`);
     }
 
     static isCoursesLink(path: string, lang: string): boolean {

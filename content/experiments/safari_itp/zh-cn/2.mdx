@@ -1,0 +1,224 @@
+---
+title: Safari ITP 影响实验 - 第二部分
+description: 测试用户指纹识别和 ITP 对跟踪的影响
+pubDate: 2024-03-14
+---
+
+# 测试用户指纹识别
+
+在本实验的第二部分，我们将探索 Safari ITP 如何影响各种指纹识别技术和跟踪机制。
+
+## 测试应用
+
+下面是一个交互式测试应用程序，用于演示不同的指纹识别方法：
+
+```html
+<div class="test-container">
+  <div class="test-section">
+    <h3>Canvas 指纹识别测试</h3>
+    <button id="testCanvas">测试 Canvas 指纹识别</button>
+    <div id="canvasResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>WebGL 指纹识别测试</h3>
+    <button id="testWebGL">测试 WebGL 指纹识别</button>
+    <div id="webglResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>音频指纹识别测试</h3>
+    <button id="testAudio">测试音频指纹识别</button>
+    <div id="audioResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>字体检测测试</h3>
+    <button id="testFonts">测试字体检测</button>
+    <div id="fontResult"></div>
+  </div>
+</div>
+
+<script>
+  // Canvas 指纹识别
+  document.getElementById('testCanvas').addEventListener('click', () => {
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 200;
+      canvas.height = 50;
+      
+      // 绘制文本
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#f60';
+      ctx.fillRect(125,1,62,20);
+      ctx.fillStyle = '#069';
+      ctx.fillText('指纹识别测试', 2, 17);
+      ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+      ctx.fillText('指纹识别测试', 4, 17);
+      
+      const fingerprint = canvas.toDataURL();
+      document.getElementById('canvasResult').textContent = 
+        "Canvas 指纹已生成。请查看控制台获取详细信息。";
+      console.log('Canvas 指纹:', fingerprint);
+    } catch (e) {
+      document.getElementById('canvasResult').textContent = 
+        "生成 Canvas 指纹时出错：" + e.message;
+    }
+  });
+
+  // WebGL 指纹识别
+  document.getElementById('testWebGL').addEventListener('click', () => {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl');
+      const fingerprint = gl.getParameter(gl.VENDOR) + '|' + 
+                         gl.getParameter(gl.RENDERER) + '|' +
+                         gl.getParameter(gl.VERSION);
+      document.getElementById('webglResult').textContent = 
+        "WebGL 指纹：" + fingerprint;
+    } catch (e) {
+      document.getElementById('webglResult').textContent = 
+        "获取 WebGL 指纹时出错：" + e.message;
+    }
+  });
+
+  // 音频指纹识别
+  document.getElementById('testAudio').addEventListener('click', () => {
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const analyser = audioContext.createAnalyser();
+      const gainNode = audioContext.createGain();
+      const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+      gainNode.gain.value = 0; // 静音
+      oscillator.type = 'triangle';
+      oscillator.connect(analyser);
+      analyser.connect(gainNode);
+      gainNode.connect(scriptProcessor);
+      scriptProcessor.connect(audioContext.destination);
+      oscillator.start(0);
+
+      scriptProcessor.onaudioprocess = (e) => {
+        const inputData = e.inputBuffer.getChannelData(0);
+        const sum = inputData.reduce((a, b) => a + b);
+        document.getElementById('audioResult').textContent = 
+          "音频指纹已生成。请查看控制台获取详细信息。";
+        console.log('音频指纹:', sum);
+      };
+    } catch (e) {
+      document.getElementById('audioResult').textContent = 
+        "生成音频指纹时出错：" + e.message;
+    }
+  });
+
+  // 字体检测
+  document.getElementById('testFonts').addEventListener('click', () => {
+    try {
+      const baseFonts = ['monospace', 'sans-serif', 'serif'];
+      const fontList = [
+        'Arial', 'Verdana', 'Helvetica', 'Times New Roman', 'Courier New',
+        'Georgia', 'Palatino', 'Garamond', 'Bookman', 'Tahoma', 'Trebuchet MS'
+      ];
+      
+      const d = document.createElement('div');
+      d.style.visibility = 'hidden';
+      d.style.position = 'absolute';
+      d.innerHTML = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      document.body.appendChild(d);
+      
+      const detectedFonts = [];
+      for (const font of fontList) {
+        let matched = 0;
+        for (const baseFont of baseFonts) {
+          d.style.fontFamily = `'${font}',${baseFont}`;
+          if (d.offsetWidth !== 0) {
+            matched++;
+          }
+        }
+        if (matched >= 2) {
+          detectedFonts.push(font);
+        }
+      }
+      
+      document.body.removeChild(d);
+      document.getElementById('fontResult').textContent = 
+        "检测到的字体：" + detectedFonts.join(', ');
+    } catch (e) {
+      document.getElementById('fontResult').textContent = 
+        "检测字体时出错：" + e.message;
+    }
+  });
+</script>
+
+<style>
+  .test-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .test-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  #canvasResult,
+  #webglResult,
+  #audioResult,
+  #fontResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+</style>
+```
+
+## 如何使用
+
+1. 打开 Safari 的开发者工具
+2. 转到控制台面板以监控指纹识别结果
+3. 点击每个测试按钮以生成不同类型的指纹
+4. 比较启用和禁用 ITP 时的结果
+
+## 需要注意什么
+
+1. Canvas 指纹识别：
+   - 检查生成的指纹是否一致
+   - 查找任何 ITP 相关的修改
+   - 比较不同会话的结果
+
+2. WebGL 指纹识别：
+   - 验证 WebGL 信息是否准确
+   - 检查 ITP 是否修改了任何值
+   - 查找任何被阻止或限制的功能
+
+3. 音频指纹识别：
+   - 检查音频上下文是否可用
+   - 查找任何 ITP 相关的限制
+   - 比较不同浏览器的结果
+
+4. 字体检测：
+   - 验证是否所有字体都被正确检测
+   - 检查 ITP 是否影响字体检测
+   - 比较与其他浏览器的结果
+
+## 下一步
+
+[继续第三部分](/experiments/safari_itp/zh-cn/3) 

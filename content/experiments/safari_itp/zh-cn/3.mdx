@@ -1,0 +1,141 @@
+---
+title: Safari ITP 影响实验 - 第三部分
+description: 实验结果总结和 ITP 处理最佳实践
+pubDate: 2024-03-14
+---
+
+# 结果与最佳实践
+
+在这个实验的最后一部分，我们将总结我们的发现，并提供处理 Safari ITP 的建议。
+
+## 主要发现
+
+### 1. 第三方 Cookie
+
+- ITP 默认有效阻止第三方 Cookie
+- 第一方 Cookie 被分区以防止跨站点跟踪
+- 跨站点上下文中的 Cookie 访问受限
+- Cookie 过期时间被修改以防止长期跟踪
+
+### 2. localStorage 和 sessionStorage
+
+- 跨站点上下文中的存储访问受限
+- 数据持久性受限
+- 存储操作可能静默失败
+- 实现了分区存储
+
+### 3. 指纹识别预防
+
+- Canvas 指纹识别被修改
+- WebGL 信息受限
+- 音频指纹识别受限
+- 字体检测受影响
+
+## 对 Web 应用的影响
+
+### 1. 分析和跟踪
+
+- 第三方分析可能无法按预期工作
+- 跨站点用户跟踪受限
+- 自定义跟踪解决方案需要适配 ITP
+
+### 2. 身份验证和会话
+
+- 跨站点身份验证可能受影响
+- 会话管理需要调整
+- OAuth 流程可能需要修改
+
+### 3. 用户体验
+
+- 某些功能可能中断或行为异常
+- 性能可能受影响
+- 用户隐私得到增强
+
+## 最佳实践
+
+### 1. Cookie 管理
+
+```javascript
+// 不要使用
+document.cookie = "user=123; domain=.example.com";
+
+// 使用
+document.cookie = "user=123; SameSite=Strict; Secure";
+```
+
+### 2. 存储处理
+
+```javascript
+// 检查存储可用性
+function isStorageAvailable() {
+  try {
+    const storage = window.localStorage;
+    const x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+// 使用带后备方案
+if (isStorageAvailable()) {
+  localStorage.setItem('key', 'value');
+} else {
+  // 回退到会话存储或 Cookie
+}
+```
+
+### 3. 跨站点请求
+
+```javascript
+// 正确包含凭证
+fetch('https://api.example.com/data', {
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+```
+
+### 4. 指纹识别替代方案
+
+```javascript
+// 不要使用 canvas 指纹识别
+// 使用服务器端会话管理
+const sessionId = generateUniqueId();
+storeSession(sessionId, userData);
+```
+
+## 建议
+
+1. **隐私优先方法**
+   - 设计应用时考虑隐私
+   - 最小化数据收集
+   - 对跟踪保持透明
+
+2. **优雅降级**
+   - 为受限功能实现后备方案
+   - 在启用和禁用 ITP 的情况下测试
+   - 提供替代解决方案
+
+3. **用户沟通**
+   - 告知用户隐私功能
+   - 解释为什么某些功能可能受限
+   - 提供清晰的隐私政策
+
+4. **技术实现**
+   - 使用 SameSite Cookie 属性
+   - 实现适当的 CORS 头
+   - 考虑使用 Privacy Sandbox API
+
+## 结论
+
+Safari ITP 显著影响了 Web 应用处理用户跟踪和隐私的方式。虽然它可能给某些应用带来挑战，但最终有利于用户隐私和安全。通过遵循这些最佳实践和建议，开发者可以创建既能与 ITP 良好配合又能尊重用户隐私的应用。
+
+## 额外资源
+
+- [Safari ITP 文档](https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/)
+- [Privacy Sandbox](https://privacysandbox.com/)
+- [Web.dev 隐私指南](https://web.dev/privacy-sandbox/) 

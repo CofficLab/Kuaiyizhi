@@ -1,0 +1,224 @@
+---
+title: Safari ITP Impact Experiment - Part 2
+description: Testing user fingerprinting and ITP's impact on tracking
+pubDate: 2024-03-14
+---
+
+# Testing User Fingerprinting
+
+In this part of the experiment, we'll explore how Safari ITP affects various fingerprinting techniques and tracking mechanisms.
+
+## Test Application
+
+Below is an interactive test application that demonstrates different fingerprinting methods:
+
+```html
+<div class="test-container">
+  <div class="test-section">
+    <h3>Canvas Fingerprinting Test</h3>
+    <button id="testCanvas">Test Canvas Fingerprinting</button>
+    <div id="canvasResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>WebGL Fingerprinting Test</h3>
+    <button id="testWebGL">Test WebGL Fingerprinting</button>
+    <div id="webglResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>Audio Fingerprinting Test</h3>
+    <button id="testAudio">Test Audio Fingerprinting</button>
+    <div id="audioResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>Font Detection Test</h3>
+    <button id="testFonts">Test Font Detection</button>
+    <div id="fontResult"></div>
+  </div>
+</div>
+
+<script>
+  // Canvas Fingerprinting
+  document.getElementById('testCanvas').addEventListener('click', () => {
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 200;
+      canvas.height = 50;
+      
+      // Draw text
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#f60';
+      ctx.fillRect(125,1,62,20);
+      ctx.fillStyle = '#069';
+      ctx.fillText('Fingerprint Test', 2, 17);
+      ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+      ctx.fillText('Fingerprint Test', 4, 17);
+      
+      const fingerprint = canvas.toDataURL();
+      document.getElementById('canvasResult').textContent = 
+        "Canvas fingerprint generated. Check console for details.";
+      console.log('Canvas Fingerprint:', fingerprint);
+    } catch (e) {
+      document.getElementById('canvasResult').textContent = 
+        "Error generating canvas fingerprint: " + e.message;
+    }
+  });
+
+  // WebGL Fingerprinting
+  document.getElementById('testWebGL').addEventListener('click', () => {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl');
+      const fingerprint = gl.getParameter(gl.VENDOR) + '|' + 
+                         gl.getParameter(gl.RENDERER) + '|' +
+                         gl.getParameter(gl.VERSION);
+      document.getElementById('webglResult').textContent = 
+        "WebGL fingerprint: " + fingerprint;
+    } catch (e) {
+      document.getElementById('webglResult').textContent = 
+        "Error getting WebGL fingerprint: " + e.message;
+    }
+  });
+
+  // Audio Fingerprinting
+  document.getElementById('testAudio').addEventListener('click', () => {
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const analyser = audioContext.createAnalyser();
+      const gainNode = audioContext.createGain();
+      const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+      gainNode.gain.value = 0; // Mute the sound
+      oscillator.type = 'triangle';
+      oscillator.connect(analyser);
+      analyser.connect(gainNode);
+      gainNode.connect(scriptProcessor);
+      scriptProcessor.connect(audioContext.destination);
+      oscillator.start(0);
+
+      scriptProcessor.onaudioprocess = (e) => {
+        const inputData = e.inputBuffer.getChannelData(0);
+        const sum = inputData.reduce((a, b) => a + b);
+        document.getElementById('audioResult').textContent = 
+          "Audio fingerprint generated. Check console for details.";
+        console.log('Audio Fingerprint:', sum);
+      };
+    } catch (e) {
+      document.getElementById('audioResult').textContent = 
+        "Error generating audio fingerprint: " + e.message;
+    }
+  });
+
+  // Font Detection
+  document.getElementById('testFonts').addEventListener('click', () => {
+    try {
+      const baseFonts = ['monospace', 'sans-serif', 'serif'];
+      const fontList = [
+        'Arial', 'Verdana', 'Helvetica', 'Times New Roman', 'Courier New',
+        'Georgia', 'Palatino', 'Garamond', 'Bookman', 'Tahoma', 'Trebuchet MS'
+      ];
+      
+      const d = document.createElement('div');
+      d.style.visibility = 'hidden';
+      d.style.position = 'absolute';
+      d.innerHTML = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      document.body.appendChild(d);
+      
+      const detectedFonts = [];
+      for (const font of fontList) {
+        let matched = 0;
+        for (const baseFont of baseFonts) {
+          d.style.fontFamily = `'${font}',${baseFont}`;
+          if (d.offsetWidth !== 0) {
+            matched++;
+          }
+        }
+        if (matched >= 2) {
+          detectedFonts.push(font);
+        }
+      }
+      
+      document.body.removeChild(d);
+      document.getElementById('fontResult').textContent = 
+        "Detected fonts: " + detectedFonts.join(', ');
+    } catch (e) {
+      document.getElementById('fontResult').textContent = 
+        "Error detecting fonts: " + e.message;
+    }
+  });
+</script>
+
+<style>
+  .test-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .test-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  #canvasResult,
+  #webglResult,
+  #audioResult,
+  #fontResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+</style>
+```
+
+## How to Use
+
+1. Open Safari's Developer Tools
+2. Go to the Console tab to monitor fingerprinting results
+3. Click each test button to generate different types of fingerprints
+4. Compare results with and without ITP enabled
+
+## What to Look For
+
+1. Canvas Fingerprinting:
+   - Check if the generated fingerprint is consistent
+   - Look for any ITP-related modifications
+   - Compare results across different sessions
+
+2. WebGL Fingerprinting:
+   - Verify if the WebGL information is accurate
+   - Check if ITP modifies any values
+   - Look for any blocked or restricted features
+
+3. Audio Fingerprinting:
+   - Check if the audio context is available
+   - Look for any ITP-related restrictions
+   - Compare results across different browsers
+
+4. Font Detection:
+   - Verify if all fonts are detected correctly
+   - Check if ITP affects font detection
+   - Compare results with other browsers
+
+## Next Steps
+
+[Continue to Part 3](/experiments/safari_itp/en/3) 

@@ -1,0 +1,158 @@
+---
+title: Safari ITP Impact Experiment - Part 1
+description: Testing third-party cookies and localStorage behavior with Safari ITP
+pubDate: 2024-03-14
+---
+
+# Testing Third-Party Cookies and localStorage
+
+In this part of the experiment, we'll create a simple test application that demonstrates how Safari ITP affects third-party cookies and localStorage.
+
+## Test Application
+
+Below is an interactive test application that will help us understand ITP's behavior:
+
+```html
+<div class="test-container">
+  <div class="test-section">
+    <h3>Third-Party Cookie Test</h3>
+    <button id="setThirdPartyCookie">Set Third-Party Cookie</button>
+    <button id="readThirdPartyCookie">Read Third-Party Cookie</button>
+    <div id="thirdPartyCookieResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>localStorage Test</h3>
+    <button id="setLocalStorage">Set localStorage Item</button>
+    <button id="readLocalStorage">Read localStorage Item</button>
+    <div id="localStorageResult"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>Cross-Site Request Test</h3>
+    <button id="makeCrossSiteRequest">Make Cross-Site Request</button>
+    <div id="crossSiteRequestResult"></div>
+  </div>
+</div>
+
+<script>
+  // Third-Party Cookie Test
+  document.getElementById('setThirdPartyCookie').addEventListener('click', () => {
+    try {
+      document.cookie = "testCookie=value; domain=.example.com; path=/";
+      document.getElementById('thirdPartyCookieResult').textContent = 
+        "Cookie set successfully. Check Safari's developer tools to see if it was blocked.";
+    } catch (e) {
+      document.getElementById('thirdPartyCookieResult').textContent = 
+        "Error setting cookie: " + e.message;
+    }
+  });
+
+  document.getElementById('readThirdPartyCookie').addEventListener('click', () => {
+    const cookies = document.cookie;
+    document.getElementById('thirdPartyCookieResult').textContent = 
+      "Current cookies: " + cookies;
+  });
+
+  // localStorage Test
+  document.getElementById('setLocalStorage').addEventListener('click', () => {
+    try {
+      localStorage.setItem('testKey', 'testValue');
+      document.getElementById('localStorageResult').textContent = 
+        "localStorage item set successfully";
+    } catch (e) {
+      document.getElementById('localStorageResult').textContent = 
+        "Error setting localStorage: " + e.message;
+    }
+  });
+
+  document.getElementById('readLocalStorage').addEventListener('click', () => {
+    try {
+      const value = localStorage.getItem('testKey');
+      document.getElementById('localStorageResult').textContent = 
+        "localStorage value: " + value;
+    } catch (e) {
+      document.getElementById('localStorageResult').textContent = 
+        "Error reading localStorage: " + e.message;
+    }
+  });
+
+  // Cross-Site Request Test
+  document.getElementById('makeCrossSiteRequest').addEventListener('click', async () => {
+    try {
+      const response = await fetch('https://api.example.com/test', {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      document.getElementById('crossSiteRequestResult').textContent = 
+        "Request successful. Check Network tab for details.";
+    } catch (e) {
+      document.getElementById('crossSiteRequestResult').textContent = 
+        "Error making request: " + e.message;
+    }
+  });
+</script>
+
+<style>
+  .test-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .test-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  #thirdPartyCookieResult,
+  #localStorageResult,
+  #crossSiteRequestResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+</style>
+```
+
+## How to Use
+
+1. Open Safari's Developer Tools (Develop > Show Web Inspector)
+2. Go to the Storage tab to monitor cookies and localStorage
+3. Go to the Network tab to monitor cross-site requests
+4. Click the buttons to perform different tests
+5. Observe how ITP affects each operation
+
+## What to Look For
+
+1. Third-Party Cookie Test:
+   - Check if the cookie is set successfully
+   - Look for any warnings in the Console
+   - Check if the cookie is partitioned
+
+2. localStorage Test:
+   - Verify if localStorage operations work
+   - Check if the data persists between page reloads
+   - Look for any storage access errors
+
+3. Cross-Site Request Test:
+   - Monitor the request headers
+   - Check if credentials are included
+   - Look for any CORS or ITP-related errors
+
+## Next Steps
+
+[Continue to Part 2](/experiments/safari_itp/en/2) 
