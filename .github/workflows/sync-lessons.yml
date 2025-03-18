@@ -58,20 +58,21 @@ jobs:
       - name: Get changed lesson directories
         id: changed-lessons
         run: |
-          # Find all directories in content/lessons and store as a JSON array to handle special characters properly
-          lesson_dirs=$(find content/lessons -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | jq -R . | jq -s .)
+          # 使用逗号分隔目录名，以避免格式问题
+          lesson_dirs=$(find content/lessons -mindepth 1 -maxdepth 1 -type d -printf "%f," | sed 's/,$//')
           echo "lesson_dirs=$lesson_dirs" >> $GITHUB_OUTPUT
 
       - name: Sync lessons to repositories
         env:
           GITHUB_TOKEN: ${{ secrets.SYNC_GITHUB_TOKEN }}
-          LESSON_DIRS: ${{ toJSON(fromJSON(steps.changed-lessons.outputs.lesson_dirs)) }}
+          LESSON_DIRS: ${{ steps.changed-lessons.outputs.lesson_dirs }}
         run: |
           # Create a temporary directory for cloning repositories
           mkdir -p /tmp/repos
 
-          # Process each lesson directory - parse from JSON array
-          echo "$LESSON_DIRS" | jq -r '.[]' | while read -r lesson_dir; do
+          # 使用IFS处理逗号分隔的目录列表
+          IFS=',' read -ra DIR_ARRAY <<< "$LESSON_DIRS"
+          for lesson_dir in "${DIR_ARRAY[@]}"; do
             echo "Processing lesson: $lesson_dir"
             
             # Determine the target repository name based on lesson directory
