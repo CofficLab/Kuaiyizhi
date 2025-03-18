@@ -1,0 +1,106 @@
+# ========================================================
+# Lessons Sync Workflow
+# ========================================================
+#
+# 这个工作流程会自动将 content/lessons 目录下的子目录同步到对应的GitHub仓库。
+#
+# 工作流程：
+# 1. 当向dev分支推送代码且 content/lessons 目录有变化时触发
+# 2. 检查 content/lessons 下的所有一级子目录
+# 3. 将每个子目录的内容同步到相应的GitHub仓库
+#
+# 配置要求：
+# - 需要在仓库Secrets中配置 SYNC_GITHUB_TOKEN，用于有权限访问目标仓库
+#   * Token需要的权限：
+#     - repo (完整的仓库访问权限，用于克隆和推送内容)
+#     - workflow (如果目标仓库有工作流保护，则需要此权限)
+#     - 如果目标仓库在另一个组织中，Token需要有该组织的访问权限
+#   * 创建步骤：
+#     1. 访问 GitHub > Settings > Developer settings > Personal access tokens
+#     2. 创建一个具有上述权限的Fine-grained token或Classic token
+#     3. 将token添加到仓库的Secrets中，命名为SYNC_GITHUB_TOKEN
+# - 目标仓库必须已经存在
+# - 目标仓库映射关系：
+#   * api_market → BuildMyOwn/api_market
+#   * 其他子目录 → BuildMyOwn/<子目录名> (默认组织)
+# - 默认同步到目标仓库的 main 分支
+#
+# ========================================================
+
+name: Sync Lessons to GitHub Repositories
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'content/lessons/**'
+
+env:
+  DEFAULT_ORG: 'BuildMyOwn' # 可配置的默认组织名
+
+jobs:
+  sync-lessons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Get changed lesson directories
+        id: changed-lessons
+        run: |
+          # Find all directories in content/lessons
+          lesson_dirs=$(find content/lessons -mindepth 1 -maxdepth 1 -type d -printf "%f\n")
+          echo "lesson_dirs=$lesson_dirs" >> $GITHUB_OUTPUT
+
+      - name: Sync lessons to repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.SYNC_GITHUB_TOKEN }}
+          LESSON_DIRS: ${{ steps.changed-lessons.outputs.lesson_dirs }}
+        run: |
+          # Create a temporary directory for cloning repositories
+          mkdir -p /tmp/repos
+
+          # Process each lesson directory
+          for lesson_dir in $LESSON_DIRS; do
+            echo "Processing lesson: $lesson_dir"
+            
+            # Determine the target repository name based on lesson directory
+            if [ "$lesson_dir" = "api_market" ]; then
+              # 特殊仓库映射，使用相同的组织名
+              TARGET_REPO="${DEFAULT_ORG}/api_market"
+            else
+              # 默认使用配置的组织名
+              TARGET_REPO="${DEFAULT_ORG}/$lesson_dir"
+            fi
+            
+            # Clone the target repository
+            echo "Cloning $TARGET_REPO"
+            git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git /tmp/repos/$lesson_dir
+            
+            # Sync the lesson directory to the cloned repository
+            echo "Syncing content/lessons/$lesson_dir to repository"
+            rsync -av --delete --exclude=".git" "content/lessons/$lesson_dir/" "/tmp/repos/$lesson_dir/"
+            
+            # Commit and push changes
+            cd /tmp/repos/$lesson_dir
+            
+            # Check if there are changes to commit
+            if git status --porcelain | grep .; then
+              git add .
+              git commit -m "Sync lesson content from main repository"
+              git push origin main
+              echo "Changes pushed to $TARGET_REPO"
+            else
+              echo "No changes to sync for $TARGET_REPO"
+            fi
+            
+            cd -
+          done
