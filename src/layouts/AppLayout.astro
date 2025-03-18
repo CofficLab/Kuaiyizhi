@@ -41,6 +41,7 @@ const lang = getLangFromUrl(Astro.url);
     </div>
 
     <Footer
+      lang={lang}
       siteName={lang === 'zh-cn' ? '快易知' : 'KuaiYiZhi'}
       homeLink={lang === 'zh-cn' ? '/zh-cn/' : '/en/'}
       slogan={lang === 'zh-cn'
