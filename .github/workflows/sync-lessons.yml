@@ -21,7 +21,7 @@
 #     1. 访问 GitHub > Settings > Developer settings > Personal access tokens
 #     2. 创建一个具有上述权限的Fine-grained token或Classic token
 #     3. 将token添加到仓库的Secrets中，命名为SYNC_GITHUB_TOKEN
-# - 目标仓库必须已经存在
+# - 目标仓库必须已经存在，不存在的仓库会被自动跳过处理
 # - 目标仓库映射关系：
 #   * api_market → BuildMyOwn/api_market
 #   * 其他子目录 → BuildMyOwn/<子目录名> (默认组织)
@@ -86,24 +86,30 @@ jobs:
             
             # Clone the target repository
             echo "Cloning $TARGET_REPO"
-            git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git "/tmp/repos/${lesson_dir}"
-            
-            # Sync the lesson directory to the cloned repository
-            echo "Syncing content/lessons/$lesson_dir to repository"
-            rsync -av --delete --exclude=".git" "content/lessons/${lesson_dir}/" "/tmp/repos/${lesson_dir}/"
-            
-            # Commit and push changes
-            cd "/tmp/repos/${lesson_dir}"
-            
-            # Check if there are changes to commit
-            if git status --porcelain | grep .; then
-              git add .
-              git commit -m "Sync lesson content from main repository"
-              git push origin main
-              echo "Changes pushed to $TARGET_REPO"
+            if git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git "/tmp/repos/${lesson_dir}" 2>/dev/null; then
+              # 克隆成功，继续处理
+              echo "Successfully cloned $TARGET_REPO"
+              
+              # Sync the lesson directory to the cloned repository
+              echo "Syncing content/lessons/$lesson_dir to repository"
+              rsync -av --delete --exclude=".git" "content/lessons/${lesson_dir}/" "/tmp/repos/${lesson_dir}/"
+              
+              # Commit and push changes
+              cd "/tmp/repos/${lesson_dir}"
+              
+              # Check if there are changes to commit
+              if git status --porcelain | grep .; then
+                git add .
+                git commit -m "Sync lesson content from main repository"
+                git push origin main
+                echo "Changes pushed to $TARGET_REPO"
+              else
+                echo "No changes to sync for $TARGET_REPO"
+              fi
+              
+              cd -
             else
-              echo "No changes to sync for $TARGET_REPO"
+              # 克隆失败，仓库可能不存在
+              echo "Warning: Repository $TARGET_REPO not found or not accessible. Skipping this lesson."
             fi
-            
-            cd -
           done
