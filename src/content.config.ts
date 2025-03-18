@@ -43,6 +43,7 @@ export const collections = {
 		}),
 		schema: z.object({
 			title: z.string(),
+			order: z.number().optional(),
 			description: z.string().optional(),
 			authors: z.array(z.object({
 				name: z.string(),

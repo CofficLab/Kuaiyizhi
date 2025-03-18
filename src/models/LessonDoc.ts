@@ -83,7 +83,12 @@ export default class LessonDoc extends HierarchicalDoc<typeof COLLECTION_NAME, L
     }
 
     async getChildren(): Promise<LessonDoc[]> {
-        return await lessonDB.getChildren(this.entry.id);
+        return (await lessonDB.getChildren(this.entry.id)).sort((a, b) => {
+            const aId = a.getId();
+            const bId = b.getId();
+
+            return aId.localeCompare(bId);
+        });
     }
 
     async getDescendants(): Promise<LessonDoc[]> {
