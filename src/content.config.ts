@@ -38,7 +38,7 @@ export const collections = {
 
 	lessons: defineCollection({
 		loader: glob({
-			pattern: '**/*.{md,mdx}',
+			pattern: '**/{zh-cn,en}/**/*.{md,mdx}',
 			base: './content/lessons',
 		}),
 		schema: z.object({

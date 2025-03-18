@@ -1,12 +1,11 @@
 # Cursor MCP Server 开发教程
 
-本项目是一个关于如何为Cursor开发最简单MCP Server的教程。
+本项目是一个关于如何为 Cursor 开发最简单 MCP Server 的教程。
 
 ## 目录结构
 
-- `content/`: 教程文档
-  - `zh-cn/`: 中文文档
-  - `en/`: 英文文档
+- `zh-cn/`: 中文文档
+- `en/`: 英文文档
 - `project/`: 项目代码
 
 ## 项目
