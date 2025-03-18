@@ -56,20 +56,20 @@ jobs:
       - name: Get changed lesson directories
         id: changed-lessons
         run: |
-          # Find all directories in content/lessons
-          lesson_dirs=$(find content/lessons -mindepth 1 -maxdepth 1 -type d -printf "%f\n")
+          # Find all directories in content/lessons and store as a JSON array to handle special characters properly
+          lesson_dirs=$(find content/lessons -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | jq -R . | jq -s .)
           echo "lesson_dirs=$lesson_dirs" >> $GITHUB_OUTPUT
 
       - name: Sync lessons to repositories
         env:
           GITHUB_TOKEN: ${{ secrets.SYNC_GITHUB_TOKEN }}
-          LESSON_DIRS: ${{ steps.changed-lessons.outputs.lesson_dirs }}
+          LESSON_DIRS: ${{ toJSON(fromJSON(steps.changed-lessons.outputs.lesson_dirs)) }}
         run: |
           # Create a temporary directory for cloning repositories
           mkdir -p /tmp/repos
 
-          # Process each lesson directory
-          for lesson_dir in $LESSON_DIRS; do
+          # Process each lesson directory - parse from JSON array
+          echo "$LESSON_DIRS" | jq -r '.[]' | while read -r lesson_dir; do
             echo "Processing lesson: $lesson_dir"
             
             # Determine the target repository name based on lesson directory
@@ -83,14 +83,14 @@ jobs:
             
             # Clone the target repository
             echo "Cloning $TARGET_REPO"
-            git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git /tmp/repos/$lesson_dir
+            git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git "/tmp/repos/${lesson_dir}"
             
             # Sync the lesson directory to the cloned repository
             echo "Syncing content/lessons/$lesson_dir to repository"
-            rsync -av --delete --exclude=".git" "content/lessons/$lesson_dir/" "/tmp/repos/$lesson_dir/"
+            rsync -av --delete --exclude=".git" "content/lessons/${lesson_dir}/" "/tmp/repos/${lesson_dir}/"
             
             # Commit and push changes
-            cd /tmp/repos/$lesson_dir
+            cd "/tmp/repos/${lesson_dir}"
             
             # Check if there are changes to commit
             if git status --porcelain | grep .; then
