@@ -70,6 +70,10 @@ jobs:
           # Create a temporary directory for cloning repositories
           mkdir -p /tmp/repos
 
+          # 创建数组以记录成功和失败的仓库
+          successful_repos=()
+          skipped_repos=()
+
           # 使用IFS处理逗号分隔的目录列表
           IFS=',' read -ra DIR_ARRAY <<< "$LESSON_DIRS"
           for lesson_dir in "${DIR_ARRAY[@]}"; do
@@ -103,13 +107,43 @@ jobs:
                 git commit -m "Sync lesson content from main repository"
                 git push origin main
                 echo "Changes pushed to $TARGET_REPO"
+                successful_repos+=("$TARGET_REPO (changes pushed)")
               else
                 echo "No changes to sync for $TARGET_REPO"
+                successful_repos+=("$TARGET_REPO (no changes)")
               fi
               
               cd -
             else
               # 克隆失败，仓库可能不存在
               echo "Warning: Repository $TARGET_REPO not found or not accessible. Skipping this lesson."
+              skipped_repos+=("$TARGET_REPO")
             fi
           done
+
+          # 输出总结信息
+          echo "========================================"
+          echo "SYNC SUMMARY"
+          echo "========================================"
+          echo "Total directories processed: ${#DIR_ARRAY[@]}"
+          echo "--------------------------------------"
+
+          echo "Successfully synced repositories (${#successful_repos[@]}):"
+          if [ ${#successful_repos[@]} -eq 0 ]; then
+            echo "  None"
+          else
+            for repo in "${successful_repos[@]}"; do
+              echo "  - $repo"
+            done
+          fi
+
+          echo "--------------------------------------"
+          echo "Skipped repositories (${#skipped_repos[@]}):"
+          if [ ${#skipped_repos[@]} -eq 0 ]; then
+            echo "  None"
+          else
+            for repo in "${skipped_repos[@]}"; do
+              echo "  - $repo"
+            done
+          fi
+          echo "========================================"
