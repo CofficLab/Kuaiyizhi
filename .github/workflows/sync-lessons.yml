@@ -123,27 +123,41 @@ jobs:
 
           # 输出总结信息
           echo "========================================"
-          echo "SYNC SUMMARY"
+          echo "🔄 SYNC SUMMARY 🔄"
           echo "========================================"
-          echo "Total directories processed: ${#DIR_ARRAY[@]}"
+          echo "📊 Total directories processed: ${#DIR_ARRAY[@]}"
           echo "--------------------------------------"
 
-          echo "Successfully synced repositories (${#successful_repos[@]}):"
+          echo "✅ Successfully synced repositories (${#successful_repos[@]}):"
           if [ ${#successful_repos[@]} -eq 0 ]; then
             echo "  None"
           else
             for repo in "${successful_repos[@]}"; do
-              echo "  - $repo"
+              if [[ $repo == *"(changes pushed)"* ]]; then
+                echo "  - 📝 $repo"
+              else
+                echo "  - 👌 $repo"
+              fi
             done
           fi
 
           echo "--------------------------------------"
-          echo "Skipped repositories (${#skipped_repos[@]}):"
+          echo "⚠️ Skipped repositories (${#skipped_repos[@]}):"
           if [ ${#skipped_repos[@]} -eq 0 ]; then
             echo "  None"
           else
             for repo in "${skipped_repos[@]}"; do
-              echo "  - $repo"
+              echo "  - 🚫 $repo"
             done
+          fi
+          echo "========================================"
+
+          # 总体结果
+          if [ ${#skipped_repos[@]} -eq 0 ]; then
+            echo "🎉 All repositories were successfully processed!"
+          elif [ ${#successful_repos[@]} -eq 0 ]; then
+            echo "❌ No repositories were successfully synced. Please check your configuration."
+          else
+            echo "⚠️ Some repositories were skipped. See details above."
           fi
           echo "========================================"
