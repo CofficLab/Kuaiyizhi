@@ -13,7 +13,8 @@
 				"astro-build.astro-vscode",
 				"Vue.volar",
 				"unifiedjs.vscode-mdx",
-				"bradlc.vscode-tailwindcss"
+				"bradlc.vscode-tailwindcss",
+				"esbenp.prettier-vscode"
 			]
 		}
 	}
