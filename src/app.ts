@@ -1,5 +1,6 @@
 import { LangPackage } from '@coffic/cosy-ui';
 import LinkDB from '@/utils/link';
+
 class App {
     companyName = LangPackage.setZh('青岛岳亿网络科技有限公司')
         .setEn('Qingdao Yueyi Network Technology Co., Ltd.')

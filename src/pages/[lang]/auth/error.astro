@@ -1,18 +1,43 @@
 ---
-import AuthErrorView from '@/views/AuthErrorView.astro';
-
 const { lang = 'en' } = Astro.params;
 export const prerender = true;
 export const getStaticPaths = async () => {
-  return [
-    {
-      params: { lang: 'zh-cn' },
-      props: {
-        lang: 'en',
-      },
-    },
-  ];
+    return [
+        {
+            params: { lang: 'zh-cn' },
+            props: {
+                lang: 'en',
+            },
+        },
+    ];
 };
+import AppLayout from '@layouts/AppLayout.astro';
+import { RiErrorWarningFill } from '@remixicon/vue';
+import LinkUtil from '@/utils/link';
+
+const title = lang === 'zh-cn' ? '登录失败' : 'Sign in Failed';
+const description = lang === 'zh-cn' ? '登录失败' : 'Sign in failed';
 ---
 
-<AuthErrorView lang={lang} />
+<AppLayout title={title} description={description}>
+    <div class="min-h-screen flex items-center justify-center bg-base-200">
+        <div class="card w-96 bg-base-100 shadow-xl">
+            <div class="card-body items-center text-center space-y-6">
+                <RiErrorWarningFill class="w-16 h-16 text-error" />
+                <h2 class="card-title text-2xl font-bold">
+                    {lang === 'zh-cn' ? '登录失败' : 'Sign in Failed'}
+                </h2>
+                <p class="text-base-content/70">
+                    {
+                        lang === 'zh-cn'
+                            ? '认证过程中发生错误'
+                            : 'An error occurred during authentication'
+                    }
+                </p>
+                <a href={LinkUtil.getSigninLink(lang)} class="btn btn-primary">
+                    {lang === 'zh-cn' ? '返回登录' : 'Back to Sign in'}
+                </a>
+            </div>
+        </div>
+    </div>
+</AppLayout>
