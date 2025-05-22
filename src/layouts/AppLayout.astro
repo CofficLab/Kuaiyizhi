@@ -11,7 +11,7 @@ interface Props {
     description: string;
     isArticle?: boolean;
     sidebar?: ISidebarItem | null | undefined;
-    verticalPadding?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    verticalPadding?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
     showSidebar?: boolean;
     showTableOfContents?: boolean;
     layout?: 'column' | 'row';
@@ -23,7 +23,7 @@ const {
     description,
     isArticle = true,
     sidebar,
-    verticalPadding = 'md',
+    verticalPadding = '5xl',
     showSidebar = true,
     layout = 'column',
     showTableOfContents = false,

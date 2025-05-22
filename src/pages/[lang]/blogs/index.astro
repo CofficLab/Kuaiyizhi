@@ -33,14 +33,9 @@ const sidebarItem = await Tag.makeRootSidebarItem(lang);
 const l = lang as 'zh' | 'en';
 ---
 
-<AppLayout
-    title="所有文章"
-    description="我的博客"
-    verticalPadding="2xl"
-    sidebar={sidebarItem}
-    showSidebar={true}>
+<AppLayout title="所有文章" description="我的博客" sidebar={sidebarItem} showSidebar={true}>
     <Container>
-        <h1 class="text-2xl font-bold mt-12 pl-2">所有文章</h1>
+        <h1 class="text-2xl font-bold pl-2">所有文章</h1>
         <BlogList blogs={blogs} lang={l} />
     </Container>
     <div class="mt-96"></div>
