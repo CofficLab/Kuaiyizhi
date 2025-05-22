@@ -1,10 +1,12 @@
 ---
-import LessonView from '@/views/LessonView.astro';
-import lessonDB from '@/database/LessonDB';
+import AppLayout from '@layouts/AppLayout.astro';
+import { lessonDB } from '@coffic/cosy-ui';
+import LessonNotFound from '@components/lesson/LessonNotFound.astro';
+import { type RenderResult } from 'astro:content';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  return lessonDB.getStaticPaths();
+    return lessonDB.getStaticPaths();
 }
 
 /**
@@ -20,10 +22,24 @@ let bookId = slug.split('/')[0];
 let id = '';
 
 if (slug.split('/').length === 1) {
-  id = `${bookId}/${lang}`;
+    id = `${bookId}/${lang}`;
 } else {
-  id = `${bookId}/${lang}/${slug.replace(`${bookId}/`, '')}`;
+    id = `${bookId}/${lang}/${slug.replace(`${bookId}/`, '')}`;
+}
+
+const lesson = await lessonDB.find(id);
+const title = lesson?.getTitle() || '没有找到课程';
+const description = lesson?.getDescription() || '没有找到课程';
+const sidebarItem = (await (await lesson?.getBook())?.toSidebarItem()) || null;
+
+let Content: RenderResult['Content'] | null = null;
+
+if (lesson) {
+    const renderResult = await lesson.render();
+    Content = renderResult.Content;
 }
 ---
 
-<LessonView id={id} />
+<AppLayout title={title} description={description} sidebar={sidebarItem}>
+    {Content ? <Content /> : <LessonNotFound id={id} />}
+</AppLayout>

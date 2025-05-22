@@ -3,6 +3,10 @@
  * 这里定义了每个语言的课程列表页，并将其作为静态页面预渲染。
  */
 
+import AppLayout from '@layouts/AppLayout.astro';
+import CourseCard from '@/components/common/CourseCard.astro';
+import { lessonDB } from '@coffic/cosy-ui';
+
 export const prerender = true;
 
 export async function getStaticPaths() {
@@ -21,11 +25,8 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-import AppLayout from '@layouts/AppLayout.astro';
-import CourseCard from '@/components/common/CourseCard.astro';
-import LessonDB from '@/database/LessonDB';
 
-const lessons = await LessonDB.allLessons(lang);
+const lessons = await lessonDB.allDocsByLang(lang);
 
 const title = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
 const description = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
