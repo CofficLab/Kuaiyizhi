@@ -1,26 +1,13 @@
 ---
 import AppLayout from '@/layouts/AppLayout.astro';
-import { RiGhostSmileFill, RiHomeSmileFill } from '@remixicon/vue';
+import { Error404, Container } from '@coffic/cosy-ui';
 ---
 
 <AppLayout
-  title="404 - Page Not Found"
-  description="The page you're looking for doesn't exist">
-  <div
-    class="flex flex-col items-center justify-center min-h-[60vh] text-center p-4">
-    <div class="text-9xl font-bold text-primary mb-4">404</div>
-    <h1 class="text-4xl font-bold mb-4">Oops! Page Not Found</h1>
-    <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
-      Looks like you've ventured into uncharted territory!
-    </p>
-
-    <div class="text-[200px] text-primary/80 mb-8">
-      <RiGhostSmileFill />
-    </div>
-
-    <a href="/" class="btn btn-primary btn-lg gap-2">
-      <RiHomeSmileFill />
-      Take Me Home
-    </a>
-  </div>
+    title="404 - Page Not Found"
+    description="The page you're looking for doesn't exist"
+    verticalPadding="2xl">
+    <Container padding="xl" size="full">
+        <Error404 />
+    </Container>
 </AppLayout>

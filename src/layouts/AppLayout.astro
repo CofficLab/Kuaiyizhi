@@ -77,7 +77,7 @@ const lang = getLangFromUrl(Astro.url);
         showTableOfContents: showTableOfContents,
     }}
     sidebarConfig={{
-        sidebarItems: [sidebar],
+        sidebarItems: sidebar ? [sidebar] : [],
     }}
     headerConfig={{
         navItems: app.getNavItems(lang),
