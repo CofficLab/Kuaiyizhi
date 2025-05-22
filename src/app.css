@@ -6,3 +6,84 @@
     luxury, business;
   logs: false;
 }
+
+.pagefind-ui {
+        --pagefind-ui-scale: 0.75;
+        --pagefind-ui-primary: navy;
+        --pagefind-ui-text: black;
+        --pagefind-ui-border: slategrey;
+        --pagefind-ui-border-width: 1px;
+        --pagefind-ui-border-radius: 0.25rem;
+        --pagefind-ui-font: sans-serif;
+        width: 100%;
+    }
+
+    .pagefind-ui.yellow {
+        --pagefind-ui-background: lightyellow;
+    }
+
+    .pagefind-ui.red {
+        --pagefind-ui-background: peachpuff;
+        width: 100%;
+    }
+
+    .pagefind-ui .pagefind-ui__drawer:not(.pagefind-ui__hidden) {
+        position: relative;
+        padding: 0;
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+    .pagefind-ui .pagefind-ui__result-link {
+        color: var(--pagefind-ui-primary);
+    }
+
+    .pagefind-ui .pagefind-ui__result-excerpt {
+        color: var(--pagefind-ui-text);
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 1023px) {
+        .modal-box {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    }
+
+    /* 模态框动画 */
+    .modal {
+        transition-duration: 200ms;
+    }
+
+    .modal-box {
+        transition-duration: 300ms;
+        transform-origin: center;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(1rem);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .modal[open] .modal-box {
+        animation: slideUp 0.3s ease-out forwards;
+    }
+
+    .modal[open] .modal-backdrop {
+        animation: fadeIn 0.2s ease-out forwards;
+    }

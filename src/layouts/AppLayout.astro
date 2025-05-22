@@ -1,15 +1,12 @@
 ---
 import '../app.css';
-import SmartHeader from './Header.astro';
 import type { SidebarItem } from '@/models/SidebarItem';
 import type { Heading } from '@/models/Heading';
-import { ClientRouter } from 'astro:transitions';
-import GlobalConfirmDialog from '@/components/GlobalConfirmDialog.vue';
-import GlobalToast from '@/components/GlobalToast.vue';
 import { getLangFromUrl } from '@/i18n/utils';
-import { Footer } from '@coffic/cosy-ui';
-import LinkUtil from '@/utils/link';
+import { AppLayout as CosyLayout } from '@coffic/cosy-ui';
+import Search from 'astro-pagefind/components/Search';
 import app from '@/app';
+import { RiSearch2Line } from '@remixicon/vue';
 
 interface Props {
     title: string;
@@ -24,44 +21,76 @@ const { title, description } = props;
 const lang = getLangFromUrl(Astro.url);
 ---
 
-<!doctype html>
-<html lang={lang} class="scroll-smooth">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="generator" content={Astro.generator} />
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    </head>
-    <body class="min-h-screen bg-gradient-to-br from-accent/5 to-primary/10">
-        <SmartHeader />
+<CosyLayout
+    debug={false}
+    showHeader={true}
+    showSidebar={true}
+    showFooter={true}
+    metaConfig={{
+        title: title,
+        description: description,
+        siteName: app.siteName,
+        keywords: app.keywords,
+        author: app.companyName.get(lang),
+        robots: 'index, follow',
+    }}
+    footerConfig={{
+        socialLinks: ['https://github.com/CofficLab'],
+        company: app.companyName.get(lang),
+        copyright: app.companyName.get(lang),
+        homeLink: '',
+        inspirationalSlogan: '',
+        siteName: app.siteName,
+        slogan: app.slogan.get(lang),
+        aboutLink: '/en/meta/about',
+        contactLink: '/en/meta/contact',
+        blogLink: '/en/blogs',
+        termsLink: '/en/meta/terms',
+        privacyLink: '/en/meta/privacy',
+        historyLink: '/en/meta/out-story',
+        techStackLink: '/en/meta/tech-stack',
+        products: [
+            { name: 'Cisum', href: '/en/cisum' },
+            { name: 'JuiceEditor', href: '/en/juice-editor' },
+            { name: 'GitOK', href: '/en/gitok' },
+            { name: 'Cosy UI', href: 'https://github.com/CofficLab/cosy-ui' },
+        ],
+    }}
+    mainContentConfig={{
+        size: 'full',
+        isArticle: false,
+        layout: 'column',
+        verticalPadding: 'md',
+        showTableOfContents: false,
+    }}
+    sidebarConfig={{
+        sidebarItems: [],
+    }}
+    headerConfig={{
+        navItems: app.getNavItems(lang),
+    }}>
+    <div slot="navbar-end" class="cosy:flex cosy:items-center cosy:gap-2">
+        <button class="btn btn-ghost btn-sm p-1" onclick="my_modal_1.showModal()">
+            <RiSearch2Line class="w-5 h-5" />
+        </button>
+    </div>
 
-        <div class="py-24 min-h-screen pb-96">
-            <slot />
+    <slot />
+
+    <!-- 搜索模态框 -->
+    <dialog id="my_modal_1" class="modal">
+        <div class="modal-box bg-base-300 text-base-content">
+            <Search />
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">
+                        {lang === 'zh-cn' ? '关闭' : 'Close'}
+                    </button>
+                </form>
+            </div>
         </div>
-
-        <Footer
-            lang={lang}
-            siteName={lang === 'zh-cn' ? '快易知' : 'KuaiYiZhi'}
-            homeLink={lang === 'zh-cn' ? '/zh-cn/' : '/en/'}
-            slogan={app.slogan}
-            company={app.companyName}
-            copyright={app.copyright}
-            inspirationalSlogan={app.inspirationalSlogan}
-            icp={app.icp}
-            aboutLink={LinkUtil.getMetaLink(lang, 'about')}
-            contactLink="https://github.com/CofficLab/FeedbackHub"
-            termsLink={LinkUtil.getMetaLink(lang, 'terms')}
-            techStackLink={LinkUtil.getMetaLink(lang, 'tech-stack')}
-            historyLink={LinkUtil.getMetaLink(lang, 'our-story')}
-            blogLink={LinkUtil.getBlogsLink(lang)}
-            privacyLink={LinkUtil.getMetaLink(lang, 'privacy')}
-            socialLinks={app.socialLinks}
-            products={app.products}
-        />
-        <GlobalConfirmDialog client:load />
-        <GlobalToast client:load />
-        <ClientRouter />
-    </body>
-</html>
+        <form method="dialog" class="modal-backdrop bg-black/20 backdrop-blur-sm">
+            <button>关闭</button>
+        </form>
+    </dialog>
+</CosyLayout>
