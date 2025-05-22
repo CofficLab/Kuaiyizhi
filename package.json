@@ -17,7 +17,7 @@
     "@astrojs/node": "^9.2.2",
     "@astrojs/sitemap": "^3.4.0",
     "@astrojs/vue": "^5.0.13",
-    "@coffic/cosy-ui": "^0.6.36",
+    "@coffic/cosy-ui": "^0.6.38",
     "@remixicon/vue": "^4.6.0",
     "@tailwindcss/vite": "^4.1.7",
     "appwrite": "^17.0.2",
