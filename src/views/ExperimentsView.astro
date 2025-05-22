@@ -1,7 +1,6 @@
 ---
 import AppLayout from '@layouts/AppLayout.astro';
-import CourseCard from '@/components/common/CourseCard.astro';
-import { experimentDB } from '@coffic/cosy-ui';
+import { experimentDB, CardCourse } from '@coffic/cosy-ui';
 interface Props {
     lang: string;
 }
@@ -18,7 +17,7 @@ const description = lang === 'zh-cn' ? '实验列表' : 'Experiments List';
         class="container max-w-screen-lg mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8">
         {
             experiments.map(experiment => (
-                <CourseCard title={experiment.getTitle()} link={experiment.getLink()} />
+                <CardCourse title={experiment.getTitle()} link={experiment.getLink()} />
             ))
         }
     </div>

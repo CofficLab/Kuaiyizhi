@@ -36,6 +36,7 @@ if (!doc) {
     description={description}
     showTableOfContents={true}
     layout="row"
+    isArticle={true}
     sidebar={sidebarItem}>
     {!doc && <CourseNotFound lang={lang || 'zh-cn'} client:load />}
     {doc && <Content />}

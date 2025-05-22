@@ -4,8 +4,7 @@
  */
 
 import AppLayout from '@layouts/AppLayout.astro';
-import CourseCard from '@/components/common/CourseCard.astro';
-import { lessonDB } from '@coffic/cosy-ui';
+import { lessonDB, CardCourse } from '@coffic/cosy-ui';
 
 export const prerender = true;
 
@@ -37,7 +36,7 @@ const description = lang === 'zh-cn' ? '教程列表' : 'Build Your Own List';
         {
             lessons.length > 0 ? (
                 lessons.map(lesson => (
-                    <CourseCard title={lesson.getTitle()} link={lesson.getLink()} />
+                    <CardCourse title={lesson.getTitle()} link={lesson.getLink()} />
                 ))
             ) : (
                 <div class="text-center text-base-content/70">暂无教程</div>
