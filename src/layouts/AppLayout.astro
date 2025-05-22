@@ -5,6 +5,7 @@ import { AppLayout as CosyLayout, type ISidebarItem } from '@coffic/cosy-ui';
 import Search from 'astro-pagefind/components/Search';
 import app from '@/app';
 import { RiSearch2Line } from '@remixicon/vue';
+import Favicon from '@/assets/logo.png';
 
 interface Props {
     title: string;
@@ -44,6 +45,7 @@ const lang = getLangFromUrl(Astro.url);
         keywords: app.keywords,
         author: app.companyName.get(lang),
         robots: 'index, follow',
+        favicon: Favicon,
     }}
     footerConfig={{
         socialLinks: ['https://github.com/CofficLab'],
