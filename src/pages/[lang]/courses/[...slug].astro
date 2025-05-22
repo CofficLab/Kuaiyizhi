@@ -2,7 +2,6 @@
 import AppLayout from '@layouts/AppLayout.astro';
 import courseDB from '@/database/CourseDB';
 import { logger } from '@/utils/logger';
-import type { MarkdownHeading } from 'astro';
 import CourseNotFound from '@/components/course/CourseNotFound.vue';
 
 // 全部预渲染，看构建好的dist目录就明白了
@@ -18,7 +17,6 @@ let doc = await courseDB.find(id);
 let title = '';
 let description = '';
 let sidebarItem = null;
-let headings: MarkdownHeading[] = [];
 let Content = null;
 
 if (!doc) {
@@ -26,14 +24,19 @@ if (!doc) {
     title = '404 - 课程未找到';
     description = '抱歉，您要查看的课程暂时不存在';
 } else {
-    ({ Content, headings } = await doc.render());
+    ({ Content } = await doc.render());
     sidebarItem = await doc.getTopSidebarItem();
     title = doc.getTitle();
     description = doc.getDescription();
 }
 ---
 
-<AppLayout title={title} description={description}>
+<AppLayout
+    title={title}
+    description={description}
+    showTableOfContents={true}
+    layout="row"
+    sidebar={sidebarItem}>
     {!doc && <CourseNotFound lang={lang || 'zh-cn'} client:load />}
     {doc && <Content />}
 </AppLayout>
