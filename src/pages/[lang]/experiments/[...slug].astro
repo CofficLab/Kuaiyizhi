@@ -1,10 +1,10 @@
 ---
 import ExperimentView from '@/views/ExperimentView.astro';
-import experimentDB from '@/database/ExperimentDB';
+import { experimentDB } from '@coffic/cosy-ui';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  return experimentDB.getStaticPaths();
+    return experimentDB.getStaticPaths();
 }
 
 /**
@@ -20,9 +20,9 @@ let bookId = slug.split('/')[0];
 let id = '';
 
 if (slug.split('/').length === 1) {
-  id = `${bookId}/${lang}`;
+    id = `${bookId}/${lang}`;
 } else {
-  id = `${bookId}/${lang}/${slug.replace(`${bookId}/`, '')}`;
+    id = `${bookId}/${lang}/${slug.replace(`${bookId}/`, '')}`;
 }
 ---
 

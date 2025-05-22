@@ -13,15 +13,15 @@
   "dependencies": {
     "@astrojs/cloudflare": "^12.5.3",
     "@astrojs/markdoc": "^0.12.11",
-    "@astrojs/mdx": "^4.2.6",
+    "@astrojs/mdx": "^4.3.0",
     "@astrojs/node": "^9.2.2",
     "@astrojs/sitemap": "^3.4.0",
-    "@astrojs/vue": "^5.0.13",
-    "@coffic/cosy-ui": "^0.6.38",
+    "@astrojs/vue": "^5.1.0",
+    "@coffic/cosy-ui": "^0.6.40",
     "@remixicon/vue": "^4.6.0",
     "@tailwindcss/vite": "^4.1.7",
     "appwrite": "^17.0.2",
-    "astro": "^5.7.14",
+    "astro": "^5.8.0",
     "astro-expressive-code": "^0.40.2",
     "astro-pagefind": "^1.8.3",
     "astro-robots-txt": "^1.0.0",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
     "daisyui": "5.0.0",
-    "wrangler": "^3.114.8"
+    "wrangler": "^3.114.9"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

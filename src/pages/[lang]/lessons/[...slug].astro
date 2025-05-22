@@ -40,6 +40,11 @@ if (lesson) {
 }
 ---
 
-<AppLayout title={title} description={description} sidebar={sidebarItem}>
+<AppLayout
+    title={title}
+    description={description}
+    sidebar={sidebarItem}
+    showTableOfContents={true}
+    layout="row">
     {Content ? <Content /> : <LessonNotFound id={id} />}
 </AppLayout>
