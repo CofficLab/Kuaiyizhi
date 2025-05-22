@@ -1,35 +1,30 @@
 ---
-import DocLayout from '@layouts/DocLayout.astro';
+import AppLayout from '@layouts/AppLayout.astro';
 import LessonNotFound from '@components/lesson/LessonNotFound.astro';
 import experimentDB from '@/database/ExperimentDB';
 import { type RenderResult } from 'astro:content';
 import type { Heading } from '@/models/Heading';
 
 export interface Props {
-  id: string;
+    id: string;
 }
 
 const { id } = Astro.props;
 const experiment = await experimentDB.find(id);
 const title = experiment?.getTitle() || '没有找到课程';
 const description = experiment?.getDescription() || '没有找到课程';
-const sidebarItem =
-  (await (await experiment?.getBook())?.toSidebarItem()) || null;
+const sidebarItem = (await (await experiment?.getBook())?.toSidebarItem()) || null;
 
 let headings: Heading[] = [];
 let Content: RenderResult['Content'] | null = null;
 
 if (experiment) {
-  const renderResult = await experiment.render();
-  headings = renderResult.headings;
-  Content = renderResult.Content;
+    const renderResult = await experiment.render();
+    headings = renderResult.headings;
+    Content = renderResult.Content;
 }
 ---
 
-<DocLayout
-  title={title}
-  description={description}
-  sidebarItem={sidebarItem}
-  headings={headings}>
-  {Content ? <Content /> : <LessonNotFound id={id} />}
-</DocLayout>
+<AppLayout title={title} description={description} sidebar={sidebarItem}>
+    {Content ? <Content /> : <LessonNotFound id={id} />}
+</AppLayout>

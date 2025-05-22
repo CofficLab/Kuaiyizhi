@@ -1,11 +1,11 @@
 ---
-import DocLayout from '@layouts/DocLayout.astro';
+import AppLayout from '@layouts/AppLayout.astro';
 import BlogDB from '@/database/BlogDB';
 import Tag from '@/models/Tag';
 import { getLangFromUrl } from '@/i18n/utils';
 
 export interface Props {
-  id: string;
+    id: string;
 }
 
 const { id } = Astro.props;
@@ -14,7 +14,7 @@ const doc = await BlogDB.find(id);
 const lang = getLangFromUrl(Astro.url);
 
 if (!doc) {
-  return Astro.redirect(404);
+    return Astro.redirect(404);
 }
 
 const { Content, headings } = await doc.render();
@@ -22,10 +22,6 @@ const { Content, headings } = await doc.render();
 const sidebarItem = await Tag.makeRootSidebarItem(lang);
 ---
 
-<DocLayout
-  title={doc.getTitle()}
-  description={doc.getDescription()}
-  sidebarItem={sidebarItem}
-  headings={headings}>
-  <Content />
-</DocLayout>
+<AppLayout title={doc.getTitle()} description={doc.getDescription()} sidebar={sidebarItem}>
+    <Content />
+</AppLayout>

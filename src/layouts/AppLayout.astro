@@ -12,11 +12,12 @@ interface Props {
     title: string;
     description: string;
     headings?: Heading[];
+    isArticle?: boolean;
     sidebar?: SidebarItem | null | undefined;
 }
 
 const props = Astro.props as Props;
-const { title, description } = props;
+const { title, description, isArticle = true } = props;
 
 const lang = getLangFromUrl(Astro.url);
 ---
@@ -58,7 +59,7 @@ const lang = getLangFromUrl(Astro.url);
     }}
     mainContentConfig={{
         size: 'full',
-        isArticle: false,
+        isArticle: isArticle,
         layout: 'column',
         verticalPadding: 'md',
         showTableOfContents: false,

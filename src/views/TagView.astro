@@ -1,12 +1,12 @@
 ---
-import DocLayout from '@/layouts/DocLayout.astro';
 import BlogDB from '@/database/BlogDB';
 import Tag from '@/models/Tag';
 import BlogList from '@/components/common/BlogList.astro';
+import AppLayout from '@/layouts/AppLayout.astro';
 
 interface Props {
-  lang: string;
-  name: string;
+    lang: string;
+    name: string;
 }
 
 const { lang, name } = Astro.props;
@@ -17,13 +17,6 @@ const emptyTitle = lang === 'zh' ? '暂无博客文章' : 'No blog posts yet';
 const emptyDescription = lang === 'zh' ? '稍后再来看看吧' : 'Check back later';
 ---
 
-<DocLayout
-  title={`标签: ${name}`}
-  description={`所有关于 ${name} 的文章`}
-  sidebarItem={sidebarItem}>
-  <BlogList
-    blogs={blogs}
-    emptyTitle={emptyTitle}
-    emptyDescription={emptyDescription}
-  />
-</DocLayout>
+<AppLayout title={`标签: ${name}`} description={`所有关于 ${name} 的文章`} sidebar={sidebarItem}>
+    <BlogList blogs={blogs} emptyTitle={emptyTitle} emptyDescription={emptyDescription} />
+</AppLayout>

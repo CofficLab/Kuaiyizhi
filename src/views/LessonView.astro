@@ -1,12 +1,12 @@
 ---
-import DocLayout from '@layouts/DocLayout.astro';
+import AppLayout from '@layouts/AppLayout.astro';
 import LessonNotFound from '@components/lesson/LessonNotFound.astro';
 import lessonDB from '@/database/LessonDB';
 import { type RenderResult } from 'astro:content';
 import type { Heading } from '@/models/Heading';
 
 export interface Props {
-  id: string;
+    id: string;
 }
 
 const { id } = Astro.props;
@@ -19,16 +19,12 @@ let headings: Heading[] = [];
 let Content: RenderResult['Content'] | null = null;
 
 if (lesson) {
-  const renderResult = await lesson.render();
-  headings = renderResult.headings;
-  Content = renderResult.Content;
+    const renderResult = await lesson.render();
+    headings = renderResult.headings;
+    Content = renderResult.Content;
 }
 ---
 
-<DocLayout
-  title={title}
-  description={description}
-  sidebarItem={sidebarItem}
-  headings={headings}>
-  {Content ? <Content /> : <LessonNotFound id={id} />}
-</DocLayout>
+<AppLayout title={title} description={description} sidebar={sidebarItem}>
+    {Content ? <Content /> : <LessonNotFound id={id} />}
+</AppLayout>
