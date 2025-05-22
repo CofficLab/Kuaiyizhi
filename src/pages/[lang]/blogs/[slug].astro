@@ -1,14 +1,39 @@
 ---
-import BlogView from '@/views/BlogView.astro';
-import blogDB from '@/database/BlogDB';
+import { Tag, LanguageUtil, Container, blogDB } from '@coffic/cosy-ui';
+import AppLayout from '@/layouts/AppLayout.astro';
 
 export const prerender = true;
 export async function getStaticPaths() {
-  return await blogDB.getStaticPaths();
+    return await blogDB.getStaticPaths();
 }
+
+interface Props {}
+const {} = Astro.props;
 
 let { lang, slug } = Astro.params;
 let id = `${lang}/${slug}`;
+
+const doc = await blogDB.find(id);
+const currentLang = LanguageUtil.getCurrentLanguage(Astro);
+
+if (!doc) {
+    return Astro.redirect(404);
+}
+
+const { Content } = await doc.render();
+
+const sidebarItem = await Tag.makeRootSidebarItem(currentLang);
 ---
 
-<BlogView id={id} />
+<AppLayout
+    title={doc.getTitle()}
+    isArticle={true}
+    verticalPadding="2xl"
+    description={doc.getDescription()}
+    sidebar={sidebarItem}
+    layout="row"
+    showTableOfContents={true}>
+    <Container padding="xl" size="full">
+        <Content />
+    </Container>
+</AppLayout>

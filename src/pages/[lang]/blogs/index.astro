@@ -1,26 +1,47 @@
 ---
-import BlogsView from '@/views/BlogsView.astro';
+import { BlogList, type IBlog } from '@coffic/cosy-ui/vue';
+import { Tag, Container, blogDB } from '@coffic/cosy-ui';
+import AppLayout from '@/layouts/AppLayout.astro';
 
 // 这里定义了每个语言的博客列表页，并将其作为静态页面预渲染。
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-  return [
-    {
-      params: {
-        lang: '/zh-cn',
-      },
-    },
-    {
-      params: {
-        lang: '/en',
-      },
-    },
-  ];
+    return [
+        {
+            params: {
+                lang: '/zh-cn',
+            },
+        },
+        {
+            params: {
+                lang: '/en',
+            },
+        },
+    ];
 }
 
 const { lang } = Astro.params;
+const blogs = (await blogDB.allBlogsByLang(lang)).map(blog => ({
+    id: blog.getId(),
+    title: blog.getTitle(),
+    link: blog.getLink(),
+    tags: blog.getTags(),
+})) as unknown as IBlog[];
+const sidebarItem = await Tag.makeRootSidebarItem(lang);
+const l = lang as 'zh' | 'en';
 ---
 
-<BlogsView lang={lang} />
+<AppLayout
+    title="所有文章"
+    description="我的博客"
+    verticalPadding="2xl"
+    sidebar={sidebarItem}
+    showSidebar={true}>
+    <Container>
+        <h1 class="text-2xl font-bold mt-12 pl-2">所有文章</h1>
+        <BlogList blogs={blogs} lang={l} />
+    </Container>
+    <div class="mt-96"></div>
+</AppLayout>

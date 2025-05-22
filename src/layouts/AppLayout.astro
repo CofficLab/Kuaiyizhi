@@ -1,9 +1,8 @@
 ---
 import '../app.css';
-import type { SidebarItem } from '@/models/SidebarItem';
 import type { Heading } from '@/models/Heading';
 import { getLangFromUrl } from '@/i18n/utils';
-import { AppLayout as CosyLayout } from '@coffic/cosy-ui';
+import { AppLayout as CosyLayout, type ISidebarItem } from '@coffic/cosy-ui';
 import Search from 'astro-pagefind/components/Search';
 import app from '@/app';
 import { RiSearch2Line } from '@remixicon/vue';
@@ -13,11 +12,24 @@ interface Props {
     description: string;
     headings?: Heading[];
     isArticle?: boolean;
-    sidebar?: SidebarItem | null | undefined;
+    sidebar?: ISidebarItem | null | undefined;
+    verticalPadding?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    showSidebar?: boolean;
+    showTableOfContents?: boolean;
+    layout?: 'column' | 'row';
 }
 
 const props = Astro.props as Props;
-const { title, description, isArticle = true } = props;
+const {
+    title,
+    description,
+    isArticle = true,
+    sidebar,
+    verticalPadding = 'md',
+    showSidebar = true,
+    layout = 'column',
+    showTableOfContents = false,
+} = props;
 
 const lang = getLangFromUrl(Astro.url);
 ---
@@ -25,7 +37,7 @@ const lang = getLangFromUrl(Astro.url);
 <CosyLayout
     debug={false}
     showHeader={true}
-    showSidebar={true}
+    showSidebar={showSidebar}
     showFooter={true}
     metaConfig={{
         title: title,
@@ -60,12 +72,12 @@ const lang = getLangFromUrl(Astro.url);
     mainContentConfig={{
         size: 'full',
         isArticle: isArticle,
-        layout: 'column',
-        verticalPadding: 'md',
-        showTableOfContents: false,
+        layout: layout,
+        verticalPadding: verticalPadding,
+        showTableOfContents: showTableOfContents,
     }}
     sidebarConfig={{
-        sidebarItems: [],
+        sidebarItems: [sidebar],
     }}
     headerConfig={{
         navItems: app.getNavItems(lang),
