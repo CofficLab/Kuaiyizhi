@@ -9,12 +9,13 @@ import GlobalToast from '@/components/GlobalToast.vue';
 import { getLangFromUrl } from '@/i18n/utils';
 import { Footer } from '@coffic/cosy-ui';
 import LinkUtil from '@/utils/link';
+import app from '@/app';
 
 interface Props {
-  title: string;
-  description: string;
-  headings?: Heading[];
-  sidebar?: SidebarItem | null | undefined;
+    title: string;
+    description: string;
+    headings?: Heading[];
+    sidebar?: SidebarItem | null | undefined;
 }
 
 const props = Astro.props as Props;
@@ -25,81 +26,42 @@ const lang = getLangFromUrl(Astro.url);
 
 <!doctype html>
 <html lang={lang} class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  </head>
-  <body class="min-h-screen bg-gradient-to-br from-accent/5 to-primary/10">
-    <SmartHeader />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    </head>
+    <body class="min-h-screen bg-gradient-to-br from-accent/5 to-primary/10">
+        <SmartHeader />
 
-    <div class="py-24 min-h-screen pb-96">
-      <slot />
-    </div>
+        <div class="py-24 min-h-screen pb-96">
+            <slot />
+        </div>
 
-    <Footer
-      lang={lang}
-      siteName={lang === 'zh-cn' ? '快易知' : 'KuaiYiZhi'}
-      homeLink={lang === 'zh-cn' ? '/zh-cn/' : '/en/'}
-      slogan={lang === 'zh-cn'
-        ? '精彩软件，有爱创造'
-        : 'Wonderful Software, Built with Love'}
-      company={lang === 'zh-cn'
-        ? '青岛岳亿网络科技有限公司'
-        : 'Qingdao Yueyi Network Technology Co., Ltd.'}
-      copyright={lang === 'zh-cn' ? '版权所有' : 'All rights reserved'}
-      inspirationalSlogan={lang === 'zh-cn'
-        ? '也许，这是一番成就的开始'
-        : 'Perhaps, this is the beginning of achievement'}
-      icp={lang === 'zh-cn'
-        ? '鲁ICP备2022009149号-2'
-        : 'ICP License: 2022009149-2'}
-      aboutLink={LinkUtil.getMetaLink(lang, 'about')}
-      contactLink="https://github.com/CofficLab/FeedbackHub"
-      termsLink={LinkUtil.getMetaLink(lang, 'terms')}
-      techStackLink={LinkUtil.getMetaLink(lang, 'tech-stack')}
-      historyLink={LinkUtil.getMetaLink(lang, 'our-story')}
-      blogLink={LinkUtil.getBlogsLink(lang)}
-      privacyLink={LinkUtil.getMetaLink(lang, 'privacy')}
-      socialLinks={['https://github.com/CofficLab']}
-      products={[
-        {
-          name: 'Cisum',
-          href: 'https://coffic.zone.id/cisum',
-          external: true,
-        },
-        {
-          name: 'GitOk',
-          href: 'https://coffic.zone.id/gitok',
-          external: true,
-        },
-        {
-          name: 'TravelMode',
-          href: 'https://coffic.zone.id/travelmode',
-          external: true,
-        },
-        {
-          name: 'Netto',
-          href: 'https://coffic.zone.id/netto',
-          external: true,
-        },
-        {
-          name: 'CosyUI',
-          href: 'https://cofficlab.github.io/cosy-ui',
-          external: true,
-        },
-        {
-          name: '菲克与象彩彩',
-          href: 'https://feekoo.zone.id',
-          external: true,
-        },
-      ]}
-    />
-    <GlobalConfirmDialog client:load />
-    <GlobalToast client:load />
-    <ClientRouter />
-  </body>
+        <Footer
+            lang={lang}
+            siteName={lang === 'zh-cn' ? '快易知' : 'KuaiYiZhi'}
+            homeLink={lang === 'zh-cn' ? '/zh-cn/' : '/en/'}
+            slogan={app.slogan}
+            company={app.companyName}
+            copyright={app.copyright}
+            inspirationalSlogan={app.inspirationalSlogan}
+            icp={app.icp}
+            aboutLink={LinkUtil.getMetaLink(lang, 'about')}
+            contactLink="https://github.com/CofficLab/FeedbackHub"
+            termsLink={LinkUtil.getMetaLink(lang, 'terms')}
+            techStackLink={LinkUtil.getMetaLink(lang, 'tech-stack')}
+            historyLink={LinkUtil.getMetaLink(lang, 'our-story')}
+            blogLink={LinkUtil.getBlogsLink(lang)}
+            privacyLink={LinkUtil.getMetaLink(lang, 'privacy')}
+            socialLinks={app.socialLinks}
+            products={app.products}
+        />
+        <GlobalConfirmDialog client:load />
+        <GlobalToast client:load />
+        <ClientRouter />
+    </body>
 </html>
