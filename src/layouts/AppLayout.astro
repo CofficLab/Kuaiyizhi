@@ -48,7 +48,7 @@ const lang = getLangFromUrl(Astro.url);
         favicon: Favicon,
     }}
     footerConfig={{
-        socialLinks: ['https://github.com/CofficLab'],
+        socialLinks: app.socialLinks,
         company: app.companyName.get(lang),
         copyright: app.companyName.get(lang),
         homeLink: '',
@@ -62,12 +62,7 @@ const lang = getLangFromUrl(Astro.url);
         privacyLink: '/en/meta/privacy',
         historyLink: '/en/meta/out-story',
         techStackLink: '/en/meta/tech-stack',
-        products: [
-            { name: 'Cisum', href: '/en/cisum' },
-            { name: 'JuiceEditor', href: '/en/juice-editor' },
-            { name: 'GitOK', href: '/en/gitok' },
-            { name: 'Cosy UI', href: 'https://github.com/CofficLab/cosy-ui' },
-        ],
+        products: app.products,
     }}
     mainContentConfig={{
         size: 'full',
